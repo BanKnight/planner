@@ -34,9 +34,7 @@
     </el-aside>
 
     <el-container>
-      <transition name="el-fade-in">
-        <router-view />
-      </transition>
+      <router-view />
     </el-container>
   </el-container>
 </template>

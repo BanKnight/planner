@@ -14,10 +14,7 @@
         </el-menu-item>
       </el-menu>
     </el-header>
-
-    <transition name="el-fade-in">
-      <router-view />
-    </transition>
+    <router-view />
   </el-container>
 </template>
 
