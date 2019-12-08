@@ -4,7 +4,7 @@
       <el-container class="full">
         <el-container class="full">
           <el-menu
-            :default-active="`${root}/${children[0].path}`"
+            :default-active="default_route"
             class="full-width"
             :router="true"
             background-color="#334444"
@@ -50,7 +50,8 @@ export default {
   weight: 0,
   data() {
     return {
-      width: "200px"
+      width: "200px",
+      default_route: "hub"
     };
   },
   computed: {

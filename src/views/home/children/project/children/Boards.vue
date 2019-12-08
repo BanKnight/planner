@@ -22,7 +22,7 @@ import draggable from "vuedraggable";
 
 export default {
   title: "看板",
-  path: "kanban",
+  path: "",
   weight: 9,
   components: { layout, NoteCol, draggable },
   data() {
