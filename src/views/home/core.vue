@@ -2,14 +2,6 @@
   <el-container class="full">
     <el-aside class="sidebar full-height" :width="width">
       <el-container class="full">
-        <el-header height="42px">
-          <el-row class="full" type="flex" justify="space-around" align="middle">
-            <h6>首页</h6>
-            <el-button type="text">
-              <i class="el-icon-s-fold" />
-            </el-button>
-          </el-row>
-        </el-header>
         <el-container class="full">
           <el-menu
             :default-active="`${root}/${children[0].path}`"
@@ -30,6 +22,14 @@
             </el-menu-item>
           </el-menu>
         </el-container>
+
+        <el-footer height="42px">
+          <el-row class="full" type="flex" justify="space-around" align="middle">
+            <el-button type="text">
+              <i class="el-icon-s-fold" />
+            </el-button>
+          </el-row>
+        </el-footer>
       </el-container>
     </el-aside>
 
@@ -45,6 +45,7 @@
 import children from "./children";
 
 export default {
+  name: "home",
   path: "/",
   weight: 0,
   data() {
@@ -54,7 +55,9 @@ export default {
   },
   computed: {
     children() {
-      return children;
+      return children.filter(one => {
+        return one.title != null;
+      });
     },
     root() {
       return "";

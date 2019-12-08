@@ -1,8 +1,9 @@
+import project from "./project"
+
 const files = require.context(".", false, /\.vue$/);
 const children = [];
 
-files.keys().forEach(key =>
-{
+files.keys().forEach(key => {
     if (key === "./index.js") return;
 
     // let name = key.replace(/(\.\/|\.vue)/g, "");
@@ -11,9 +12,10 @@ files.keys().forEach(key =>
     children.push(mod);
 });
 
-children.sort((first, second) =>
-{
-    return first.weight > second.weight;
+children.push(project)
+
+children.sort((first, second) => {
+    return second.weight - first.weight;
 });
 
 export default children

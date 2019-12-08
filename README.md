@@ -1,4 +1,4 @@
-# organize
+# planner
 
 ## Project setup
 ```

@@ -10,8 +10,8 @@
 import ProjectCard from "@/components/ProjectCard";
 
 export default {
-  title: "项目",
-  path: "",
+  title: "Hub",
+  path: "hub",
   weight: 0,
   components: { ProjectCard },
   data() {

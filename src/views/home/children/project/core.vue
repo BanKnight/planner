@@ -43,7 +43,7 @@
 import children from "./children";
 
 export default {
-  path: "/project/:id",
+  path: "project/:id",
   weight: 0,
   components: {},
   data() {
