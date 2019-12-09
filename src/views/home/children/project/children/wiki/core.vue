@@ -1,14 +1,12 @@
 <template>
-  <layout>我是Wiki</layout>
+  <router-view />
 </template>
 
 <script>
-import layout from "../layout";
-
 export default {
   title: "Wiki",
   path: "wiki",
   weight: 5,
-  components: { layout }
+  components: {}
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-row style="padding: 10px" type="flex" justify="start" align="bottom">
+    <el-row style="padding: 0 10px" type="flex" justify="start" align="bottom">
       <el-row
         type="flex"
         justify="center"

@@ -1,5 +1,3 @@
-import backlogs from "./backlogs"
-import wiki from "./wiki"
 
 const files = require.context(".", false, /\.vue$/);
 const children = [];
@@ -13,9 +11,6 @@ files.keys().forEach(key =>
 
     children.push(mod);
 });
-
-children.push(backlogs)
-children.push(wiki)
 
 children.sort((first, second) =>
 {
