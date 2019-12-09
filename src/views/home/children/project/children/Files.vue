@@ -1,14 +1,14 @@
 <template>
-  <layout>我是Wiki</layout>
+  <layout>我是文件</layout>
 </template>
 
 <script>
 import layout from "../layout";
 
 export default {
-  title: "Wiki",
-  path: "wiki",
-  weight: 5,
+  title: "文件",
+  path: "files",
+  weight: 0,
   components: { layout }
 };
 </script>
