@@ -1,6 +1,6 @@
 <template>
   <layout>
-    <el-container class="scroll-if-need full" style="padding:10px">
+    <el-container class="scroll-if-need full">
       <draggable
         style="width:fit-content;min-height:100%;"
         :list="cols"
