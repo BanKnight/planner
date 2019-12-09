@@ -32,6 +32,7 @@
 import children from "./children";
 
 export default {
+  name: "project",
   path: "project/:id",
   weight: 0,
   components: {},
@@ -42,7 +43,13 @@ export default {
   },
   computed: {
     children() {
-      return children;
+      return children.map(one => {
+        let view = one.core || one;
+        if (view.title == null) {
+          return;
+        }
+        return view;
+      });
     },
     root() {
       return `/project/${this.$route.params.id}`;
@@ -51,18 +58,4 @@ export default {
   methods: {}
 };
 </script>
-
-<style scoped>
-svg {
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
-  display: block;
-  width: 100;
-  height: 100;
-}
-
-svg text {
-  font-size: 25;
-}
-</style>
 

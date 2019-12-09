@@ -1,7 +1,12 @@
 <template>
-  <layout>
+  <el-container direction="vertical" class="full">
     <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px">
-      <el-button type="primary" icon="el-icon-plus" style="margin-right:20px"></el-button>
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        style="margin-right:20px"
+        @click="$router.push(`${root}/new`)"
+      ></el-button>
 
       <el-input
         class="search"
@@ -32,17 +37,13 @@
       </el-table-column>
       <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
     </el-table>
-  </layout>
+  </el-container>
 </template>
 
 <script>
-import layout from "../layout";
-
 export default {
-  title: "Issues",
-  path: "issues",
-  weight: 7,
-  components: { layout },
+  path: "",
+  weight: 8,
   data() {
     return {
       keyword: "",
@@ -85,6 +86,11 @@ export default {
       ],
       multipleSelection: []
     };
+  },
+  computed: {
+    root() {
+      return `/project/${this.$route.params.id}/backlogs`;
+    }
   },
   methods: {
     on_clear() {},

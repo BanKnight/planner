@@ -83,6 +83,9 @@ export default {
     root() {
       return "";
     }
+  },
+  mounted() {
+    console.log(this.$route);
   }
 };
 </script>
