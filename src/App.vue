@@ -13,8 +13,10 @@ html {
   width: 100%;
   height: 100%;
 
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+
   font-size: 14px;
   line-height: 1.5;
   color: #24292e;
@@ -83,7 +85,7 @@ p {
 }
 
 .sidebar {
-  background-color: #3c4146;
+  background-color: #334444;
   color: white;
 }
 

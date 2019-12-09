@@ -4,7 +4,11 @@
       <router-link :to="'/project/' + value.id" class="el-link el-link--default">
         <h3>{{value.title}}</h3>
       </router-link>
-      <el-button type="text" icon="el-icon-more"></el-button>
+
+      <el-button-group>
+        <el-button size="mini" icon="el-icon-star-off"></el-button>
+        <el-button size="mini" icon="el-icon-more"></el-button>
+      </el-button-group>
     </el-row>
     <span>{{value.desc}}</span>
   </el-card>
