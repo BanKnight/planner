@@ -1,13 +1,6 @@
 <template>
   <layout>
-    <el-table
-      :data="items"
-      style="width: 100%"
-      height="100%"
-      size="medium"
-      :show-header="true"
-      :stripe="true"
-    >
+    <el-table :data="items" style="width: 100%" height="100%" :stripe="true">
       <el-table-column label="名称" prop="name" width="180">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
@@ -29,10 +22,13 @@
           ></el-progress>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="180" align="right">
+        <template slot="header">
+          <el-button type="primary" icon="el-icon-plus"></el-button>
+        </template>
         <el-button-group>
-          <el-button size="mini" icon="el-icon-edit"></el-button>
-          <el-button size="mini" icon="el-icon-close"></el-button>
+          <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
+          <el-button size="mini" icon="el-icon-check" type="success"></el-button>
           <el-button size="mini" icon="el-icon-delete" type="danger"></el-button>
         </el-button-group>
       </el-table-column>

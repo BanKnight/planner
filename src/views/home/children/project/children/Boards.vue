@@ -21,7 +21,7 @@ import NoteCol from "@/components/NoteCol";
 import draggable from "vuedraggable";
 
 export default {
-  title: "看板",
+  title: "开发",
   path: "",
   weight: 9,
   components: { layout, NoteCol, draggable },
@@ -33,14 +33,16 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      for (let i = 1; i < 20; ++i) {
+      for (let i = 1; i < 6; ++i) {
         let one = {
           id: i,
           title: `标题${i}`,
           notes: []
         };
 
-        for (let j = 1; j < 30; ++j) {
+        let notes_count = Math.floor(Math.random() * 10000) % 10;
+
+        for (let j = 1; j < notes_count; ++j) {
           one.notes.push({
             id: `${i}:${j}`,
             title: `${i}:${j} title`,
