@@ -69,7 +69,7 @@ export default {
   weight: 0,
   data() {
     return {
-      width: "150px",
+      width: "200px",
       default_route: "hub",
       array: []
     };

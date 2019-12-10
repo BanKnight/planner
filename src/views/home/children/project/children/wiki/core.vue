@@ -1,7 +1,7 @@
 <template>
-  <el-main>
+  <el-container style="padding:10px" class="full">
     <router-view />
-  </el-main>
+  </el-container>
 </template>
 
 <script>
