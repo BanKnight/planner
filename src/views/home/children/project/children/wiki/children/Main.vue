@@ -1,12 +1,7 @@
 <template>
   <el-container class="full">
-    <el-aside width="180px">
+    <el-aside width="180px" v-if="folding==false">
       <el-container class="full" direction="vertical">
-        <el-row type="flex" justify="start" align="middle">
-          <el-button size="small">
-            <i class="el-icon-s-fold" />
-          </el-button>
-        </el-row>
         <el-table :data="articles" style="width: 100%" height="100%" size="small" :border="true">
           <el-table-column prop="title" label="地址">
             <template slot="header">
@@ -26,8 +21,14 @@
       </el-container>
     </el-aside>
     <el-container>
-      <el-main style="padding-top:0">
-        <el-card shadow="never">
+      <el-main style="padding:2px">
+        <el-row type="flex" justify="start" align="middle">
+          <el-button-group>
+            <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
+            <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
+          </el-button-group>
+        </el-row>
+        <el-card shadow="never" class="full-width">
           <div slot="header">
             <h2>文章标题</h2>
             <el-tag type="success" size="small">标签二</el-tag>
@@ -69,16 +70,23 @@ export default {
           title: "文章标题4",
           content: `# this is content`
         }
-      ]
+      ],
+      folding: false
     };
   },
   computed: {
+    fold_icon() {
+      if (this.folding == false) {
+        return "el-icon-s-fold";
+      }
+      return "el-icon-s-unfold";
+    },
     root() {
       return `/project/${this.$route.params.id}/wiki`;
     },
     test_markdown() {
       return mavonEditor.markdownIt.render(
-        "# this is something\n ## this is you don't know"
+        "# this is something\n ## this is you don't know\n > 测试引用"
       );
     }
   },
