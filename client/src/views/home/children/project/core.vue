@@ -5,7 +5,7 @@
         type="flex"
         justify="center"
         align="middle"
-        style="width:fit-content;height:60px;background-color:#75b368;color:white;padding:10px"
+        style="width:fit-content;height:100%;background-color:#75b368;color:white;padding:10px"
       >
         <h3>{{title}}</h3>
       </el-row>

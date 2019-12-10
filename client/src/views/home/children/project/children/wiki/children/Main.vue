@@ -22,19 +22,26 @@
     </el-aside>
     <el-container>
       <el-main style="padding:2px">
-        <el-row type="flex" justify="start" align="middle">
+        <el-row type="flex" justify="space-between" align="middle">
           <el-button-group>
             <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
             <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
+          </el-button-group>
+          <el-button-group>
+            <el-button size="mini" icon="el-icon-edit" />
+            <el-button size="mini" icon="el-icon-more" />
           </el-button-group>
         </el-row>
         <el-card shadow="never" class="full-width">
           <div slot="header">
             <h2>文章标题</h2>
-            <el-tag type="success" size="small">标签二</el-tag>
-            <el-tag type="info" size="small">标签三</el-tag>
-            <el-tag type="warning" size="small">标签四</el-tag>
-            <el-tag type="danger" size="small">标签五</el-tag>
+
+            <span>
+              <el-tag type="success" size="small">标签二</el-tag>
+              <el-tag type="info" size="small">标签三</el-tag>
+              <el-tag type="warning" size="small">标签四</el-tag>
+              <el-tag type="danger" size="small">标签五</el-tag>
+            </span>
           </div>
           <div class="markdown-body" v-html="test_markdown"></div>
         </el-card>
@@ -45,9 +52,6 @@
 </template>
 
 <script>
-import mavonEditor from "mavon-editor";
-import "mavon-editor/dist/css/index.css";
-
 export default {
   path: "",
   weight: 8,
@@ -85,7 +89,7 @@ export default {
       return `/project/${this.$route.params.id}/wiki`;
     },
     test_markdown() {
-      return mavonEditor.markdownIt.render(
+      return this.$md(
         "# this is something\n ## this is you don't know\n > 测试引用"
       );
     }

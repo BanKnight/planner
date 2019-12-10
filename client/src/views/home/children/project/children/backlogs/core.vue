@@ -10,7 +10,7 @@ import layout from "../../layout";
 export default {
   title: "需求池",
   path: "backlogs",
-  weight: 8,
+  weight: 9,
   components: { layout }
 };
 </script>

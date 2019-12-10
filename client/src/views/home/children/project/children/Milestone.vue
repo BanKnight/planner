@@ -2,6 +2,9 @@
   <layout>
     <el-table :data="items" style="width: 100%" height="100%" :stripe="true">
       <el-table-column label="名称" prop="name" width="180">
+        <template slot="header">
+          <el-button type="primary" icon="el-icon-plus"></el-button>
+        </template>
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
@@ -23,9 +26,6 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180" align="right">
-        <template slot="header">
-          <el-button type="primary" icon="el-icon-plus"></el-button>
-        </template>
         <el-button-group>
           <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
           <el-button size="mini" icon="el-icon-check" type="success"></el-button>
@@ -41,8 +41,8 @@ import layout from "../layout";
 
 export default {
   title: "里程碑",
-  path: "Milestone",
-  weight: 6,
+  path: "",
+  weight: 10,
   components: { layout },
   data() {
     return { items: [] };

@@ -22,8 +22,8 @@ import draggable from "vuedraggable";
 
 export default {
   title: "开发",
-  path: "",
-  weight: 9,
+  path: "boards",
+  weight: 8,
   components: { layout, NoteCol, draggable },
   data() {
     return {
