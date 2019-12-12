@@ -1,0 +1,22 @@
+{
+  "name": "planner-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_ENV=development node index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cross-env": "^6.0.3",
+    "extend2": "^1.0.0",
+    "is-type-of": "^1.2.1",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-compress": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.12.3",
+    "mongodb": "^3.4.0"
+  }
+}
