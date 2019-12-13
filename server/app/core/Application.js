@@ -93,7 +93,7 @@ module.exports = class Application extends KoaApplication
 
     load_schedule()
     {
-        this.schedule = utils.load_folder(path.join(this.app_path, "schedule"))
+        // this.schedule = utils.load_folder(path.join(this.app_path, "schedule"))
 
     }
 

@@ -9,9 +9,9 @@ module.exports = async (app) =>
 {
     const config = app.config.mongodb
 
-    app.mongo = new Mongodb(config)
+    app.db = new Mongodb(config)
 
-    return app.mongo.connect()
+    return app.db.connect()
 }
 
 const empty = {}

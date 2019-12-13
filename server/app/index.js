@@ -7,10 +7,5 @@ module.exports = async function ()
         app_path: __dirname
     })
 
-    console.log(`app path:${__dirname}`)
-
-
     await app.run()
-
-    console.log("app is listener")
 }
