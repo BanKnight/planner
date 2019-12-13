@@ -40,7 +40,7 @@ module.exports = class Current extends Service
 
         this.add(one)
 
-        this.app.db.set(one.id, one)
+        this.app.db.set("planner.backlogs", one._id, one)
     }
 
     destroy(id)
@@ -98,11 +98,6 @@ module.exports = class Current extends Service
 
             tag_notes.push(one)
         }
-    }
-
-    update(id, option)
-    {
-
     }
 
     get(id)

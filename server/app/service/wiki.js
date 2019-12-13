@@ -1,3 +1,4 @@
+const shortid = require('shortid');
 const { Service } = require("../core")
 
 module.exports = class Current extends Service
@@ -12,24 +13,77 @@ module.exports = class Current extends Service
 
     async start()
     {
-        let array = await this.app.db.load("wiki")
+        let array = await this.app.db.load("planner.wiki")
 
         for (let one of array)
         {
-            this.ids[one._id] = one
+            this.add(one)
+        }
+    }
 
-            let planner = this.planners[one.planner]
-            if (planner == null)
-            {
-                planner = {
-                    _id: one.planner,
-                    wiki: new Map()
-                }
+    /**
+     * option = { 
+     *  planner:xx
+     *  title:xx,
+     *  bodys:[],   多个内容
+     *  attachment：[],
+     *  author:xx,
+     * }
+     */
+    create(option)
+    {
+        let one = {
+            _id: shortid.generate(),
+            ...option,
+        }
 
-                this.planners[one.planner] = planner
+        this.add(one)
+
+        this.app.db.set("planner.wiki", one._id, one)
+    }
+
+    destroy(id)
+    {
+        let article = this.get(id)
+        if (article == null)
+        {
+            return
+        }
+
+        this.del(article)
+
+        this.app.db.delete("planner.wiki", article._id)
+    }
+
+    get(id)
+    {
+        return this.ids[id]
+    }
+
+    add(article)
+    {
+        this.ids[article._id] = article
+
+        let planner = this.planners[article.planner]
+        if (planner == null)
+        {
+            planner = {
+                _id: article.planner,
+                wiki: new Map()
             }
 
-            planner.wiki.set(one._id, one)
+            this.planners[article.planner] = planner
         }
+
+        planner.wiki.set(article._id, article)
+    }
+
+    del(article)
+    {
+        delete this.ids[article._id]
+
+        let planner = this.planners[article.planner]
+
+        planner.wiki.delete(article._id)
     }
 }
