@@ -1,6 +1,6 @@
 <template>
   <el-main class="full">
-    <el-row type="flex" justify="space-between" style="flex-wrap:wrap">
+    <el-row type="flex" justify="space-around" style="flex-wrap:wrap">
       <project-card v-for="project in projects" :key="project.id" :value="project" />
     </el-row>
   </el-main>
