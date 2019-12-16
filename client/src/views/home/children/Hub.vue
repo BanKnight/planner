@@ -1,6 +1,6 @@
 <template>
   <el-main class="full">
-    <el-row type="flex" justify="space-around" style="flex-wrap:wrap">
+    <el-row type="flex" class="full" justify="space-around" style="flex-wrap:wrap" align="middle">
       <project-card v-for="project in projects" :key="project.id" :value="project" />
     </el-row>
   </el-main>
@@ -13,6 +13,7 @@ export default {
   title: "Hub",
   path: "hub",
   weight: 0,
+  meta: { require_logined: true },
   components: { ProjectCard },
   data() {
     return {

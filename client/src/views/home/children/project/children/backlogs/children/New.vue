@@ -22,6 +22,8 @@
 export default {
   path: "new",
   weight: 10,
+  meta: { require_logined: true },
+
   data() {
     return {
       form: {

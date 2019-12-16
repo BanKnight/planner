@@ -1,7 +1,7 @@
 <template>
   <layout>
     <el-table :data="items" style="width: 100%" height="100%" :stripe="true">
-      <el-table-column label="标题" prop="title" width="180">
+      <el-table-column label="标题" prop="title" width="150">
         <template slot="header">
           <el-button type="primary" icon="el-icon-plus"></el-button>
         </template>
@@ -9,12 +9,6 @@
 
       <el-table-column label="描述" prop="desc"></el-table-column>
 
-      <el-table-column label="日期" width="200">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="进度" width="180">
         <template slot-scope="scope">
           <el-progress
@@ -24,7 +18,15 @@
           ></el-progress>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180" align="right">
+
+      <el-table-column label="日期" width="120">
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" width="180" align="right" fixed="right">
         <el-button-group>
           <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
           <el-button size="mini" icon="el-icon-check" type="success"></el-button>
@@ -42,6 +44,8 @@ export default {
   title: "里程碑",
   path: "",
   weight: 10,
+  meta: { require_logined: true },
+
   components: { layout },
   data() {
     return { items: [] };

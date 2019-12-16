@@ -32,15 +32,24 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column label="标题">
-        <template slot-scope="scope">{{ scope.row.title }}</template>
+      <el-table-column label="标题" prop="title"></el-table-column>
+
+      <el-table-column label="标签">
+        <template slot-scope="scope">
+          <span>
+            <el-tag v-for="tag in scope.row.tags" :key="tag" type="danger" size="small">{{tag}}</el-tag>
+          </span>
+        </template>
       </el-table-column>
+      <el-table-column label="指派给" prop="assignee" width="120"></el-table-column>
+
       <el-table-column label="里程碑" width="120">
         <template slot-scope="scope">
           <el-tag size="medium">{{ scope.row.milestone ||"无" }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180" align="right">
+
+      <el-table-column label="操作" width="180" align="right" fixed="right">
         <el-button-group>
           <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
           <el-button size="mini" icon="el-icon-check" type="success"></el-button>
@@ -55,6 +64,7 @@
 export default {
   path: "",
   weight: 8,
+  meta: { require_logined: true },
   data() {
     return {
       keyword: "",
@@ -66,9 +76,11 @@ export default {
     for (let i = 1; i < 100; ++i) {
       let one = {
         _id: i,
-        created: Date.now(),
         title: `this is title ${i}`,
-        milesone: "milestone[${i}]"
+        milesone: "milestone[${i}]",
+        tags: ["标签1", "标签2", "标签3"],
+        assignee: "张三",
+        created: Date.now()
       };
 
       this.data.push(one);

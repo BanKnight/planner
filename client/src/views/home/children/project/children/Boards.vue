@@ -24,6 +24,8 @@ export default {
   title: "开发",
   path: "boards",
   weight: 8,
+  meta: { require_logined: true },
+
   components: { layout, NoteCol, draggable },
   data() {
     return {

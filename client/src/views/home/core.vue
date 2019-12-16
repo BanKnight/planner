@@ -67,6 +67,7 @@ export default {
   name: "home",
   path: "/",
   weight: 0,
+  meta: { require_logined: true },
   data() {
     return {
       width: "200px",

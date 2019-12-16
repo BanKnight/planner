@@ -1,18 +1,22 @@
 const shortid = require('shortid');
 const { Service } = require("../core")
 
-module.exports = class Current extends Service {
-    constructor(app) {
+module.exports = class Current extends Service
+{
+    constructor(app)
+    {
         super(app)
 
         this.ids = {}
         this.planners = {}
     }
 
-    async start() {
+    async start()
+    {
         let array = await this.app.db.load("planner.backlogs")
 
-        for (let one of array) {
+        for (let one of array)
+        {
             this.add(one)
         }
     }
@@ -27,11 +31,13 @@ module.exports = class Current extends Service {
      *  tags:[],
      * }
      */
-    create(option) {
+    create(option)
+    {
         let one = {
             _id: shortid.generate(),
             ...option,
             created: Date.now(),
+            updated: Date.now(),
         }
 
         this.add(one)
@@ -39,9 +45,11 @@ module.exports = class Current extends Service {
         this.app.db.set("planner.backlogs", one._id, one)
     }
 
-    destroy(id) {
+    destroy(id)
+    {
         let one = this.get(id)
-        if (one == null) {
+        if (one == null)
+        {
             return
         }
 
@@ -53,7 +61,8 @@ module.exports = class Current extends Service {
 
         delete planner.backlogs[one._id]
 
-        for (let tag of one.tags) {
+        for (let tag of one.tags)
+        {
             let tag_notes = planner.tags[tag]
 
             tag_notes.splice(tag_notes.indexOf(one), 1)
@@ -62,14 +71,17 @@ module.exports = class Current extends Service {
         return one
     }
 
-    add(one) {
+    add(one)
+    {
         this.ids[one._id] = one
 
         let planner = this.planners[one.planner]
-        if (planner == null) {
+        if (planner == null)
+        {
             planner = {
                 _id: one.planner,
                 backlogs: {},
+                sorted: [],              //按照更新时间排序
                 tags: {},
             }
 
@@ -78,9 +90,13 @@ module.exports = class Current extends Service {
 
         planner.backlogs[one._id] = one
 
-        for (let tag of one.tags) {
+        planner.sorted.unshift(one)         //插到开头
+
+        for (let tag of one.tags)
+        {
             let tag_notes = planner.tags[tag]
-            if (tag_nodes == null) {
+            if (tag_nodes == null)
+            {
                 tag_nodes = []
                 planner.tags[tag] = tag_nodes
             }
@@ -89,7 +105,8 @@ module.exports = class Current extends Service {
         }
     }
 
-    get(id) {
+    get(id)
+    {
         return this.ids[id]
     }
 }

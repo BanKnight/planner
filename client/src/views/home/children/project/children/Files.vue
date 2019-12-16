@@ -9,6 +9,8 @@ export default {
   title: "文件",
   path: "files",
   weight: 4,
+  meta: { require_logined: true },
+
   components: { layout }
 };
 </script>

@@ -119,4 +119,8 @@ p {
   opacity: 0.8;
   background: #c8ebfb;
 }
+
+.el-tag {
+  margin-right: 10px;
+}
 </style>

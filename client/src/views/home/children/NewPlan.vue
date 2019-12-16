@@ -23,6 +23,7 @@ export default {
   title: "New plan",
   path: "new-plan",
   weight: 10,
+  meta: { require_logined: true },
   data() {
     return {
       form: {

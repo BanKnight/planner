@@ -35,6 +35,7 @@ export default {
   name: "project",
   path: "project/:id",
   weight: 0,
+  meta: { require_logined: true },
   components: {},
   data() {
     return {

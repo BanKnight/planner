@@ -9,6 +9,8 @@ export default {
   title: "Wiki",
   path: "wiki",
   weight: 5,
+  meta: { require_logined: true },
+
   components: {}
 };
 </script>

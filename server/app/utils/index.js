@@ -17,3 +17,5 @@ exports.load_folder = function (root)
 
     return ret
 }
+
+exports.SortedArray = require("./SortedArray")

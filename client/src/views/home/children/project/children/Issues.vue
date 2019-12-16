@@ -41,6 +41,8 @@ export default {
   title: "Issues",
   path: "issues",
   weight: 7,
+  meta: { require_logined: true },
+
   components: { layout },
   data() {
     return {

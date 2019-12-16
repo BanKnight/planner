@@ -55,6 +55,8 @@
 export default {
   path: "",
   weight: 8,
+  meta: { require_logined: true },
+
   data() {
     return {
       articles: [
@@ -100,9 +102,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.el-tag {
-  margin-right: 10px;
-}
-</style>
