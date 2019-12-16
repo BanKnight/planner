@@ -54,9 +54,9 @@
       </el-container>
     </el-aside>
 
-    <el-container>
+    <el-main style="padding:0">
       <router-view />
-    </el-container>
+    </el-main>
   </el-container>
 </template>
 

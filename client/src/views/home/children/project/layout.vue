@@ -1,7 +1,7 @@
 <template>
-  <el-container :direction="direction" class="full" style="padding:10px">
+  <el-main class="full" style="padding:10px">
     <slot />
-  </el-container>
+  </el-main>
 </template>
 
 <script>
