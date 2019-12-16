@@ -1,22 +1,21 @@
 <template>
   <layout>
     <el-table :data="items" style="width: 100%" height="100%" :stripe="true">
-      <el-table-column label="名称" prop="name" width="180">
+      <el-table-column label="标题" prop="title" width="180">
         <template slot="header">
           <el-button type="primary" icon="el-icon-plus"></el-button>
         </template>
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
       </el-table-column>
 
-      <el-table-column label="日期" width="180">
+      <el-table-column label="描述" prop="desc"></el-table-column>
+
+      <el-table-column label="日期" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.create }}</span>
+          <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="进度">
+      <el-table-column label="进度" width="180">
         <template slot-scope="scope">
           <el-progress
             :percentage="scope.row.percent"
@@ -50,10 +49,11 @@ export default {
   mounted() {
     for (let i = 0; i < 10; ++i) {
       this.items.push({
-        id: i,
-        name: `里程碑${i}`,
+        _id: i,
+        title: `里程碑${i}`,
+        desc: `这是描述${i}`,
         percent: Number((Math.random() * 100).toFixed(2)),
-        create: "2016-05-02"
+        created: Date.now()
       });
     }
   },

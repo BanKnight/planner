@@ -22,20 +22,31 @@
     </el-row>
 
     <el-table
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
+      ref="data"
+      :data="data"
       style="width: 100%"
       height="100%"
       size="small"
       :stripe="true"
+      border
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column label="标题" width="120">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+      <el-table-column label="标题">
+        <template slot-scope="scope">{{ scope.row.title }}</template>
       </el-table-column>
-      <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+      <el-table-column label="里程碑" width="120">
+        <template slot-scope="scope">
+          <el-tag size="medium">{{ scope.row.milestone ||"无" }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180" align="right">
+        <el-button-group>
+          <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
+          <el-button size="mini" icon="el-icon-check" type="success"></el-button>
+          <el-button size="mini" icon="el-icon-delete" type="danger"></el-button>
+        </el-button-group>
+      </el-table-column>
     </el-table>
   </el-container>
 </template>
@@ -47,45 +58,21 @@ export default {
   data() {
     return {
       keyword: "",
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
+      data: [],
       multipleSelection: []
     };
+  },
+  mounted() {
+    for (let i = 1; i < 100; ++i) {
+      let one = {
+        _id: i,
+        created: Date.now(),
+        title: `this is title ${i}`,
+        milesone: "milestone[${i}]"
+      };
+
+      this.data.push(one);
+    }
   },
   computed: {
     root() {

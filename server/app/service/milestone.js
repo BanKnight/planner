@@ -1,22 +1,18 @@
 const shortid = require("shortid")
 const { Service } = require("../core")
 
-module.exports = class Milestone extends Service
-{
-    constructor(app)
-    {
+module.exports = class Milestone extends Service {
+    constructor(app) {
         super(app)
 
         this.ids = {}
         this.planners = {}
     }
 
-    async start()
-    {
+    async start() {
         let array = await this.app.db.load("planner.milestone")
 
-        for (let one of array)
-        {
+        for (let one of array) {
             this.add(one)
         }
     }
@@ -24,14 +20,14 @@ module.exports = class Milestone extends Service
     /**
      * option = {
      *  title:"",
+     *  desc:"",
      *  author:user_id,
      *  planner:planner_id
      * }
      *
      * @param {*} option
      */
-    create(option)
-    {
+    create(option) {
         let one = {
             _id: shortid.generate(),
             ...option,
@@ -45,13 +41,11 @@ module.exports = class Milestone extends Service
         return one
     }
 
-    add(one)
-    {
+    add(one) {
         this.ids[one._id] = one
 
         let planner = this.planners[one.planner]
-        if (planner == null)
-        {
+        if (planner == null) {
             planner = {
                 _id: one.planner,
                 milestones: {}
@@ -63,16 +57,13 @@ module.exports = class Milestone extends Service
         planner.milestones[one._id] = one
     }
 
-    get(id)
-    {
+    get(id) {
         return this.ids[id]
     }
 
-    get_by_planner(id)
-    {
+    get_by_planner(id) {
         let planner = this.planners[id]
-        if (planner == null)
-        {
+        if (planner == null) {
             return
         }
 
