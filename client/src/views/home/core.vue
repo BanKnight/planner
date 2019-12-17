@@ -54,9 +54,7 @@
       </el-container>
     </el-aside>
 
-    <el-main style="padding:0">
-      <router-view />
-    </el-main>
+    <router-view />
   </el-container>
 </template>
 
@@ -90,7 +88,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .el-collapse-item__header {
   background-color: transparent;
 }

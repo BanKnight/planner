@@ -18,7 +18,7 @@
       </el-main>
     </transition>
 
-    <el-main class="full scroll-if-need">
+    <el-main class="full">
       <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
         <el-table-column label="标题" prop="name" width="150">
           <template slot="header">
@@ -51,14 +51,11 @@
 </template>
 
 <script>
-import PlannerCard from "@/components/PlannerCard";
-
 export default {
   title: "Hub",
   path: "",
   weight: 0,
   meta: { require_logined: true },
-  components: { PlannerCard },
   data() {
     return {
       form: {

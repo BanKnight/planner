@@ -68,14 +68,23 @@ module.exports = class Planner extends Service
 
         this.add(planner)
 
-        this.ids[planner._id] = planner
-        this.names[planner.name] = planner
-
-        console.log("add", planner)
-
         this.app.db.set("planner", planner._id, planner)
 
         return planner
+    }
+
+    destroy(id)
+    {
+        let one = this.get(id)
+
+        if (one == null)
+        {
+            return
+        }
+
+        this.del(one)
+
+        this.app.db.delete("planner", planner._id)
     }
 
     add(one)
@@ -84,5 +93,18 @@ module.exports = class Planner extends Service
         this.names[one.name] = one
 
         this.sorted.push(one)
+    }
+
+    del(one)
+    {
+        delete this.ids[one._id]
+        this.names[one.name]
+
+        this.sorted.pop(one)
+    }
+
+    get(id)
+    {
+        return this.ids[id]
     }
 }

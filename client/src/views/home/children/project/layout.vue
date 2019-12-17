@@ -4,15 +4,4 @@
   </el-main>
 </template>
 
-<script>
-export default {
-  props: {
-    direction: {
-      type: String,
-      default: () => {
-        return "vertical";
-      }
-    }
-  }
-};
-</script>
+

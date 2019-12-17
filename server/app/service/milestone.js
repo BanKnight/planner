@@ -1,4 +1,5 @@
 const shortid = require("shortid")
+const extend = require("extend2")
 const utils = require("../utils")
 const { Service } = require("../core")
 
@@ -25,9 +26,9 @@ module.exports = class Milestone extends Service
 
     static cmp(first, second)
     {
-        if (first.updated != second.updated)
+        if (first.created != second.created)
         {
-            return first.updated - second.updated
+            return second.created - first.created
         }
 
         return first._id - second._id
@@ -37,6 +38,7 @@ module.exports = class Milestone extends Service
      * option = {
      *  title:"",
      *  desc:"",
+     *  due:0,
      *  author:user_id,
      *  planner:planner_id
      * }
@@ -49,6 +51,7 @@ module.exports = class Milestone extends Service
             _id: shortid.generate(),
             ...option,
             created: Date.now(),
+            updated: Date.now(),
         }
 
         this.add(one)
@@ -59,7 +62,7 @@ module.exports = class Milestone extends Service
     }
 
     /**
-     * 关闭
+     * 删除
      *
      * @param {*} id
      */
@@ -76,13 +79,10 @@ module.exports = class Milestone extends Service
             return
         }
 
-        this.close(one)
-
-        this.app.db.set("planner.milestone", one._id, one)
+        this.app.db.delete("planner.milestone", one._id)
 
         return one
     }
-
 
     add(one)
     {
@@ -102,20 +102,30 @@ module.exports = class Milestone extends Service
 
         planner.milestones[one._id] = one
 
-        if (one.closed)
+        if (!one.closed)
         {
-            planner.sorted.push(one)
+            planner.curr.push(one)
         }
     }
 
-    close(one)
+    update(one, option)
     {
-        one.closed = Date.now()
+        let is_closed = one.closed
+
+        extend(one, option)
+
+        if (!is_closed && one.closed)
+        {
+            one.closed = Date.now()
+
+            let planner = this.planners[one.planner]
+
+            planner.curr.pop(one)
+        }
+
         one.updated = Date.now()
 
-        let planner = this.planners[one.planner]
-
-        planner.curr.pop(one)
+        this.app.db.set("planner.milestone", one._id, one)
     }
 
     get(id)
@@ -123,7 +133,7 @@ module.exports = class Milestone extends Service
         return this.ids[id]
     }
 
-    get_by_planner(id)
+    get_planner(id)
     {
         let planner = this.planners[id]
         if (planner == null)
@@ -131,6 +141,6 @@ module.exports = class Milestone extends Service
             return
         }
 
-        return planner.milestones
+        return planner
     }
 }

@@ -1,29 +1,27 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-row style="padding: 0 10px" type="flex" justify="start" align="bottom">
+    <el-header style="padding:0" height="fit-content">
       <el-row
         type="flex"
         justify="center"
         align="middle"
-        style="width:fit-content;height:100%;background-color:#75b368;color:white;padding:10px"
+        style="width:100%;height:20px;background-color:#75b368;color:white;padding:10px"
       >
-        <h3>{{title}}</h3>
+        <h4>{{title}}</h4>
       </el-row>
-
-      <el-menu
-        :default-active="`${root}/${children[0].path}`"
-        mode="horizontal"
-        :router="true"
-        background-color="transparent"
-        style="width:fit-content;"
-      >
-        <el-menu-item :index="`${root}/${child.path}`" v-for="child in children" :key="child.path">
-          <i class="el-icon-menu"></i>
-          <span slot="title">{{child.title}}</span>
-        </el-menu-item>
-      </el-menu>
-    </el-row>
-
+    </el-header>
+    <el-menu
+      :default-active="`${root}/${children[0].path}`"
+      mode="horizontal"
+      :router="true"
+      background-color="transparent"
+      style="width:fit-content;"
+    >
+      <el-menu-item :index="`${root}/${child.path}`" v-for="child in children" :key="child.path">
+        <i class="el-icon-menu"></i>
+        <span slot="title">{{child.title}}</span>
+      </el-menu-item>
+    </el-menu>
     <router-view />
   </el-container>
 </template>

@@ -9,7 +9,7 @@ module.exports = class Current extends Service
 
         this.ids = {}           //[id = planner + user] = member
         this.planners = {}      //[planner_id] = {members:}
-        this.to_planners = {}   //[user_id] = [planner]
+        this.to_planners = {}   //[user_id] = [planner_id]
     }
 
     async start()
@@ -31,14 +31,14 @@ module.exports = class Current extends Service
 
         this.add(one)
 
-        this.app.db.set(one._id, one)
+        this.app.db.set("planner.member", one._id, one)
 
         return one
     }
 
     add(one)
     {
-        this.ids[one.id] = one
+        this.ids[one._id] = one
 
         let planner = this.planners[one.planner]
         if (planner == null)
@@ -51,7 +51,7 @@ module.exports = class Current extends Service
             this.planners[one.planner] = planner
         }
 
-        planner.members.set(one._id, one)
+        planner.members.set(one.user, one)
 
         let to_planner = this.to_planners[one.user]
         if (to_planner == null)

@@ -58,4 +58,22 @@ module.exports = class Current extends Controller
             planner: planner._id
         }
     }
+
+    destroy()
+    {
+        const { ctx, service } = this
+
+        const { planner, user } = ctx
+
+        if (planner.owner != user._id)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "you are not the owner"
+            }
+            return
+        }
+
+        service.planner.destroy(planner.id)
+    }
 }

@@ -123,4 +123,20 @@ p {
 .el-tag {
   margin-right: 10px;
 }
+
+.el-table .normal-row {
+  background: #f5f7fa;
+}
+
+.el-table .primary-row {
+  background: #69b2fc;
+}
+
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #f0f9eb;
+}
 </style>

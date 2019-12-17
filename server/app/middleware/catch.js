@@ -12,6 +12,8 @@ module.exports = (options, app) =>
             ctx.body = {
                 error: e.message
             }
+
+            console.error(e.stack)
         }
     }
 }
