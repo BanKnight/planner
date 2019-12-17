@@ -2,7 +2,7 @@
   <el-card shadow="never" class="card">
     <el-row slot="header" type="flex" justify="space-between">
       <router-link :to="'/project/' + value.id" class="el-link el-link--default">
-        <h4>{{value.title}}</h4>
+        <h4>{{value.name}}</h4>
       </router-link>
 
       <el-button-group>

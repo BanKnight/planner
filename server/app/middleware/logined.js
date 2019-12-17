@@ -4,7 +4,12 @@ module.exports = (options, app) =>
     {
         if (ctx.user == null)
         {
-            return ctx.redirect("/login")
+            ctx.status = 401
+            ctx.body = {
+                error: "need to login first"
+            }
+
+            return
         }
 
         return next()

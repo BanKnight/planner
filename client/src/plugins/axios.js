@@ -44,7 +44,7 @@ axios.interceptors.response.use(function (response)
 
     if (error.response)
     {
-        switch (error.response.statues)
+        switch (error.response.status)
         {
             case 401: {
                 to_login()
@@ -55,7 +55,7 @@ axios.interceptors.response.use(function (response)
             }
         }
 
-        return Promise.resolve(error.response.data.error)
+        return Promise.reject(error.response.data)
     }
     //请求错误时做些事
     return Promise.reject(error);

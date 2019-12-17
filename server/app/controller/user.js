@@ -45,7 +45,7 @@ module.exports = class Current extends Controller
     {
         if (this.ctx.user)
         {
-            this.ctx.redirect("/")
+            this.ctx.body = {}
             return
         }
 
@@ -94,6 +94,7 @@ module.exports = class Current extends Controller
         this.ctx.session = { user: user._id }
         this.ctx.user = user
 
-        this.ctx.redirect("/")
+        this.ctx.body = {}
+
     }
 }

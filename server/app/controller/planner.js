@@ -12,7 +12,7 @@ module.exports = class Current extends Controller
     {
         const ctx = this.ctx
 
-        ctx.body = this.app.service.planner.ids
+        ctx.body = this.app.service.planner.sorted.data
     }
 
     create()
@@ -23,6 +23,7 @@ module.exports = class Current extends Controller
         const body = ctx.request.body
 
         body.name = (body.name || "").trim()
+        body.desc = body.desc || ""
 
         if (body.name.length == 0)
         {
@@ -48,7 +49,7 @@ module.exports = class Current extends Controller
 
         planner = service.planner.create(body)
 
-        service.planner.member.create({
+        service.member.create({
             user: user._id,
             planner: planner._id
         })

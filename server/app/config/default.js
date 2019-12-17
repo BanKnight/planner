@@ -1,6 +1,6 @@
 module.exports = {
     port: 7000,
-    middleware: ["cors", "compress", "jwt", "user", "cache", "body"],
+    middleware: ["cors", "compress", "jwt", "user", "cache", "body", "catch"],
     mongodb: {
         host: "192.168.1.4",
         port: 27019,

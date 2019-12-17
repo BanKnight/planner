@@ -15,7 +15,7 @@ export default {
 
     async planner_list(context, payload)
     {
-        await Vue.axios.get("/api/planner", payload)
+        return await Vue.axios.get("/api/planner", payload)
     },
 
     async planner_create(context, payload)

@@ -64,7 +64,6 @@
 import children from "./children";
 
 export default {
-  name: "home",
   path: "/",
   weight: 0,
   meta: { require_logined: true },
