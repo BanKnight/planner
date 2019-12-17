@@ -68,7 +68,7 @@ module.exports = class Current extends Controller
         const stone = ctx.params.stone
         const body = ctx.request.body
 
-        if (body.milestone == null)
+        if (stone == null)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {

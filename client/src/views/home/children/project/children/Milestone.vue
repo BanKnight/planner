@@ -39,6 +39,7 @@
             border
             v-loading="loading"
             :row-class-name="row_class"
+            row-key="_id"
           >
             <el-table-column label="标题" prop="title" width="150">
               <template slot="header">
@@ -97,21 +98,21 @@
 
       <transition name="el-zoom-in-center">
         <el-main width="300px" v-if="editing">
-          <el-form label-position="top" :model="editing" ref="new_one">
-            <h3>{{editing.title}}</h3>
+          <el-form label-position="top" :model="editing_form" ref="new_one">
+            <h3>{{editing_form.title}}</h3>
 
             <el-form-item label="标题">
-              <el-input v-model="editing.title"></el-input>
+              <el-input v-model="editing_form.title"></el-input>
             </el-form-item>
             <el-form-item label="描述">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing.desc"></el-input>
+              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
             </el-form-item>
 
             <el-form-item label="截止时间">
               <el-date-picker
                 type="date"
                 placeholder="选择日期"
-                v-model="editing.due"
+                v-model="editing_form.due"
                 value-format="timestamp"
               ></el-date-picker>
             </el-form-item>
@@ -206,6 +207,8 @@ export default {
     },
 
     edit(milestone) {
+      this.adding = false;
+
       if (this.editing === milestone) {
         this.editing = null;
         this.editing_form = null;
@@ -215,7 +218,7 @@ export default {
       }
     },
     async on_edit() {
-      await this.$store.dispatch("milestone_destroy", {
+      await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: this.editing._id,
         data: this.editing_form
@@ -228,7 +231,7 @@ export default {
     async close(milestone) {
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
-        milestone: this.milestone._id,
+        milestone: milestone._id,
         data: { closed: true }
       });
 
