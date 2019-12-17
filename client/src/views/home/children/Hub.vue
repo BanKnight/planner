@@ -1,36 +1,51 @@
 <template>
   <el-container class="full">
-    <el-button type="info" size="mini" icon="el-icon-plus" @click="adding =!adding"></el-button>
+    <transition>
+      <el-main v-if="adding">
+        <el-form label-position="top" :model="form" ref="new_plan">
+          <el-form-item label="标题">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="描述">
+            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-row type="flex" justify="center">
+              <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
+            </el-row>
+          </el-form-item>
+        </el-form>
+      </el-main>
+    </transition>
 
     <el-main class="full scroll-if-need">
-      <el-row
-        v-if="adding == false && planners.length > 0"
-        type="flex"
-        justify="space-around"
-        style="flex-wrap:wrap"
-        align="start"
-      >
-        <planner-card v-for="planner in planners" :key="planner._id" :value="planner" />
-      </el-row>
+      <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
+        <el-table-column label="标题" prop="name" width="150">
+          <template slot="header">
+            <el-button type="primary" icon="el-icon-plus" @click="adding =!adding"></el-button>
+          </template>
+          <template slot-scope="scope">
+            <router-link :to="'/project/' + scope.row._id" class="el-link el-link--default">
+              <h4>{{scope.row.name}}</h4>
+            </router-link>
+          </template>
+        </el-table-column>
 
-      <el-form
-        v-if="adding || planners.length == 0"
-        label-position="top"
-        :model="form"
-        ref="new_plan"
-      >
-        <el-form-item label="标题">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-row type="flex" justify="center">
-            <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
-          </el-row>
-        </el-form-item>
-      </el-form>
+        <el-table-column label="描述" prop="desc"></el-table-column>
+
+        <el-table-column label="创建日期" width="120">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="180" align="right" fixed="right">
+          <el-button-group>
+            <el-button size="mini" icon="el-icon-star-off" type="success"></el-button>
+          </el-button-group>
+        </el-table-column>
+      </el-table>
     </el-main>
   </el-container>
 </template>
