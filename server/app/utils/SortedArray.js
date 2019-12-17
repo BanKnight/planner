@@ -34,7 +34,7 @@ module.exports = class SortedArray
             return
         }
 
-        if (this.cmp(this.data[index], item) != 0)
+        if (this.data[index] != item)
         {
             return
         }

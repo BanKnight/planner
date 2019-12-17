@@ -17,6 +17,7 @@
                 placeholder="选择日期"
                 v-model="form.due"
                 value-format="timestamp"
+                class="full-width"
               ></el-date-picker>
             </el-form-item>
 
@@ -36,6 +37,7 @@
             style="width: 100%"
             height="100%"
             border
+            v-loading="loading"
             :row-class-name="row_class"
           >
             <el-table-column label="标题" prop="title" width="150">
@@ -46,6 +48,13 @@
 
             <el-table-column label="描述" prop="desc"></el-table-column>
 
+            <el-table-column label="截止日期" width="130">
+              <template slot-scope="scope">
+                <i v-if="scope.row.due" class="el-icon-time">{{ $format(scope.row.due) }}</i>
+                <el-tag v-else>无</el-tag>
+              </template>
+            </el-table-column>
+
             <el-table-column label="进度" width="180">
               <template slot-scope="scope">
                 <el-progress
@@ -54,12 +63,6 @@
                   :text-inside="true"
                   :stroke-width="20"
                 ></el-progress>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="截止日期" width="130">
-              <template slot-scope="scope">
-                <i v-if="scope.row.due" class="el-icon-time">{{ $format(scope.row.due) }}</i>
               </template>
             </el-table-column>
 
@@ -176,7 +179,7 @@ export default {
 
         try {
           await this.$store.dispatch("milestone_create", {
-            id: this.planner_id,
+            planner: this.planner_id,
             data: this.form
           });
           this.loading = false;
@@ -191,7 +194,7 @@ export default {
     async init_milestones() {
       this.items = [];
       this.editing = null;
-      this.loading = false;
+      this.loading = true;
 
       let data = await this.$store.dispatch("milestone_list", this.planner_id);
 
@@ -199,6 +202,7 @@ export default {
         one.percent = one.percent || parseInt(Math.random().toFixed(2) * 100);
         this.items.push(one);
       }
+      this.loading = false;
     },
 
     edit(milestone) {
@@ -219,9 +223,29 @@ export default {
 
       this.init_milestones();
       this.editing = null;
+      this.editing_form = null;
     },
-    close() {},
+    async close(milestone) {
+      await this.$store.dispatch("milestone_update", {
+        planner: this.planner_id,
+        milestone: this.milestone._id,
+        data: { closed: true }
+      });
+
+      this.init_milestones();
+    },
     async del(milestone) {
+      await this.$confirm("是否确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      });
+
+      this.$message({
+        type: "success",
+        message: "删除成功!"
+      });
+
       await this.$store.dispatch("milestone_destroy", {
         planner: this.planner_id,
         milestone: milestone._id

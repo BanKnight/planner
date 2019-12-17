@@ -74,14 +74,31 @@ module.exports = class Milestone extends Service
             return
         }
 
-        if (one.closed)
-        {
-            return
-        }
+        this.del(one)
 
         this.app.db.delete("planner.milestone", one._id)
 
         return one
+    }
+
+    update(one, option)
+    {
+        let is_closed = one.closed
+
+        extend(one, option)
+
+        if (!is_closed && one.closed)
+        {
+            one.closed = Date.now()
+
+            let planner = this.planners[one.planner]
+
+            planner.curr.pop(one)
+        }
+
+        one.updated = Date.now()
+
+        this.app.db.set("planner.milestone", one._id, one)
     }
 
     add(one)
@@ -108,24 +125,14 @@ module.exports = class Milestone extends Service
         }
     }
 
-    update(one, option)
+    del(one)
     {
-        let is_closed = one.closed
+        let planner = this.planners[one.planner]
 
-        extend(one, option)
+        delete this.ids[one._id]
+        delete planner.milestones[one._id]
 
-        if (!is_closed && one.closed)
-        {
-            one.closed = Date.now()
-
-            let planner = this.planners[one.planner]
-
-            planner.curr.pop(one)
-        }
-
-        one.updated = Date.now()
-
-        this.app.db.set("planner.milestone", one._id, one)
+        planner.curr.pop(one)
     }
 
     get(id)
