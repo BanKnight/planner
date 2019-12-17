@@ -37,7 +37,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        this.ctx.session.user = user._id
+        this.ctx.session = { user: user._id }
         this.ctx.body = { user: user._id }
     }
 
@@ -51,7 +51,7 @@ module.exports = class Current extends Controller
 
         const body = this.ctx.request.body
 
-        const { name, password } = body
+        let { name, password } = body
 
         if (name == null || password == null)
         {
@@ -87,11 +87,11 @@ module.exports = class Current extends Controller
 
         password = md5(password)
 
-        user = this.ctx.service.user.create({
+        user = this.app.service.user.create({
             name, password,
         })
 
-        this.ctx.session.user = user._id
+        this.ctx.session = { user: user._id }
         this.ctx.user = user
 
         this.ctx.redirect("/")

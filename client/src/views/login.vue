@@ -82,7 +82,7 @@
               :loading="loading"
               type="primary"
               style="width:100%;"
-              @click.native.prevent="handleLogin"
+              @click.native.prevent="regist"
             >注册</el-button>
           </el-form>
         </el-tab-pane>
@@ -155,10 +155,33 @@ export default {
 
         try {
           await this.$store.dispatch("login", this.login_form);
+          this.loading = false;
+
           this.$router.push({
             path: this.redirect || "/",
             query: this.otherQuery
           });
+        } catch (e) {
+          this.loading = false;
+        }
+      });
+    },
+    regist() {
+      this.$refs.regist.validate(async valid => {
+        if (!valid) {
+          console.log("error submit!!");
+          return false;
+        }
+        this.loading = true;
+
+        try {
+          await this.$store.dispatch("regist", this.regist_form);
+
+          this.$router.push({
+            path: this.redirect || "/",
+            query: this.otherQuery
+          });
+
           this.loading = false;
         } catch (e) {
           console.log(e);

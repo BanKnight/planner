@@ -9,9 +9,16 @@ import { Message } from 'element-ui';
 Vue.use(VueAxios, axios)
 
 axios.defaults.baseURL = "http://localhost:7000"
-axios.defaults.timeout = 5000
 axios.defaults.withCredentials = true
 
+if (process.env.NODE_ENV == "development")
+{
+    axios.defaults.timeout = 50000
+}
+else
+{
+    axios.defaults.timeout = 5000
+}
 //定义一个请求拦截器
 axios.interceptors.request.use(function (config)
 {
