@@ -1,13 +1,6 @@
 <template>
   <el-container direction="vertical" class="full">
-    <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px">
-      <el-button
-        type="primary"
-        icon="el-icon-plus"
-        style="margin-right:20px"
-        @click="$router.push(`${root}/new`)"
-      ></el-button>
-
+    <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px;">
       <el-input
         class="search"
         placeholder="输入搜索关键字"
@@ -21,6 +14,14 @@
       </el-input>
     </el-row>
 
+    <el-row
+      v-if="tags.length > 0"
+      type="flex"
+      style="flex-wrap: wrap;margin-bottom:10px;background-color:white;border-radius:4px;border: 1px solid #EBEEF5;padding:10px"
+    >
+      <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{one.title}}</el-checkbox>
+    </el-row>
+
     <el-table
       ref="data"
       :data="data"
@@ -31,14 +32,21 @@
       border
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column width="38">
+        <template slot="header">
+          <i class="el-icon-check"></i>
+        </template>
+
+        <template slot-scope="scope">
+          <el-checkbox :value="!!scope.row.closed" @change="close(scope.row,$event)"></el-checkbox>
+        </template>
+      </el-table-column>
+
       <el-table-column label="标题" prop="title"></el-table-column>
 
-      <el-table-column label="标签">
+      <el-table-column label="标签" width="150">
         <template slot-scope="scope">
-          <span>
-            <el-tag v-for="tag in scope.row.tags" :key="tag" type="danger" size="small">{{tag}}</el-tag>
-          </span>
+          <el-tag v-for="tag in scope.row.tags" :key="tag" type="danger" size="small">{{tag}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="指派给" prop="assignee" width="120"></el-table-column>
@@ -49,11 +57,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="180" align="right" fixed="right">
+      <el-table-column label="操作" width="120" align="right" fixed="right">
+        <template slot="header">
+          <el-button type="primary" icon="el-icon-plus" @click="$router.push(`${root}/new`)"></el-button>
+        </template>
+
         <el-button-group>
-          <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
-          <el-button size="mini" icon="el-icon-check" type="success"></el-button>
           <el-button size="mini" icon="el-icon-delete" type="danger"></el-button>
+          <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
         </el-button-group>
       </el-table-column>
     </el-table>
@@ -69,11 +80,21 @@ export default {
     return {
       keyword: "",
       data: [],
+      tags: [],
       multipleSelection: []
     };
   },
   mounted() {
-    for (let i = 1; i < 100; ++i) {
+    // for (let i = 0; i < 10; ++i) {
+    //   let one = {
+    //     title: `标签${i}`,
+    //     checked: true
+    //   };
+
+    //   this.tags.push(one);
+    // }
+
+    for (let i = 1; i < 20; ++i) {
       let one = {
         _id: i,
         title: `this is title ${i}`,

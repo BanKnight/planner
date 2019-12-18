@@ -1,6 +1,74 @@
 <template>
   <layout>
     <el-container direction="horizontal" class="full">
+      <transition name="el-fade-in">
+        <el-main style="padding:0">
+          <el-table
+            :data="items"
+            style="width: 100%"
+            height="100%"
+            border
+            v-loading="loading"
+            :row-class-name="row_class"
+            row-key="_id"
+          >
+            <el-table-column width="38">
+              <template slot="header">
+                <i class="el-icon-check"></i>
+              </template>
+
+              <template slot-scope="scope">
+                <el-checkbox :value="!!scope.row.closed" @change="close(scope.row,$event)"></el-checkbox>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="标题" prop="title" width="150"></el-table-column>
+
+            <el-table-column label="描述" prop="desc"></el-table-column>
+
+            <el-table-column label="截止日期" width="130">
+              <template slot-scope="scope">
+                <i v-if="scope.row.due" class="el-icon-time">{{ $format(scope.row.due) }}</i>
+                <el-tag v-else>无</el-tag>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="进度" width="180">
+              <template slot-scope="scope">
+                <el-progress
+                  :percentage="scope.row.percent"
+                  :title="scope.row.percent + '%'"
+                  :text-inside="true"
+                  :stroke-width="20"
+                ></el-progress>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="操作" width="120" align="right" fixed="right">
+              <template slot="header">
+                <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
+              </template>
+              <template slot-scope="scope">
+                <el-button-group>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-delete"
+                    type="danger"
+                    @click="del(scope.row)"
+                  ></el-button>
+                  <el-button
+                    size="mini"
+                    icon="el-icon-edit"
+                    type="primary"
+                    @click="edit(scope.row)"
+                  ></el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-main>
+      </transition>
+
       <transition name="el-zoom-in-center">
         <el-main width="300px" v-if="adding">
           <el-form label-position="top" :model="form" ref="new_one">
@@ -27,72 +95,6 @@
               </el-row>
             </el-form-item>
           </el-form>
-        </el-main>
-      </transition>
-
-      <transition name="el-fade-in">
-        <el-main style="padding:0">
-          <el-table
-            :data="items"
-            style="width: 100%"
-            height="100%"
-            border
-            v-loading="loading"
-            :row-class-name="row_class"
-            row-key="_id"
-          >
-            <el-table-column label="标题" width="150">
-              <template slot="header">
-                <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
-              </template>
-
-              <template slot-scope="scope">
-                <el-checkbox
-                  :value="!!scope.row.closed"
-                  @change="close(scope.row,$event)"
-                >{{scope.row.title}}</el-checkbox>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="描述" prop="desc"></el-table-column>
-
-            <el-table-column label="截止日期" width="130">
-              <template slot-scope="scope">
-                <i v-if="scope.row.due" class="el-icon-time">{{ $format(scope.row.due) }}</i>
-                <el-tag v-else>无</el-tag>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="进度" width="180">
-              <template slot-scope="scope">
-                <el-progress
-                  :percentage="scope.row.percent"
-                  :title="scope.row.percent + '%'"
-                  :text-inside="true"
-                  :stroke-width="20"
-                ></el-progress>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作" width="180" align="right" fixed="right">
-              <template slot-scope="scope">
-                <el-button-group>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="del(scope.row)"
-                  ></el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="edit(scope.row)"
-                  ></el-button>
-                </el-button-group>
-              </template>
-            </el-table-column>
-          </el-table>
         </el-main>
       </transition>
 
