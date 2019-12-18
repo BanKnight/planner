@@ -44,7 +44,7 @@
 
       <el-table-column label="标题" prop="title"></el-table-column>
 
-      <el-table-column label="标签" width="150">
+      <el-table-column label="标签" width="200">
         <template slot-scope="scope">
           <el-tag v-for="tag in scope.row.tags" :key="tag" type="danger" size="small">{{tag}}</el-tag>
         </template>
@@ -59,15 +59,28 @@
 
       <el-table-column label="操作" width="120" align="right" fixed="right">
         <template slot="header">
-          <el-button type="primary" icon="el-icon-plus" @click="$router.push(`${root}/new`)"></el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-plus"
+            @click="$router.push(`${root}/new`)"
+          ></el-button>
         </template>
 
         <el-button-group>
           <el-button size="mini" icon="el-icon-delete" type="danger"></el-button>
-          <el-button size="mini" icon="el-icon-edit" type="primary"></el-button>
         </el-button-group>
       </el-table-column>
     </el-table>
+
+    <el-footer height="auto" style="display: flex;justify-content: center">
+      <el-pagination
+        :page-size="20"
+        :pager-count="11"
+        layout="total,prev, pager, next"
+        :total="1000"
+      ></el-pagination>
+    </el-footer>
   </el-container>
 </template>
 
@@ -109,7 +122,10 @@ export default {
   },
   computed: {
     root() {
-      return `/project/${this.$route.params.id}/backlogs`;
+      return `/project/${this.planner_id}/backlogs`;
+    },
+    planner_id() {
+      return this.$route.params.id;
     }
   },
   methods: {
