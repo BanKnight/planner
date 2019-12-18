@@ -1,21 +1,28 @@
 <template>
-  <el-main>
-    <el-form label-position="top">
-      <el-form-item label="标题">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-row type="flex" justify="center">
-          <el-button>取消</el-button>
+  <el-container class="full" direction="vertical">
+    <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px">
+      <el-button
+        icon="el-icon-back"
+        @click="goback"
+        type="success"
+        plain
+        style="margin-right:20px"
+      >返回</el-button>
 
-          <el-button type="primary">立即创建</el-button>
-        </el-row>
-      </el-form-item>
-    </el-form>
-  </el-main>
+      <el-input placeholder="请输入标题" v-model="article.name" clearable>
+        <el-button slot="append" type="primary" icon="el-icon-upload">提交</el-button>
+      </el-input>
+    </el-row>
+
+    <mavon-editor
+      v-model="article.content"
+      @save="save"
+      :ishljs="false"
+      :toolbars="options"
+      toolbarsBackground="#f0f9eb"
+      class="full"
+    />
+  </el-container>
 </template>
 
 <script>
@@ -23,14 +30,33 @@ export default {
   path: "new",
   weight: 10,
   meta: { require_logined: true },
-
   data() {
     return {
-      form: {
-        name: "",
-        desc: ""
+      article: {
+        title: "",
+        content: ""
       }
     };
+  },
+  computed: {
+    options() {
+      return {
+        imagelink: true, // 图片链接
+        fullscreen: true, // 全屏编辑
+        undo: true, // 上一步
+        redo: true, // 下一步
+        trash: true, // 清空
+        table: true, // 表格
+
+        save: true, // 保存（触发events中的save事件）,
+        subfield: true, // 单双栏模式
+        preview: true // 预览
+      };
+    }
+  },
+  methods: {
+    save() {},
+    goback() {}
   }
 };
 </script>

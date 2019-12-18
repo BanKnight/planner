@@ -4,7 +4,6 @@
       <el-button type="primary" icon="el-icon-plus" style="margin-right:20px"></el-button>
 
       <el-input
-        class="search"
         placeholder="输入搜索关键字"
         v-model="keyword"
         clearable
