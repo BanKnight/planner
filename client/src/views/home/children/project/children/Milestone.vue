@@ -41,9 +41,16 @@
             :row-class-name="row_class"
             row-key="_id"
           >
-            <el-table-column label="标题" prop="title" width="150">
+            <el-table-column label="标题" width="150">
               <template slot="header">
                 <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
+              </template>
+
+              <template slot-scope="scope">
+                <el-checkbox
+                  :value="!!scope.row.closed"
+                  @change="close(scope.row,$event)"
+                >{{scope.row.title}}</el-checkbox>
               </template>
             </el-table-column>
 
@@ -75,13 +82,6 @@
                     icon="el-icon-delete"
                     type="danger"
                     @click="del(scope.row)"
-                  ></el-button>
-
-                  <el-button
-                    size="mini"
-                    icon="el-icon-check"
-                    type="success"
-                    @click="close(scope.row)"
                   ></el-button>
                   <el-button
                     size="mini"
@@ -163,6 +163,10 @@ export default {
   methods: {
     row_class({ row, rowIndex }) {
       if (row == this.editing) {
+        return "primary-row";
+      }
+
+      if (row.closed) {
         return "warning-row";
       }
 
@@ -228,11 +232,11 @@ export default {
       this.editing = null;
       this.editing_form = null;
     },
-    async close(milestone) {
+    async close(milestone, value) {
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: milestone._id,
-        data: { closed: true }
+        data: { closed: value }
       });
 
       this.init_milestones();

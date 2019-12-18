@@ -24,14 +24,39 @@ module.exports = class Milestone extends Service
         }
     }
 
+    /**
+     * 未关闭的
+     * 最新更新的
+     * id大的
+     */
     static cmp(first, second)
     {
-        if (first.created != second.created)
+        if (first.closed == null && second.closed != null)
         {
-            return second.created - first.created
+            return -1
         }
 
-        return first._id - second._id
+        if (first.closed != null && second.closed == null)
+        {
+            return 1
+        }
+
+        if (first.updated != second.updated)
+        {
+            return second.updated - first.updated
+        }
+
+        if (first._id < second._id)
+        {
+            return -1
+        }
+
+        if (first._id > second._id)
+        {
+            return 1
+        }
+
+        return 0
     }
 
     /**
@@ -85,18 +110,22 @@ module.exports = class Milestone extends Service
     {
         let is_closed = one.closed
 
+        this.del(one)
+
         extend(one, option)
 
-        if (!is_closed && one.closed)
+        if (option.closed == false)
+        {
+            one.closed = null
+        }
+        else if (!is_closed)
         {
             one.closed = Date.now()
-
-            let planner = this.planners[one.planner]
-
-            planner.curr.pop(one)
         }
 
         one.updated = Date.now()
+
+        this.add(one)
 
         this.app.db.set("planner.milestone", one._id, one)
     }
@@ -110,27 +139,20 @@ module.exports = class Milestone extends Service
         {
             planner = {
                 _id: one.planner,
-                milestones: {},
-                curr: new utils.SortedArray(Milestone.cmp),         //当前还没有关闭的
+                curr: new utils.SortedArray(Milestone.cmp),
             }
 
             this.planners[one.planner] = planner
         }
 
-        planner.milestones[one._id] = one
-
-        if (!one.closed)
-        {
-            planner.curr.push(one)
-        }
+        planner.curr.push(one)
     }
 
     del(one)
     {
-        let planner = this.planners[one.planner]
-
         delete this.ids[one._id]
-        delete planner.milestones[one._id]
+
+        let planner = this.planners[one.planner]
 
         planner.curr.pop(one)
     }

@@ -95,7 +95,6 @@ module.exports = class Current extends Controller
     destroy()
     {
         const { ctx, service } = this
-        const { user, planner } = ctx
 
         const milestone = service.milestone
 

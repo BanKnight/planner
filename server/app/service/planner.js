@@ -34,7 +34,17 @@ module.exports = class Planner extends Service
             return second.created - first.created
         }
 
-        return first._id - second._id
+        if (first._id < second._id)
+        {
+            return 1
+        }
+
+        if (first._id > second._id)
+        {
+            return -1
+        }
+
+        return 0
     }
 
     get(id)

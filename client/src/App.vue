@@ -129,7 +129,7 @@ p {
 }
 
 .el-table .primary-row {
-  background: #69b2fc;
+  background: #69b2fc85;
 }
 
 .el-table .warning-row {
@@ -138,5 +138,9 @@ p {
 
 .el-table .success-row {
   background: #f0f9eb;
+}
+
+.el-table .danger-row {
+  background: #ff572229;
 }
 </style>
