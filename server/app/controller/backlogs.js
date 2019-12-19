@@ -1,5 +1,6 @@
 const { Controller } = require("../core")
 const { error } = require("../define")
+const { cal_page } = require("../utils")
 
 module.exports = class Current extends Controller
 {
@@ -10,14 +11,111 @@ module.exports = class Current extends Controller
 
     list()
     {
-        const { ctx, service } = this
+        const { ctx, service, config } = this
+
+        const current = service.backlogs
 
         const planner = ctx.planner
-        const milestone = service.milestone
 
-        const all = milestone.get_by_planner(planner._id)
+        const backlogs_planner = current.get_planner(planner._id)
 
-        ctx.body = all
+        if (backlogs_planner == null)
+        {
+            ctx.body = cal_page([], config.page.size, ctx.query.page)
+            return
+        }
+
+        const backlogs = backlogs_planner.backlogs
+
+        ctx.body = cal_page(backlogs.data, config.page.size, +ctx.query.curr, (one) =>
+        {
+            let data = {
+                _id: one._id,
+                title: one.title,
+                tags: one.tags,
+                created: one.created,
+                updated: one.updated
+            }
+
+            if (one.assignee)
+            {
+                let user = service.user.get(one.assignee)
+                if (user)
+                {
+                    data.assignee = {
+                        _id: user._id,
+                        title: user.title,
+                        name: user.name,
+                    }
+                }
+            }
+            if (one.milestone)
+            {
+                let milestone = service.user.get(one.milestone)
+                if (milestone)
+                {
+                    data.milestone = {
+                        _id: milestone._id,
+                        title: milestone.title
+                    }
+                }
+            }
+
+            return data
+        })
+    }
+
+    detail()
+    {
+        const { ctx, service } = this
+
+        const current = service.backlogs
+
+        const one = current.get(ctx.params.id)
+
+        if (one == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "article is not exists"
+            }
+            return
+        }
+
+        let data = {
+            _id: one._id,
+            title: one.title,
+            content: one.content,
+            tags: one.tags,
+            created: one.created,
+            updated: one.updated
+        }
+
+        if (one.assignee)
+        {
+            let user = service.user.get(one.assignee)
+            if (user)
+            {
+                data.assignee = {
+                    _id: user._id,
+                    title: user.title,
+                    name: user.name,
+                }
+            }
+        }
+        if (one.milestone)
+        {
+            let milestone = service.user.get(one.milestone)
+            if (milestone)
+            {
+                data.milestone = {
+                    _id: milestone._id,
+                    title: milestone.title
+                }
+            }
+        }
+
+        ctx.body = data
     }
 
     create()
@@ -25,17 +123,17 @@ module.exports = class Current extends Controller
         const { ctx, service } = this
         const { user, planner } = ctx
 
-        const milestone = service.milestone
+        const backlogs = service.backlogs
 
         const body = ctx.request.body
 
         body.title = (body.title || "").trim()
 
-        if (body.title.length == 0)
+        if (body.title.length == 0 || body.content.length == 0)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "title is invalid"
+                error: "title or content is invalid"
             }
             return
         }
@@ -43,13 +141,63 @@ module.exports = class Current extends Controller
         body.author = user._id
         body.planner = planner._id
 
-        milestone.create(body)
+        backlogs.create(body)
+
+        ctx.body = {}
+    }
+    update()
+    {
+        const { ctx, service } = this
+        const { user, planner } = ctx
+
+        const current = service.backlogs
+
+        const id = ctx.params.backlogs
+        const body = ctx.request.body
+
+        if (id == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "backlogs id required"
+            }
+            return
+        }
+
+        let item = current.get(id)
+        if (item == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "backlogs is not exist"
+            }
+            return
+        }
+
+        current.update(item, body)
 
         ctx.body = {}
     }
 
-    remove()
+    destroy()
     {
+        const { ctx, service } = this
 
+        const current = service.backlogs
+
+        const id = ctx.params.backlogs
+
+        if (id == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "backlogs id required"
+            }
+            return
+        }
+
+        current.destroy(id)
+
+        ctx.body = {}
     }
 }

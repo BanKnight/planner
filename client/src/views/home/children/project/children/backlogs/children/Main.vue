@@ -24,13 +24,13 @@
 
     <el-table
       ref="data"
-      :data="data"
+      v-loading="loading"
+      :data="page.data"
       style="width: 100%"
       height="100%"
       size="small"
       :stripe="true"
       border
-      @selection-change="handleSelectionChange"
     >
       <el-table-column width="38">
         <template slot="header">
@@ -42,18 +42,35 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="标题" prop="title"></el-table-column>
+      <el-table-column label="标题" prop="title">
+        <template slot-scope="scope">
+          <router-link
+            :to="`${root}/detail/${scope.row._id}`"
+            class="el-link el-link--default"
+          >{{scope.row.title}}</router-link>
+        </template>
+      </el-table-column>
 
       <el-table-column label="标签" width="200">
         <template slot-scope="scope">
           <el-tag v-for="tag in scope.row.tags" :key="tag" type="danger" size="small">{{tag}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="指派给" prop="assignee" width="120"></el-table-column>
+      <el-table-column label="指派给" width="120">
+        <template slot-scope="scope">
+          <i v-if="scope.row.assignee" class="el-icon-user">{{scope.row.assignee.title }}</i>
+          <el-tag v-else>无</el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column label="里程碑" width="120">
         <template slot-scope="scope">
-          <el-tag size="medium">{{ scope.row.milestone ||"无" }}</el-tag>
+          <router-link
+            v-if="scope.row.milestone"
+            :to="`${milestone}/${scope.row.milestone._id}`"
+            class="el-link el-link--default"
+          >{{scope.row.milestone.title}}</router-link>
+          <el-tag v-else>无</el-tag>
         </template>
       </el-table-column>
 
@@ -74,12 +91,7 @@
     </el-table>
 
     <el-footer height="auto" style="display: flex;justify-content: center">
-      <el-pagination
-        :page-size="20"
-        :pager-count="11"
-        layout="total,prev, pager, next"
-        :total="1000"
-      ></el-pagination>
+      <el-pagination :page-count="page.count" layout="total,prev, pager, next" :total="page.total"></el-pagination>
     </el-footer>
   </el-container>
 </template>
@@ -87,42 +99,30 @@
 <script>
 export default {
   path: "",
-  weight: 8,
+  weight: -1,
   meta: { require_logined: true },
   data() {
     return {
-      keyword: "",
-      data: [],
+      loading: false,
+      page: {
+        curr: 1, //当前页码
+        count: 1, //总页数
+        total: 0, //条目总数
+        data: [] //当前页的数据
+      },
       tags: [],
-      multipleSelection: []
+      keyword: ""
     };
   },
   mounted() {
-    // for (let i = 0; i < 10; ++i) {
-    //   let one = {
-    //     title: `标签${i}`,
-    //     checked: true
-    //   };
-
-    //   this.tags.push(one);
-    // }
-
-    for (let i = 1; i < 20; ++i) {
-      let one = {
-        _id: i,
-        title: `this is title ${i}`,
-        milesone: "milestone[${i}]",
-        tags: ["标签1", "标签2", "标签3"],
-        assignee: "张三",
-        created: Date.now()
-      };
-
-      this.data.push(one);
-    }
+    this.fetch(1);
   },
   computed: {
     root() {
       return `/project/${this.planner_id}/backlogs`;
+    },
+    milestone() {
+      return `/project/${this.planner_id}/milestone`;
     },
     planner_id() {
       return this.$route.params.id;
@@ -136,20 +136,36 @@ export default {
     });
   },
   methods: {
-    on_clear() {},
-    on_search() {},
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
+    async fetch(page) {
+      this.loading = true;
+
+      try {
+        const page_info = await this.$store.dispatch("backlogs_list", {
+          planner: this.planner_id,
+          params: {
+            curr: page //页码
+          }
         });
-      } else {
-        this.$refs.multipleTable.clearSelection();
+
+        this.page.curr = page_info.curr;
+        this.page.count = page_info.count;
+        this.page.total = page_info.total;
+
+        this.page.data = [];
+
+        for (let one of page_info.data) {
+          this.page.data.push(one);
+        }
+
+        console.log(this.page.data);
+      } catch (error) {
+        console.log(error);
       }
+
+      this.loading = false;
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    }
+    on_clear() {},
+    on_search() {}
   }
 };
 </script>

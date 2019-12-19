@@ -65,7 +65,7 @@ module.exports = class Current extends Controller
 
         const milestone = service.milestone
 
-        const stone = ctx.params.stone
+        const stone = ctx.params.milestone
         const body = ctx.request.body
 
         if (stone == null)
@@ -98,7 +98,7 @@ module.exports = class Current extends Controller
 
         const milestone = service.milestone
 
-        const stone = ctx.params.stone
+        const stone = ctx.params.milestone
 
         if (stone == null)
         {

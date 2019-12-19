@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const utils = require("../utils")
 const { Service } = require("../core")
 
 module.exports = class Current extends Service
@@ -20,11 +21,48 @@ module.exports = class Current extends Service
             this.add(one)
         }
     }
+
+    /**
+   * 未关闭的
+   * 最新更新的
+   * id大的
+   */
+    static cmp(first, second)
+    {
+        if (first.closed == null && second.closed != null)
+        {
+            return -1
+        }
+
+        if (first.closed != null && second.closed == null)
+        {
+            return 1
+        }
+
+        if (first.updated != second.updated)
+        {
+            return second.updated - first.updated
+        }
+
+        if (first._id < second._id)
+        {
+            return -1
+        }
+
+        if (first._id > second._id)
+        {
+            return 1
+        }
+
+        return 0
+    }
+
     /**
      * option = { 
      *  planner:xx
      *  title:xx,
-     *  bodys:[],   多个内容
+     *  content:xx,   
+     *  assignee:xx
      *  attachment：[],
      *  author:xx,
      *  milestone:xx,
@@ -38,7 +76,10 @@ module.exports = class Current extends Service
             ...option,
             created: Date.now(),
             updated: Date.now(),
+
         }
+
+        one.tags = one.tags || []
 
         this.add(one)
 
@@ -55,20 +96,33 @@ module.exports = class Current extends Service
 
         this.app.db.delete("planner.backlogs", id)
 
-        delete this.ids[id]
-
-        let planner = this.planners[one.planner]
-
-        delete planner.backlogs[one._id]
-
-        for (let tag of one.tags)
-        {
-            let tag_notes = planner.tags[tag]
-
-            tag_notes.splice(tag_notes.indexOf(one), 1)
-        }
+        this.del(one)
 
         return one
+    }
+
+    update(one, option)
+    {
+        let is_closed = one.closed
+
+        this.del(one)
+
+        extend(one, option)
+
+        if (option.closed == false)
+        {
+            one.closed = null
+        }
+        else if (!is_closed)
+        {
+            one.closed = Date.now()
+        }
+
+        one.updated = Date.now()
+
+        this.add(one)
+
+        this.app.db.set("planner.milestone", one._id, one)
     }
 
     add(one)
@@ -80,33 +134,58 @@ module.exports = class Current extends Service
         {
             planner = {
                 _id: one.planner,
-                backlogs: {},
-                sorted: [],              //按照更新时间排序
+                backlogs: new utils.SortedArray(Current.cmp),
+
                 tags: {},
             }
 
             this.planners[one.planner] = planner
         }
 
-        planner.backlogs[one._id] = one
-
-        planner.sorted.unshift(one)         //插到开头
+        planner.backlogs.push(one)
 
         for (let tag of one.tags)
         {
             let tag_notes = planner.tags[tag]
             if (tag_nodes == null)
             {
-                tag_nodes = []
-                planner.tags[tag] = tag_nodes
+                tag_nodes = new utils.SortedArray(Current.cmp),
+                    planner.tags[tag] = tag_nodes
             }
 
             tag_notes.push(one)
         }
     }
 
+    del(one)
+    {
+        delete this.ids[one._id]
+
+        let planner = this.planners[one.planner]
+
+        planner.backlogs.pop(one)
+
+        for (let tag of one.tags)
+        {
+            let tag_notes = planner.tags[tag]
+
+            tag_notes.pop(one)
+        }
+    }
+
     get(id)
     {
         return this.ids[id]
+    }
+
+    get_planner(id)
+    {
+        let planner = this.planners[id]
+        if (planner == null)
+        {
+            return
+        }
+
+        return planner
     }
 }

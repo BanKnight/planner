@@ -20,5 +20,8 @@ module.exports = {
         options: {
             expiresIn: "30d",
         }
+    },
+    page: {
+        size: 10,                    //每页条目数量    
     }
 }

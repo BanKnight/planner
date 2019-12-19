@@ -3,7 +3,7 @@ module.exports = (options, app) =>
     return function (ctx, next)
     {
         const user = ctx.user
-        const planner_id = ctx.params.id
+        const planner_id = ctx.params.planner
 
         ctx.member = app.service.member.get(planner_id, user._id)
 

@@ -9,16 +9,17 @@
         style="margin-right:20px"
       >返回</el-button>
 
-      <el-input placeholder="请输入标题" v-model="article.title" clearable>
-        <el-button slot="append" type="primary" icon="el-icon-upload" @click="summit">提交</el-button>
-      </el-input>
+      <h1>{{article.title}}</h1>
     </el-row>
 
     <mavon-editor
       v-model="article.content"
-      @save="summit"
       :ishljs="false"
-      :toolbars="options"
+      :subfield="false"
+      :editable="false"
+      :toolbarsFlag="false"
+      defaultOpen="preview"
+      :toolbars="{}"
       toolbarsBackground="#f0f9eb"
       class="full"
     />
@@ -27,7 +28,7 @@
 
 <script>
 export default {
-  path: "new",
+  path: "detail/:backlogs",
   weight: 10,
   meta: { require_logined: true },
   data() {
@@ -39,20 +40,6 @@ export default {
     };
   },
   computed: {
-    options() {
-      return {
-        imagelink: true, // 图片链接
-        fullscreen: true, // 全屏编辑
-        undo: true, // 上一步
-        redo: true, // 下一步
-        trash: true, // 清空
-        table: true, // 表格
-
-        save: true, // 保存（触发events中的save事件）,
-        subfield: true, // 单双栏模式
-        preview: true // 预览
-      };
-    },
     root() {
       return `/project/${this.planner_id}/backlogs`;
     },
@@ -67,7 +54,18 @@ export default {
       }
     });
   },
+  mounted() {
+    this.fetch();
+  },
   methods: {
+    async fetch() {
+      let article = await this.$store.dispatch("backlogs_detail", {
+        planner: this.planner_id,
+        backlogs: this.$route.params.backlogs
+      });
+
+      this.article = article;
+    },
     async summit() {
       let title = this.article.title.trim();
       let content = this.article.content;

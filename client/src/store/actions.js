@@ -22,6 +22,10 @@ export default {
     {
         await Vue.axios.put("/api/planner", payload)
     },
+
+
+    //-----------------------
+
     async milestone_list(context, id)
     {
         return await Vue.axios.get(`/api/planner/${id}/milestone`)
@@ -34,11 +38,39 @@ export default {
 
     async milestone_destroy(context, payload)
     {
-        await Vue.axios.delete(`/api/planner/${payload.planner}/milestone/${payload.milestone}`, payload.data)
+        await Vue.axios.delete(`/api/planner/${payload.planner}/milestone/${payload.milestone}`)
     },
 
     async milestone_update(context, payload)
     {
         await Vue.axios.post(`/api/planner/${payload.planner}/milestone/${payload.milestone}`, payload.data)
     },
+
+    //-----------------------
+    async backlogs_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/backlogs`, payload)
+    },
+
+    async backlogs_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`)
+    },
+
+    async backlogs_create(context, payload)
+    {
+        await Vue.axios.put(`/api/planner/${payload.planner}/backlogs`, payload.data)
+    },
+
+    async backlogs_destroy(context, payload)
+    {
+        await Vue.axios.delete(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`)
+    },
+
+    async backlogs_update(context, payload)
+    {
+        await Vue.axios.post(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`, payload.data)
+    },
+
+
 }
