@@ -8,10 +8,9 @@
 import layout from "../../layout";
 
 export default {
-  title: "需求池",
   path: "backlogs",
   weight: 9,
-  meta: { require_logined: true },
+  meta: { menu_title: "需求池", require_logined: true },
   components: { layout }
 };
 </script>

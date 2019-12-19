@@ -128,6 +128,13 @@ export default {
       return this.$route.params.id;
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.fullPath != "/") {
+        vm.from = from.fullPath;
+      }
+    });
+  },
   methods: {
     on_clear() {},
     on_search() {},

@@ -52,10 +52,9 @@
 
 <script>
 export default {
-  title: "Hub",
   path: "",
   weight: 0,
-  meta: { require_logined: true },
+  meta: { menu_title: "项目", require_logined: true },
   data() {
     return {
       form: {

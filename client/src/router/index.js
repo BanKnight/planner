@@ -11,7 +11,7 @@ console.log(views)
 
 const routes = []
 
-function make_routes(parent, views)
+function make_routes(container, views, parent)
 {
   for (let key in views)
   {
@@ -20,10 +20,16 @@ function make_routes(parent, views)
     let route = {
       path: page.path,
       name: page.name,
-      meta: page.meta,
+      meta: page.meta || {},
       component: page,
     }
-    parent.push(route)
+    container.push(route)
+
+    if (parent && route.meta.menu_title == null)
+    {
+      route.meta.menu_title = parent.meta.menu_title
+    }
+
     if (view.children == null)
     {
       continue
@@ -31,7 +37,7 @@ function make_routes(parent, views)
 
     route.children = []
 
-    make_routes(route.children, view.children)
+    make_routes(route.children, view.children, route)
   }
 }
 

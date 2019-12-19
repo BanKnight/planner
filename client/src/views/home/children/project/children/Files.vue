@@ -6,10 +6,9 @@
 import layout from "../layout";
 
 export default {
-  title: "文件",
   path: "files",
   weight: 4,
-  meta: { require_logined: true },
+  meta: { menu_title: "文件", require_logined: true },
 
   components: { layout }
 };

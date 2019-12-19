@@ -135,10 +135,9 @@
 import layout from "../layout";
 
 export default {
-  title: "里程碑",
   path: "",
   weight: 10,
-  meta: { require_logined: true },
+  meta: { menu_title: "里程碑", require_logined: true },
   components: { layout },
   data() {
     return {

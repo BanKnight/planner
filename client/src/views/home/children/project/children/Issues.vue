@@ -37,10 +37,9 @@
 import layout from "../layout";
 
 export default {
-  title: "Issues",
   path: "issues",
   weight: 7,
-  meta: { require_logined: true },
+  meta: { menu_title: "Issues", require_logined: true },
 
   components: { layout },
   data() {

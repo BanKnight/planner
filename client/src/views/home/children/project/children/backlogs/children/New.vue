@@ -52,11 +52,30 @@ export default {
         subfield: true, // 单双栏模式
         preview: true // 预览
       };
+    },
+    root() {
+      return `/project/${this.planner_id}/backlogs`;
+    },
+    planner_id() {
+      return this.$route.params.id;
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.fullPath != "/") {
+        vm.from = from.fullPath;
+      }
+    });
   },
   methods: {
     save() {},
-    goback() {}
+    goback() {
+      if (this.from) {
+        this.$router.push(this.from);
+      } else {
+        this.$router.push(this.root);
+      }
+    }
   }
 };
 </script>

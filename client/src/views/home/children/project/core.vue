@@ -11,15 +11,20 @@
       </el-row>
     </el-header>
     <el-menu
-      :default-active="`${root}/${children[0].path}`"
+      :default-active="$route.meta.menu_title"
       mode="horizontal"
-      :router="true"
       background-color="transparent"
       style="width:fit-content;"
+      :router="true"
     >
-      <el-menu-item :index="`${root}/${child.path}`" v-for="child in children" :key="child.path">
+      <el-menu-item
+        v-for="child in children"
+        :index="child.meta.menu_title"
+        :key="child.meta.menu_title"
+        :route="{path: `${root}/${child.path}`}"
+      >
         <i class="el-icon-menu"></i>
-        <span slot="title">{{child.title}}</span>
+        <span slot="title">{{child.meta.menu_title}}</span>
       </el-menu-item>
     </el-menu>
     <router-view />
@@ -40,14 +45,16 @@ export default {
       title: "项目标题"
     };
   },
+  mounted() {
+    console.log(this.$route, this.$router);
+  },
   computed: {
     children() {
       return children.map(one => {
         let view = one.core || one;
-        if (view.title == null) {
-          return;
+        if (view.meta && view.meta.menu_title) {
+          return view;
         }
-        return view;
       });
     },
     root() {

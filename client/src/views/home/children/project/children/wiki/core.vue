@@ -6,10 +6,9 @@
 
 <script>
 export default {
-  title: "Wiki",
   path: "wiki",
   weight: 5,
-  meta: { require_logined: true },
+  meta: { menu_title: "Wiki", require_logined: true },
 
   components: {}
 };

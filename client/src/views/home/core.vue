@@ -17,7 +17,7 @@
             :key="child.path"
           >
             <i class="el-icon-menu"></i>
-            <span slot="title">{{child.title}}</span>
+            <span slot="title">{{child.meta.menu_title}}</span>
           </el-menu-item>
         </el-menu>
 
@@ -75,7 +75,11 @@ export default {
   computed: {
     children() {
       return children.filter(one => {
-        return one.title != null;
+        if (one.meta && one.meta.menu_title) {
+          return true;
+        }
+
+        return false;
       });
     },
     root() {
