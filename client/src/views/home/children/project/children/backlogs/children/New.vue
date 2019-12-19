@@ -1,27 +1,51 @@
 <template>
-  <el-container class="full" direction="vertical">
-    <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px">
-      <el-button
-        icon="el-icon-back"
-        @click="goback"
-        type="success"
-        plain
-        style="margin-right:20px"
-      >返回</el-button>
+  <el-container class="full">
+    <el-header
+      height="auto"
+      style="display: flex;padding:0;justify-content: space-between;margin-bottom:10px"
+    >
+      <el-button icon="el-icon-s-fold" @click="folding=!folding" style="margin-right:20px"></el-button>
 
       <el-input placeholder="请输入标题" v-model="article.title" clearable>
         <el-button slot="append" type="primary" icon="el-icon-upload" @click="summit">提交</el-button>
       </el-input>
-    </el-row>
+    </el-header>
 
-    <mavon-editor
-      v-model="article.content"
-      @save="summit"
-      :ishljs="false"
-      :toolbars="options"
-      toolbarsBackground="#f0f9eb"
-      class="full"
-    />
+    <el-container class="full scroll-if-need" direction="horizontal">
+      <el-aside width="180px" v-if="folding==false" style="margin-right:10px">
+        <el-container class="full" direction="vertical">
+          <el-table :data="articles" style="width: 100%" height="100%" size="small" :border="true">
+            <el-table-column>
+              <template slot="header">
+                <el-input
+                  class="search"
+                  placeholder="输入关键字"
+                  v-model="keyword"
+                  clearable
+                  size="mini"
+                  prefix-icon="el-icon-search"
+                  @clear="on_clear"
+                  @keydown.enter.native.stop="on_search"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-container>
+      </el-aside>
+
+      <el-container style="border: 1px solid #ebeef5">
+        <mavon-editor
+          v-model="article.content"
+          @save="summit"
+          :ishljs="false"
+          :boxShadow="false"
+          :toolbars="options"
+          toolbarsBackground="#f0f9eb"
+          class="full"
+          style="border:none"
+        />
+      </el-container>
+    </el-container>
   </el-container>
 </template>
 
@@ -35,7 +59,8 @@ export default {
       article: {
         title: "",
         content: ""
-      }
+      },
+      folding: false
     };
   },
   computed: {

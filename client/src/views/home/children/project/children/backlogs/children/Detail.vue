@@ -1,28 +1,60 @@
 <template>
-  <el-container class="full" direction="vertical">
-    <el-row type="flex" justify="space-between" align="middle" style="margin-bottom:10px">
-      <el-button
-        icon="el-icon-back"
-        @click="goback"
-        type="success"
-        plain
-        style="margin-right:20px"
-      >返回</el-button>
+  <el-container class="full">
+    <el-aside width="180px" v-if="folding==false">
+      <el-container class="full" direction="vertical"></el-container>
+    </el-aside>
 
-      <h1>{{article.title}}</h1>
-    </el-row>
+    <el-container>
+      <el-header>
+        <el-button-group>
+          <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
+        </el-button-group>
+        <h1>{{article.title}}</h1>
 
-    <mavon-editor
-      v-model="article.content"
-      :ishljs="false"
-      :subfield="false"
-      :editable="false"
-      :toolbarsFlag="false"
-      defaultOpen="preview"
-      :toolbars="{}"
-      toolbarsBackground="#f0f9eb"
-      class="full"
-    />
+        <el-button-group>
+          <el-button size="mini" icon="el-icon-edit" />
+          <el-button size="mini" icon="el-icon-more" />
+        </el-button-group>
+      </el-header>
+
+      <el-main style="padding:2px">
+        <el-row type="flex" justify="space-between" align="middle">
+          <el-button-group>
+            <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
+            <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
+          </el-button-group>
+          <el-button-group>
+            <el-button size="mini" icon="el-icon-edit" />
+            <el-button size="mini" icon="el-icon-more" />
+          </el-button-group>
+        </el-row>
+
+        <div>
+          <h1>{{article.title}}</h1>
+
+          <span>
+            <el-tag type="success" size="small">标签二</el-tag>
+            <el-tag type="info" size="small">标签三</el-tag>
+            <el-tag type="warning" size="small">标签四</el-tag>
+            <el-tag type="danger" size="small">标签五</el-tag>
+          </span>
+        </div>
+        <mavon-editor
+          v-model="article.content"
+          :boxShadow="false"
+          :ishljs="false"
+          :subfield="false"
+          :editable="false"
+          :toolbarsFlag="false"
+          defaultOpen="preview"
+          :toolbars="{}"
+          toolbarsBackground="#f0f9eb"
+          class="full"
+        />
+      </el-main>
+      <el-aside></el-aside>
+    </el-container>
   </el-container>
 </template>
 
@@ -36,10 +68,17 @@ export default {
       article: {
         title: "",
         content: ""
-      }
+      },
+      folding: true
     };
   },
   computed: {
+    fold_icon() {
+      if (this.folding == false) {
+        return "el-icon-s-fold";
+      }
+      return "el-icon-s-unfold";
+    },
     root() {
       return `/project/${this.planner_id}/backlogs`;
     },

@@ -3,7 +3,7 @@
     <el-aside width="180px" v-if="folding==false">
       <el-container class="full" direction="vertical">
         <el-table :data="articles" style="width: 100%" height="100%" size="small" :border="true">
-          <el-table-column prop="title" label="地址">
+          <el-table-column>
             <template slot="header">
               <el-input
                 class="search"
@@ -54,7 +54,7 @@
 <script>
 export default {
   path: "",
-  weight: 8,
+  weight: -1,
   meta: { require_logined: true },
 
   data() {
