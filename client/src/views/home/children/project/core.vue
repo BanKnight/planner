@@ -11,6 +11,8 @@
       :default-active="$route.meta.menu_title"
       mode="horizontal"
       background-color="transparent"
+      active-text-color="#77b36b"
+      text-color="#000"
       style="width:fit-content;"
       :router="true"
     >
