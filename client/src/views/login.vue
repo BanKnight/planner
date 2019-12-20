@@ -8,12 +8,12 @@
       <el-tabs type="border-card" style="width:520px;height:fit-content;border-radius:4px">
         <el-tab-pane label="登录">
           <el-form ref="login" :model="login_form" autocomplete="on" label-position="left">
-            <el-form-item prop="name">
+            <el-form-item prop="account">
               <el-input
                 ref="login_name"
-                v-model="login_form.name"
+                v-model="login_form.account"
                 placeholder="用户名称(请使用邮箱地址)"
-                name="name"
+                name="account"
                 type="text"
                 tabindex="1"
                 autocomplete="on"
@@ -51,9 +51,9 @@
             <el-form-item prop="name">
               <el-input
                 ref="regist_name"
-                v-model="regist_form.name"
+                v-model="regist_form.account"
                 placeholder="用户名称(请使用邮箱地址)"
-                name="name"
+                name="account"
                 type="text"
                 tabindex="1"
                 autocomplete="on"
@@ -78,6 +78,18 @@
               </el-input>
             </el-form-item>
 
+            <el-form-item prop="name">
+              <el-input
+                ref="regist_name"
+                v-model="regist_form.name"
+                placeholder="输入姓名"
+                name="name"
+                type="text"
+                tabindex="3"
+                autocomplete="on"
+              ></el-input>
+            </el-form-item>
+
             <el-button
               :loading="loading"
               type="primary"
@@ -99,12 +111,13 @@ export default {
   data() {
     return {
       login_form: {
-        name: "",
+        account: "",
         password: ""
       },
       regist_form: {
-        name: "",
-        password: ""
+        account: "",
+        password: "",
+        name: ""
       },
       passwordType: "password",
       loading: false,

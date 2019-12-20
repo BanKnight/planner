@@ -14,9 +14,9 @@ module.exports = class Current extends Controller
     {
         const body = this.ctx.request.body
 
-        const { name, password } = body
+        const { account, password } = body
 
-        let user = this.app.service.user.get_by_name(name)
+        let user = this.app.service.user.get_account(account)
 
         if (user == null)
         {
@@ -51,36 +51,37 @@ module.exports = class Current extends Controller
 
         const body = this.ctx.request.body
 
-        let { name, password } = body
+        let { account, password, name } = body
 
-        if (name == null || password == null)
+        if (account == null || password == null)
         {
             this.ctx.status = error.BAD_REQUEST
             this.ctx.body = {
-                error: "name or password is invalid"
+                error: "account or password is invalid"
             }
             return
         }
 
-        name = name.trim()
+        account = account.trim()
         password = password.trim()
+        name = name.trim()
 
-        if (name.length == 0 || password == 0)
+        if (account.length == 0 || password.length == 0 || name.length == 0)
         {
             this.ctx.status = error.BAD_REQUEST
             this.ctx.body = {
-                error: "name or password is invalid"
+                error: "account or password or name is invalid"
             }
             return
         }
 
-        let user = this.app.service.user.get_by_name(name)
+        let user = this.app.service.user.get_account(account)
 
         if (user)
         {
             this.ctx.status = error.NAME_CONFLICT
             this.ctx.body = {
-                error: 'name conflict',
+                error: 'account conflict',
             }
             return
         }
@@ -88,7 +89,7 @@ module.exports = class Current extends Controller
         password = md5(password)
 
         user = this.app.service.user.create({
-            name, password,
+            account, password, name
         })
 
         this.ctx.session = { user: user._id }
@@ -96,5 +97,29 @@ module.exports = class Current extends Controller
 
         this.ctx.body = {}
 
+    }
+
+    detail()
+    {
+        const { ctx, service } = this
+        const current = service.user
+
+        const user_id = ctx.params.user
+
+        const that = current.get(user_id)
+
+        if (that == null)
+        {
+            this.ctx.status = error.USER_NOT_FOUND
+            this.ctx.body = {
+                error: 'no such user',
+            }
+            return
+        }
+
+        ctx.body = {
+            _id: that._id,
+            name: that.name
+        }
     }
 }

@@ -1,14 +1,11 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-header style="padding:0" height="fit-content">
-      <el-row
-        type="flex"
-        justify="center"
-        align="middle"
-        style="width:100%;height:20px;background-color:#75b368;color:white;padding:10px"
-      >
-        <h4>{{title}}</h4>
-      </el-row>
+    <el-header
+      style=" display:flex;padding:2px 10px;justify-content:space-between;align-content:center;background-color:#75b368;color:white;"
+      height="auto"
+    >
+      <i class="el-icon-s-home">{{detail.name}}</i>
+      <i class="el-icon-s-tools" style="cursor:pointer"></i>
     </el-header>
     <el-menu
       :default-active="$route.meta.menu_title"
@@ -42,11 +39,13 @@ export default {
   components: {},
   data() {
     return {
-      title: "项目标题"
+      detail: {
+        name: ""
+      }
     };
   },
   mounted() {
-    console.log(this.$route, this.$router);
+    this.fetch();
   },
   computed: {
     children() {
@@ -61,7 +60,15 @@ export default {
       return `/project/${this.$route.params.id}`;
     }
   },
-  methods: {}
+  methods: {
+    async fetch() {
+      const detail = await this.$store.dispatch("planner_detail", {
+        planner: this.$route.params.id
+      });
+
+      Object.assign(this.detail, detail);
+    }
+  }
 };
 </script>
 

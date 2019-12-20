@@ -31,6 +31,7 @@
       size="small"
       :stripe="true"
       border
+      row-key="_id"
     >
       <el-table-column width="38">
         <template slot="header">

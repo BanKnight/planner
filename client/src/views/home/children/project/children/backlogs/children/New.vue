@@ -2,7 +2,7 @@
   <el-container class="full">
     <el-header
       height="auto"
-      style="display: flex;padding:0;justify-content: space-between;margin-bottom:10px"
+      style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
     >
       <el-button icon="el-icon-s-fold" @click="folding=!folding" style="margin-right:20px"></el-button>
 
@@ -11,29 +11,56 @@
       </el-input>
     </el-header>
 
-    <el-container class="full scroll-if-need" direction="horizontal">
-      <el-aside width="180px" v-if="folding==false" style="margin-right:10px">
-        <el-container class="full" direction="vertical">
-          <el-table :data="articles" style="width: 100%" height="100%" size="small" :border="true">
-            <el-table-column>
-              <template slot="header">
-                <el-input
-                  class="search"
-                  placeholder="输入关键字"
-                  v-model="keyword"
-                  clearable
-                  size="mini"
-                  prefix-icon="el-icon-search"
-                  @clear="on_clear"
-                  @keydown.enter.native.stop="on_search"
-                ></el-input>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-container>
+    <el-container class="full scroll-if-need">
+      <el-aside
+        width="180px"
+        v-if="folding==false"
+        style="margin-right:10px;padding:10px"
+        class="el-card"
+      >
+        <el-form :model="extra">
+          <el-form-item label="指派:">
+            <el-select v-model="extra.assignee" placeholder="请选择">
+              <el-option
+                v-for="item in assignee"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="里程碑:">
+            <el-select v-model="extra.assignee" placeholder="请选择">
+              <el-option
+                v-for="item in assignee"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="标签:">
+            <el-select
+              v-model="extra.tags"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              placeholder="请选择文章标签"
+            >
+              <el-option
+                v-for="item in tags"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
       </el-aside>
 
-      <el-container style="border: 1px solid #ebeef5">
+      <el-container class="el-card">
         <mavon-editor
           v-model="article.content"
           @save="summit"
@@ -60,7 +87,44 @@ export default {
         title: "",
         content: ""
       },
-      folding: false
+      folding: false,
+      extra: {},
+      assignee: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      tags: [
+        {
+          value: "HTML",
+          label: "HTML"
+        },
+        {
+          value: "CSS",
+          label: "CSS"
+        },
+        {
+          value: "JavaScript",
+          label: "JavaScript"
+        }
+      ]
     };
   },
   computed: {

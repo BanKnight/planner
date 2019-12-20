@@ -1,45 +1,69 @@
 <template>
   <el-container class="full">
-    <el-aside width="180px" v-if="folding==false">
-      <el-container class="full" direction="vertical"></el-container>
-    </el-aside>
+    <el-header
+      height="auto"
+      style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
+    >
+      <el-button icon="el-icon-s-fold" @click="folding=!folding" style="margin-right:20px"></el-button>
 
-    <el-container>
-      <el-header>
-        <el-button-group>
-          <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
-        </el-button-group>
-        <h1>{{article.title}}</h1>
+      <h2>{{article.title}}</h2>
 
-        <el-button-group>
-          <el-button size="mini" icon="el-icon-edit" />
-          <el-button size="mini" icon="el-icon-more" />
-        </el-button-group>
-      </el-header>
+      <el-button-group>
+        <el-button icon="el-icon-edit" />
+        <el-button icon="el-icon-more" />
+      </el-button-group>
+    </el-header>
 
-      <el-main style="padding:2px">
-        <el-row type="flex" justify="space-between" align="middle">
-          <el-button-group>
-            <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
-            <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
-          </el-button-group>
-          <el-button-group>
-            <el-button size="mini" icon="el-icon-edit" />
-            <el-button size="mini" icon="el-icon-more" />
-          </el-button-group>
-        </el-row>
+    <el-container class="full scroll-if-need">
+      <el-aside
+        width="180px"
+        v-if="folding==false"
+        style="margin-right:10px;padding:10px"
+        class="el-card"
+      >
+        <el-form :model="extra">
+          <el-form-item label="指派:">
+            <el-select v-model="extra.assignee" placeholder="请选择">
+              <el-option
+                v-for="item in assignee"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="里程碑:">
+            <el-select v-model="extra.assignee" placeholder="请选择">
+              <el-option
+                v-for="item in assignee"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
 
-        <div>
-          <h1>{{article.title}}</h1>
+          <el-form-item label="标签:">
+            <el-select
+              v-model="extra.tags"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              placeholder="请选择文章标签"
+            >
+              <el-option
+                v-for="item in tags"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-aside>
 
-          <span>
-            <el-tag type="success" size="small">标签二</el-tag>
-            <el-tag type="info" size="small">标签三</el-tag>
-            <el-tag type="warning" size="small">标签四</el-tag>
-            <el-tag type="danger" size="small">标签五</el-tag>
-          </span>
-        </div>
+      <el-container class="el-card">
         <mavon-editor
           v-model="article.content"
           :boxShadow="false"
@@ -51,9 +75,9 @@
           :toolbars="{}"
           toolbarsBackground="#f0f9eb"
           class="full"
+          style="border:none"
         />
-      </el-main>
-      <el-aside></el-aside>
+      </el-container>
     </el-container>
   </el-container>
 </template>
@@ -69,7 +93,44 @@ export default {
         title: "",
         content: ""
       },
-      folding: true
+      folding: true,
+      extra: {},
+      assignee: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      tags: [
+        {
+          value: "HTML",
+          label: "HTML"
+        },
+        {
+          value: "CSS",
+          label: "CSS"
+        },
+        {
+          value: "JavaScript",
+          label: "JavaScript"
+        }
+      ]
     };
   },
   computed: {

@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const extend = require("extend2")
 
 const { Service } = require("../core")
 
@@ -9,7 +10,7 @@ module.exports = class User extends Service
         super(app)
 
         this.ids = {}
-        this.names = {}
+        this.accounts = {}
     }
 
     async start()
@@ -19,7 +20,7 @@ module.exports = class User extends Service
         for (let one of array)
         {
             this.ids[one._id] = one
-            this.names[one.name] = one
+            this.accounts[one.account] = one
         }
     }
 
@@ -28,11 +29,21 @@ module.exports = class User extends Service
         return this.ids[id]
     }
 
-    get_by_name(name)
+    get_account(account)
     {
-        return this.names[name]
+        return this.accounts[account]
     }
 
+    /**
+     * option = {
+     *  account:账户名
+     *  password：md5后的密码
+     *  name:姓名
+     * }
+     *
+     * @param {*} option
+     * @returns
+     */
     create(option)
     {
         let user = {
@@ -42,13 +53,17 @@ module.exports = class User extends Service
 
         this.ids[user._id] = user
 
-        if (user.name)
-        {
-            this.names[user.name] = user
-        }
+        this.accounts[user.account] = user
 
         this.app.db.set("user", user._id, user)
 
         return user
+    }
+
+    update(one, option)
+    {
+        extend(one, option)
+
+        this.app.db.set("user", user._id, user)
     }
 }

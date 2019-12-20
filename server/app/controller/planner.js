@@ -75,5 +75,31 @@ module.exports = class Current extends Controller
         }
 
         service.planner.destroy(planner.id)
+
+        ctx.body = {}
+    }
+
+    detail()
+    {
+        const { ctx, service } = this
+
+        const current = service.planner
+
+        const that = current.get(ctx.params.planner)
+
+        if (that == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                errror: "planner is not exists"
+            }
+
+            return
+        }
+
+        ctx.body = {
+            _id: that._id,
+            name: that.name,
+        }
     }
 }

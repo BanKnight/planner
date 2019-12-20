@@ -70,7 +70,7 @@
       </transition>
 
       <transition name="el-zoom-in-center">
-        <el-main width="300px" v-if="adding">
+        <el-main width="300px" v-if="adding" class="el-card">
           <el-form label-position="top" :model="form" ref="new_one">
             <el-form-item label="标题">
               <el-input v-model="form.title"></el-input>
@@ -99,7 +99,7 @@
       </transition>
 
       <transition name="el-zoom-in-center">
-        <el-main width="300px" v-if="editing">
+        <el-main width="300px" v-if="editing" class="el-card">
           <el-form label-position="top" :model="editing_form" ref="new_one">
             <h3>{{editing_form.title}}</h3>
 

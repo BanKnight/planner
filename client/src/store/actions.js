@@ -13,6 +13,7 @@ export default {
         await Vue.axios.post("/api/user/regist", payload)
     },
 
+    //-----------------------
     async planner_list(context, payload)
     {
         return await Vue.axios.get("/api/planner", payload)
@@ -22,7 +23,10 @@ export default {
     {
         await Vue.axios.put("/api/planner", payload)
     },
-
+    async planner_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}`)
+    },
 
     //-----------------------
 

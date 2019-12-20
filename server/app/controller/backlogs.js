@@ -44,7 +44,6 @@ module.exports = class Current extends Controller
                 {
                     data.assignee = {
                         _id: user._id,
-                        title: user.title,
                         name: user.name,
                     }
                 }

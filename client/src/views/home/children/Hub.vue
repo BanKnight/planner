@@ -1,6 +1,6 @@
 <template>
-  <el-container class="full">
-    <el-main class="full">
+  <el-container class="full" style="padding:10px">
+    <el-main class="full" style="padding:0;">
       <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
         <el-table-column label="标题" prop="name" width="150">
           <template slot-scope="scope">
@@ -19,7 +19,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="180" align="right" fixed="right">
+        <el-table-column label="操作" width="180" align="right">
           <template slot="header">
             <el-button type="primary" icon="el-icon-plus" @click="adding =!adding"></el-button>
           </template>
@@ -31,7 +31,7 @@
     </el-main>
 
     <transition>
-      <el-main v-if="adding">
+      <el-main v-if="adding" class="el-card" style="margin-left:10px">
         <el-form label-position="top" :model="form" ref="new_plan">
           <el-form-item label="标题">
             <el-input v-model="form.name"></el-input>
