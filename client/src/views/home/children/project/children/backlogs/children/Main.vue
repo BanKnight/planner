@@ -66,11 +66,7 @@
 
       <el-table-column label="里程碑" width="120">
         <template slot-scope="scope">
-          <router-link
-            v-if="scope.row.milestone"
-            :to="`${milestone}/${scope.row.milestone._id}`"
-            class="el-link el-link--default"
-          >{{scope.row.milestone.title}}</router-link>
+          <i v-if="scope.row.milestone" class="el-icon-s-opportunity">{{scope.row.milestone.title }}</i>
           <el-tag v-else>无</el-tag>
         </template>
       </el-table-column>
@@ -92,7 +88,14 @@
     </el-table>
 
     <el-footer height="auto" style="display: flex;justify-content: center">
-      <el-pagination :page-count="page.count" layout="total,prev, pager, next" :total="page.total"></el-pagination>
+      <el-pagination
+        :page-count="page.count"
+        layout="total,prev, pager, next"
+        :total="page.total"
+        @current-change="fetch"
+        @prev-click="fetch"
+        @next-click="fetch"
+      ></el-pagination>
     </el-footer>
   </el-container>
 </template>
@@ -157,13 +160,20 @@ export default {
         for (let one of page_info.data) {
           this.page.data.push(one);
         }
-
-        console.log(this.page.data);
       } catch (error) {
         console.log(error);
       }
 
       this.loading = false;
+    },
+    async close(backlog, value) {
+      await this.$store.dispatch("backlogs_update", {
+        planner: this.planner_id,
+        backlogs: backlog._id,
+        data: { closed: value }
+      });
+
+      this.fetch(this.page.curr);
     },
     on_clear() {},
     on_search() {}

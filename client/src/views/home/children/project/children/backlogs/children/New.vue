@@ -116,8 +116,8 @@ export default {
       this.article.title = this.article.title.trim();
       this.articlecontent = this.article.content;
 
-      if (this.article.title.length == 0 || this.article.content.length == 0) {
-        this.$message.error("请输入完整的标题和内容后再提交");
+      if (this.article.title.length == 0) {
+        this.$message.error("提交前标题不能为空");
         return;
       }
       await this.$store.dispatch("backlogs_create", {

@@ -34,7 +34,9 @@ module.exports = class Current extends Controller
                 title: one.title,
                 tags: one.tags,
                 created: one.created,
-                updated: one.updated
+                updated: one.updated,
+                closed: one.closed,
+
             }
 
             if (one.assignee)
@@ -50,7 +52,7 @@ module.exports = class Current extends Controller
             }
             if (one.milestone)
             {
-                let milestone = service.user.get(one.milestone)
+                let milestone = service.milestone.get(one.milestone)
                 if (milestone)
                 {
                     data.milestone = {
@@ -89,7 +91,8 @@ module.exports = class Current extends Controller
             milestone: one.milestone,
             tags: one.tags,
             created: one.created,
-            updated: one.updated
+            updated: one.updated,
+            closed: one.closed,
         }
 
         ctx.body = data
@@ -106,11 +109,11 @@ module.exports = class Current extends Controller
 
         body.title = (body.title || "").trim()
 
-        if (body.title.length == 0 || body.content.length == 0)
+        if (body.title.length == 0)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "title or content is invalid"
+                error: "title is invalid"
             }
             return
         }
