@@ -38,9 +38,9 @@ export default {
     //-----------------------
 
 
-    async milestone_list(context, id)
+    async milestone_list(context, payload)
     {
-        return await Vue.axios.get(`/api/planner/${id}/milestone`)
+        return await Vue.axios.get(`/api/planner/${payload.planner}/milestone`, payload)
     },
 
     async milestone_create(context, payload)

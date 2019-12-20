@@ -1,5 +1,6 @@
 const { Controller } = require("../core")
 const { error } = require("../define")
+const { cal_page } = require("../utils")
 
 module.exports = class Current extends Controller
 {
@@ -10,22 +11,30 @@ module.exports = class Current extends Controller
 
     list()
     {
-        const { ctx, service } = this
+        const { ctx, service, config } = this
 
         const planner = ctx.planner
         const current = service.milestone
-
-        const ret = []
 
         const milestone_planner = current.get_planner(planner._id)
 
         if (milestone_planner == null)        
         {
-            ctx.body = ret
+            ctx.body = cal_page([], config.page.size, ctx.query.page)
             return
         }
 
-        for (let one of milestone_planner.curr.data)
+        let data = milestone_planner.curr.data
+
+        if (ctx.query.closed === "false")
+        {
+            data = data.filter((one) =>
+            {
+                return !one.closed
+            })
+        }
+
+        ctx.body = cal_page(data, config.page.size, +ctx.query.curr, (one) =>
         {
             let data = { ...one }
 
@@ -47,10 +56,8 @@ module.exports = class Current extends Controller
                 }
             }
 
-            ret.push(data)
-        }
-
-        ctx.body = ret
+            return data
+        })
     }
 
     create()

@@ -34,7 +34,25 @@ export default {
   async mounted() {
     this.current = this.value;
     this.loading = true;
-    this.options = await this.$store.dispatch("milestone_list", this.planner);
+
+    for (let curr = 1; curr < 100; ++curr) {
+      let page_info = await this.$store.dispatch("milestone_list", {
+        planner: this.planner,
+        params: {
+          curr: curr,
+          closed: false
+        }
+      });
+
+      for (let one of page_info.data) {
+        this.options.push(one);
+      }
+
+      if (page_info.count == curr) {
+        break;
+      }
+    }
+
     this.loading = false;
   },
   methods: {

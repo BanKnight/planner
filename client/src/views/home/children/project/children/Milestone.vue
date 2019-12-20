@@ -2,9 +2,9 @@
   <layout>
     <el-container direction="horizontal" class="full">
       <transition name="el-fade-in">
-        <el-main style="padding:0">
+        <el-container direction="vertical">
           <el-table
-            :data="items"
+            :data="page.data"
             style="width: 100%"
             height="100%"
             border
@@ -66,7 +66,18 @@
               </template>
             </el-table-column>
           </el-table>
-        </el-main>
+
+          <el-footer height="auto" style="display: flex;justify-content: center">
+            <el-pagination
+              :page-count="page.count"
+              layout="total,prev, pager, next"
+              :total="page.total"
+              @current-change="fetch"
+              @prev-click="fetch"
+              @next-click="fetch"
+            ></el-pagination>
+          </el-footer>
+        </el-container>
       </transition>
 
       <transition name="el-zoom-in-center">
@@ -143,7 +154,12 @@ export default {
     return {
       adding: false,
       loading: false,
-      items: [],
+      page: {
+        curr: 1, //当前页码
+        count: 1, //总页数
+        total: 0, //条目总数
+        data: [] //当前页的数据
+      },
       form: {
         title: "",
         desc: "",
@@ -154,7 +170,7 @@ export default {
     };
   },
   mounted() {
-    this.init_milestones();
+    this.fetch(1);
   },
   computed: {
     planner_id() {
@@ -190,23 +206,33 @@ export default {
           });
           this.loading = false;
 
-          this.init_milestones();
+          this.fetch(1);
         } catch (e) {
           this.loading = false;
         }
       });
     },
 
-    async init_milestones() {
-      this.items = [];
+    async fetch(page) {
       this.editing = null;
       this.loading = true;
 
-      let data = await this.$store.dispatch("milestone_list", this.planner_id);
+      const page_info = await this.$store.dispatch("milestone_list", {
+        planner: this.planner_id,
+        params: {
+          curr: page //页码
+        }
+      });
 
-      for (let one of data) {
+      this.page.curr = page_info.curr;
+      this.page.count = page_info.count;
+      this.page.total = page_info.total;
+
+      this.page.data = [];
+
+      for (let one of page_info.data) {
         one.percent = one.percent || parseInt(Math.random().toFixed(2) * 100);
-        this.items.push(one);
+        this.page.data.push(one);
       }
       this.loading = false;
     },
@@ -229,7 +255,7 @@ export default {
         data: this.editing_form
       });
 
-      this.init_milestones();
+      this.fetch(this.page.curr);
       this.editing = null;
       this.editing_form = null;
     },
@@ -240,7 +266,7 @@ export default {
         data: { closed: value }
       });
 
-      this.init_milestones();
+      this.fetch(this.page.curr);
     },
     async del(milestone) {
       await this.$confirm("是否确认删除?", "提示", {
@@ -259,7 +285,7 @@ export default {
         milestone: milestone._id
       });
 
-      this.init_milestones();
+      this.fetch(this.page.curr);
     }
   }
 };

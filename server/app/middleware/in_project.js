@@ -11,7 +11,7 @@ module.exports = (options, app) =>
         {
             ctx.status = 403
             ctx.body = {
-                error: "you are not authorized to this planner"
+                error: "you are not authorized to this planner" + ctx.path
             }
             return
         }
