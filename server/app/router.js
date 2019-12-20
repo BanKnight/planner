@@ -19,6 +19,11 @@ module.exports = function (app)
     router.get("/api/planner/:planner", logined, in_project, app.controller.planner.detail)
     router.delete("/api/planner", logined, in_project, app.controller.planner.destroy)
 
+    router.get("/api/planner/:planner/member", logined, in_project, app.controller.member.list)
+    router.get("/api/planner/:planner/member/:member", logined, in_project, app.controller.member.detail)
+    router.put("/api/planner/:planner/member", logined, in_project, app.controller.member.create)
+    router.delete("/api/planner/:planner/member/:member", logined, in_project, app.controller.member.destroy)
+
     router.get("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.list)
     router.put("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.create)
     router.post("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.update)
@@ -30,9 +35,5 @@ module.exports = function (app)
     router.post("/api/planner/:planner/backlogs/:backlogs", logined, in_project, app.controller.backlogs.update)
     router.delete("/api/planner/:planner/backlogs/:backlogs", logined, in_project, app.controller.backlogs.destroy)
 
-    router.get("/api/planner/:planner/member", logined, in_project, app.controller.member.list)
-    router.get("/api/planner/:planner/member/:member", logined, in_project, app.controller.member.detail)
-    router.put("/api/planner/:planner/member", logined, in_project, app.controller.member.create)
-    router.delete("/api/planner/:planner/member/:member", logined, in_project, app.controller.member.destroy)
 
 }

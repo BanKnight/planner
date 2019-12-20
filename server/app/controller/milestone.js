@@ -13,18 +13,41 @@ module.exports = class Current extends Controller
         const { ctx, service } = this
 
         const planner = ctx.planner
-        const milestone = service.milestone
+        const current = service.milestone
 
         const ret = []
 
-        const milestone_planner = milestone.get_planner(planner._id)
+        const milestone_planner = current.get_planner(planner._id)
 
-        if (milestone_planner)        
+        if (milestone_planner == null)        
         {
-            for (let one of milestone_planner.curr.data)
+            ctx.body = ret
+            return
+        }
+
+        for (let one of milestone_planner.curr.data)
+        {
+            let data = { ...one }
+
+            if (one.assignee)
             {
-                ret.push(one)
+                let assignee = service.user.get(one.assignee)
+                data.assignee = {
+                    _id: assignee._id,
+                    name: assignee.name,
+                }
             }
+
+            if (one.milestone)
+            {
+                let milestone = service.milestone.get(one.milestone)
+                data.assignee = {
+                    _id: milestone._id,
+                    name: milestone.title,
+                }
+            }
+
+            ret.push(data)
         }
 
         ctx.body = ret

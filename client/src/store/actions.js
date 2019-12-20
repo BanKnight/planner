@@ -30,6 +30,14 @@ export default {
 
     //-----------------------
 
+    async member_list(context, id)
+    {
+        return await Vue.axios.get(`/api/planner/${id}/member`)
+    },
+
+    //-----------------------
+
+
     async milestone_list(context, id)
     {
         return await Vue.axios.get(`/api/planner/${id}/milestone`)

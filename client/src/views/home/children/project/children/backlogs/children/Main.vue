@@ -59,7 +59,7 @@
       </el-table-column>
       <el-table-column label="指派给" width="120">
         <template slot-scope="scope">
-          <i v-if="scope.row.assignee" class="el-icon-user">{{scope.row.assignee.title }}</i>
+          <i v-if="scope.row.assignee" class="el-icon-user">{{scope.row.assignee.name }}</i>
           <el-tag v-else>无</el-tag>
         </template>
       </el-table-column>

@@ -85,33 +85,11 @@ module.exports = class Current extends Controller
             _id: one._id,
             title: one.title,
             content: one.content,
+            assignee: one.assignee,
+            milestone: one.milestone,
             tags: one.tags,
             created: one.created,
             updated: one.updated
-        }
-
-        if (one.assignee)
-        {
-            let user = service.user.get(one.assignee)
-            if (user)
-            {
-                data.assignee = {
-                    _id: user._id,
-                    title: user.title,
-                    name: user.name,
-                }
-            }
-        }
-        if (one.milestone)
-        {
-            let milestone = service.user.get(one.milestone)
-            if (milestone)
-            {
-                data.milestone = {
-                    _id: milestone._id,
-                    title: milestone.title
-                }
-            }
         }
 
         ctx.body = data

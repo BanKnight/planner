@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const extend = require("extend2")
 const utils = require("../utils")
 const { Service } = require("../core")
 
@@ -103,6 +104,8 @@ module.exports = class Current extends Service
 
     update(one, option)
     {
+        delete option._id
+
         let is_closed = one.closed
 
         this.del(one)

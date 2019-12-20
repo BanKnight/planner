@@ -18,29 +18,15 @@
         style="margin-right:10px;padding:10px"
         class="el-card"
       >
-        <el-form :model="extra">
+        <el-form :model="article">
           <el-form-item label="指派:">
-            <el-select v-model="extra.assignee" placeholder="请选择">
-              <el-option
-                v-for="item in assignee"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            <member-select v-model="article.assignee" :planner="planner_id" />
           </el-form-item>
           <el-form-item label="里程碑:">
-            <el-select v-model="extra.assignee" placeholder="请选择">
-              <el-option
-                v-for="item in assignee"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            <milestone-select v-model="article.milestone" :planner="planner_id" />
           </el-form-item>
 
-          <el-form-item label="标签:">
+          <!-- <el-form-item label="标签:">
             <el-select
               v-model="extra.tags"
               multiple
@@ -56,7 +42,7 @@
                 :value="item.value"
               ></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>-->
         </el-form>
       </el-aside>
 
@@ -77,54 +63,23 @@
 </template>
 
 <script>
+import MemberSelect from "@/components/MemberSelect";
+import MilestoneSelect from "@/components/MilestoneSelect";
+
 export default {
   path: "new",
   weight: 10,
   meta: { require_logined: true },
+  components: { MilestoneSelect, MemberSelect },
   data() {
     return {
       article: {
         title: "",
-        content: ""
+        content: "",
+        assignee: null,
+        milestone: null
       },
-      folding: false,
-      extra: {},
-      assignee: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      tags: [
-        {
-          value: "HTML",
-          label: "HTML"
-        },
-        {
-          value: "CSS",
-          label: "CSS"
-        },
-        {
-          value: "JavaScript",
-          label: "JavaScript"
-        }
-      ]
+      folding: false
     };
   },
   computed: {
@@ -158,21 +113,16 @@ export default {
   },
   methods: {
     async summit() {
-      let title = this.article.title.trim();
-      let content = this.article.content;
+      this.article.title = this.article.title.trim();
+      this.articlecontent = this.article.content;
 
-      if (title.length == 0 || content.length == 0) {
+      if (this.article.title.length == 0 || this.article.content.length == 0) {
         this.$message.error("请输入完整的标题和内容后再提交");
-
         return;
       }
-
       await this.$store.dispatch("backlogs_create", {
         planner: this.planner_id,
-        data: {
-          title,
-          content
-        }
+        data: this.article
       });
 
       this.$message.success("创建成功");
