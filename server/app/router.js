@@ -35,5 +35,15 @@ module.exports = function (app)
     router.post("/api/planner/:planner/backlogs/:backlogs", logined, in_project, app.controller.backlogs.update)
     router.delete("/api/planner/:planner/backlogs/:backlogs", logined, in_project, app.controller.backlogs.destroy)
 
+    router.get("/api/planner/:planner/boards", logined, in_project, app.controller.boards.list)
+    router.get("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.col_detail)
+    router.put("/api/planner/:planner/boards", logined, in_project, app.controller.boards.create)
+    router.post("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.update)
+    router.delete("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.destroy)
+
+    router.put("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.create_note)
+    router.post("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.update_note)
+    router.delete("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.destroy_note)
+
 
 }

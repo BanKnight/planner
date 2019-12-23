@@ -1,16 +1,18 @@
 <template>
   <el-container class="note-col">
     <el-header
-      :class="{'note-col-head':true,'moveable':!editing_name}"
+      :class="{'note-col-head':true,'moveable':!editing}"
       height="24px"
       style="cursor:move;min-width:250px"
       @dblclick.native="edit_name"
     >
-      <template v-if="editing_name == null">
-        <i class="el-icon-mobile">{{value.title}}</i>
+      <template v-if="!editing">
+        <i class="el-icon-mobile">{{title}}</i>
 
         <span>
           <i class="el-icon-more" style="cursor:pointer"></i>
+          <i class="el-icon-refresh" style="cursor:pointer"></i>
+
           <i class="el-icon-plus" @click="adding = !adding" style="cursor:pointer"></i>
         </span>
       </template>
@@ -18,16 +20,16 @@
         <el-input
           ref="editing_name"
           autofocus
-          v-model="editing_name"
+          v-model="editing_form.name"
           class="no-border-input"
-          @blur="editing_name=null"
+          @blur="editing=false"
         ></el-input>
       </template>
     </el-header>
 
     <el-container class="scroll-if-need">
-      <draggable :list="value.notes" group="note" handle=".note-card-head" ghostClass="ghost">
-        <note-card v-for="(note) in value.notes" :key="note.id" :value="note"></note-card>
+      <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
+        <note-card v-for="(note) in curr" :key="note.id" :value="note"></note-card>
       </draggable>
 
       <el-main v-if="adding" style="padding:10px 0;width:fit-content">
@@ -50,17 +52,43 @@ import NoteCard from "./NoteCard";
 export default {
   components: { NoteCard, draggable },
   props: {
-    value: Object
+    planner: String,
+    col: String
   },
   data() {
     return {
-      editing_name: null,
-      adding: false
+      title: "",
+      curr: [],
+      adding: false,
+      loading: false,
+      editing: false,
+      editing_form: {
+        title: ""
+      }
     };
   },
+  mounted() {
+    this.fetch();
+  },
   methods: {
+    async fetch() {
+      this.loading = true;
+      this.curr = [];
+
+      let col = await this.$store.dispatch("boards_col_detail", {
+        planner: this.planner,
+        col: this.col
+      });
+
+      this.title = col.title;
+
+      for (let one of col.curr) {
+        this.curr.push(one);
+      }
+    },
     edit_name() {
-      this.editing_name = this.value.title;
+      this.editing = true;
+      this.editing_form.title = this.title;
       this.$nextTick(() => {
         this.$refs.editing_name.focus();
       });
@@ -92,7 +120,11 @@ export default {
   color: white;
 }
 .note-col-head i {
-  margin-right: 10px;
+  margin-right: 5px;
+}
+
+.note-col-head i:last-child {
+  margin-right: 0;
 }
 
 .note-col-body {

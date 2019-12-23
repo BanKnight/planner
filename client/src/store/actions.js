@@ -84,5 +84,44 @@ export default {
         await Vue.axios.post(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`, payload.data)
     },
 
+    //-----------------------
+    async boards_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/boards`, payload)
+    },
 
+    async boards_col_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/boards/${payload.col}`)
+    },
+
+    async boards_create(context, payload)
+    {
+        return await Vue.axios.put(`/api/planner/${payload.planner}/boards`, payload.data)
+    },
+
+    async boards_destroy(context, payload)
+    {
+        return await Vue.axios.delete(`/api/planner/${payload.planner}/boards/${payload.col}`)
+    },
+
+    async boards_update(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/boards/${payload.col}`, payload.data)
+    },
+    //-----------------------
+    async note_create(context, payload)
+    {
+        return await Vue.axios.put(`/api/planner/${payload.planner}/boards/${payload.col}`, payload.data)
+    },
+
+    async note_destroy(context, payload)
+    {
+        return await Vue.axios.delete(`/api/planner/${payload.planner}/boards/${payload.col}`)
+    },
+
+    async note_update(context, payload)
+    {
+        await Vue.axios.post(`/api/planner/${payload.planner}/boards/${payload.col}/${payload.note}`, payload.data)
+    },
 }

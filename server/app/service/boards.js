@@ -1,4 +1,5 @@
 const shortid = require('shortid')
+const extend = require("extend2")
 const { Service } = require("../core")
 
 module.exports = class Current extends Service
@@ -21,6 +22,8 @@ module.exports = class Current extends Service
             this.planners[one._id] = one
 
             const cols = await this.app.db.load("planner.boards.cols", { planner: one._id })
+
+            one.cols = {}
 
             for (let col of cols)
             {
@@ -58,6 +61,7 @@ module.exports = class Current extends Service
             curr: [],                //当前
             notes: {},               //所有
             created: Date.now(),
+            updated: Date.now(),
         }
 
         this.add_col(planner, col)
@@ -85,6 +89,19 @@ module.exports = class Current extends Service
 
         this.app.delete("planner.boards.cols", one._id)
         this.app.delete_cond("planner.boards.notes", { col: one._id })
+
+        return col
+    }
+
+    update_col(one, option)
+    {
+        delete option._id
+
+        extend(one, option)
+
+        one.updated = Date.now()
+
+        this.save_col(col)
     }
 
     /**
@@ -92,6 +109,7 @@ module.exports = class Current extends Service
      *  col:
      *  title:          //可选
      *  author:
+     *  planner:
      * }
      *
      * @param {*} option
@@ -104,10 +122,13 @@ module.exports = class Current extends Service
             return false
         }
 
+        col.updated = Date.now()
+
         let note = {
             _id: shortid.generate(),
             ...option,
             created: Date.now(),
+            updated: Date.now(),
         }
 
         this.add_note(col, note)
@@ -115,6 +136,37 @@ module.exports = class Current extends Service
         this.save_note(note)
 
         this.save_col(col)
+    }
+
+    update_note(note, option)
+    {
+        delete option._id
+
+        let is_closed = note.closed
+        let col = this.cols[note.col]
+
+        extend(note, option)
+
+        if (option.closed == false)
+        {
+            note.closed = null
+        }
+        else if (!is_closed)
+        {
+            let index = col.curr.indexOf(note._id)
+            if (index >= 0)
+            {
+                col.curr.splice(index)
+            }
+
+            note.closed = Date.now()
+        }
+
+        note.updated = Date.now()
+
+        this.save_col(col)
+
+        this.save_note(note)
     }
 
     destroy_note(id)
@@ -135,12 +187,11 @@ module.exports = class Current extends Service
         let one = {
             _id: id,
             curr: [],        //当前在用的，里面放的是 id
-            cols: {}         //所有col，包括curr中的，放的是对象
+            cols: {},         //所有col，包括curr中的，放的是对象
+            created: Date.now()
         }
 
-        this.planners[one.planner] = one
-
-        this.save_planner(one)
+        this.planners[id] = one
 
         return one
     }
@@ -192,7 +243,7 @@ module.exports = class Current extends Service
 
     get_col(id)
     {
-        return this.ids[id]
+        return this.cols[id]
     }
 
     get_planner(id)

@@ -1,5 +1,5 @@
 <template>
-  <layout>
+  <el-container style="padding:10px">
     <el-container class="scroll-if-need full">
       <draggable
         :list="cols"
@@ -7,15 +7,14 @@
         ghostClass="ghost"
         class="col-layout el-row el-row--flex"
       >
-        <note-col v-for="col in cols" :key="col.id" :value="col" />
-        <el-button icon="el-icon-plus"></el-button>
+        <note-col v-for="col in cols" :key="col" :planner="planner_id" :col="col" />
       </draggable>
+      <el-button style="margin-left:10px;width:200px" plain icon="el-icon-plus" @click="add_col"></el-button>
     </el-container>
-  </layout>
+  </el-container>
 </template>
 
 <script>
-import layout from "../layout";
 import NoteCol from "@/components/NoteCol";
 import draggable from "vuedraggable";
 
@@ -24,35 +23,56 @@ export default {
   weight: 8,
   meta: { menu_title: "开发", require_logined: true },
 
-  components: { layout, NoteCol, draggable },
+  components: { NoteCol, draggable },
   data() {
     return {
       cols: [],
       drag: false
     };
   },
+  computed: {
+    planner_id() {
+      return this.$route.params.id;
+    }
+  },
   mounted() {
-    setTimeout(() => {
-      for (let i = 1; i < 6; ++i) {
-        let one = {
-          id: i,
-          title: `标题${i}`,
-          notes: []
-        };
+    this.fetch();
+  },
+  methods: {
+    async fetch() {
+      let data = await this.$store.dispatch("boards_list", {
+        planner: this.planner_id
+      });
 
-        let notes_count = Math.floor(Math.random() * 10000) % 10;
-
-        for (let j = 1; j < notes_count; ++j) {
-          one.notes.push({
-            id: `${i}:${j}`,
-            title: `${i}:${j} title`,
-            body: "note body"
-          });
-        }
-
-        this.cols.push(one);
+      for (let one of data) {
+        this.cols.push(one); //全部都是id
       }
-    }, 300);
+    },
+    async add_col() {
+      let title;
+      try {
+        title = await this.$prompt("输入标题", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消"
+        });
+      } catch (e) {
+        return;
+      }
+
+      let resp = await this.$store.dispatch("boards_create", {
+        planner: this.planner_id,
+        data: {
+          title: title.value
+        }
+      });
+
+      this.cols.push(resp._id);
+
+      this.$message({
+        type: "success",
+        message: "创建成功"
+      });
+    }
   }
 };
 </script>
