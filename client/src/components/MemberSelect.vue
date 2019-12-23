@@ -7,6 +7,7 @@
     clearable
     :multiple="multiple"
     :disabled="disabled"
+    :size="size"
     placeholder="请输入名称"
     value-key="_id"
     :loading="loading"
@@ -26,6 +27,7 @@ export default {
   },
   props: {
     value: [String, Array],
+    size: String,
     planner: {
       type: String,
       required: true

@@ -11,7 +11,7 @@
 
         <span>
           <i class="el-icon-more" style="cursor:pointer"></i>
-          <i class="el-icon-refresh" style="cursor:pointer"></i>
+          <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>
 
           <i class="el-icon-plus" @click="adding = !adding" style="cursor:pointer"></i>
         </span>
@@ -20,26 +20,20 @@
         <el-input
           ref="editing_name"
           autofocus
-          v-model="editing_form.name"
+          v-model="editing_form.title"
           class="no-border-input"
           @blur="editing=false"
         ></el-input>
       </template>
     </el-header>
 
-    <el-container class="scroll-if-need">
+    <el-container class="scroll-if-need full" v-loading="loading">
       <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
         <note-card v-for="(note) in curr" :key="note.id" :value="note"></note-card>
       </draggable>
 
       <el-main v-if="adding" style="padding:10px 0;width:fit-content">
-        <el-card shadow="never">
-          <el-form label-width="auto" label-position="left">
-            <el-form-item label="标题:">
-              <el-input size="mini" />
-            </el-form-item>
-          </el-form>
-        </el-card>
+        <note :planner="planner" :col="col" />
       </el-main>
     </el-container>
   </el-container>
@@ -48,9 +42,10 @@
 <script>
 import draggable from "vuedraggable";
 import NoteCard from "./NoteCard";
+import Note from "@/components/Note";
 
 export default {
-  components: { NoteCard, draggable },
+  components: { Note, NoteCard, draggable },
   props: {
     planner: String,
     col: String
@@ -71,6 +66,11 @@ export default {
     this.fetch();
   },
   methods: {
+    refresh() {
+      this.adding = false;
+      this.editing = false;
+      this.fetch();
+    },
     async fetch() {
       this.loading = true;
       this.curr = [];
@@ -85,6 +85,7 @@ export default {
       for (let one of col.curr) {
         this.curr.push(one);
       }
+      this.loading = false;
     },
     edit_name() {
       this.editing = true;
@@ -133,10 +134,5 @@ export default {
 
 .note-col:last-child {
   margin-right: 0;
-}
-
-.no-border-input input {
-  border: none;
-  border-radius: 4px;
 }
 </style>

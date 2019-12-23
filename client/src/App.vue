@@ -143,4 +143,18 @@ p {
 .el-table .danger-row {
   background: #ff572229;
 }
+
+.no-border-input input {
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  padding: 0;
+}
+
+.no-border-input textarea {
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  padding: 0;
+}
 </style>
