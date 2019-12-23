@@ -117,7 +117,7 @@ p {
 
 .ghost {
   opacity: 0.8;
-  background: #c8ebfb;
+  background: #bfdcb9;
 }
 
 .el-tag {

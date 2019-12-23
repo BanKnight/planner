@@ -2,14 +2,13 @@
   <layout>
     <el-container class="scroll-if-need full">
       <draggable
-        style="width:fit-content;min-height:100%;"
         :list="cols"
-        handle=".note-col-head .el-icon-rank"
+        handle=".note-col-head.moveable"
         ghostClass="ghost"
+        class="col-layout el-row el-row--flex"
       >
-        <transition-group tag="div" class="el-row el-row--flex full">
-          <note-col class="full-height" v-for="col in cols" :key="col.id" :value="col" />
-        </transition-group>
+        <note-col v-for="col in cols" :key="col.id" :value="col" />
+        <el-button icon="el-icon-plus"></el-button>
       </draggable>
     </el-container>
   </layout>
@@ -57,3 +56,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.col-layout {
+  height: 100%;
+  flex-shrink: 0;
+}
+</style>

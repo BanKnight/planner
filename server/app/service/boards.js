@@ -55,6 +55,8 @@ module.exports = class Current extends Service
         let col = {
             _id: shortid.generate(),
             ...option,
+            curr: [],                //当前
+            notes: {},               //所有
             created: Date.now(),
         }
 
@@ -145,9 +147,6 @@ module.exports = class Current extends Service
 
     add_col(planner, col)
     {
-        col.notes = {}
-        col.curr = col.curr || []
-
         this.cols[col._id] = col
 
         planner.cols[col._id] = col

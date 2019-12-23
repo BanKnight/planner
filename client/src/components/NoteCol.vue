@@ -1,14 +1,44 @@
 <template>
   <el-container class="note-col">
-    <el-header class="note-col-head" height="22px">
-      <h4 class="el-icon-mobile" style="cursor:pointer">{{value.title}}</h4>
-    </el-header>
-    <el-button icon="el-icon-plus" style="margin: 10px 0"></el-button>
+    <el-header
+      :class="{'note-col-head':true,'moveable':!editing_name}"
+      height="24px"
+      style="cursor:move;min-width:250px"
+      @dblclick.native="edit_name"
+    >
+      <template v-if="editing_name == null">
+        <i class="el-icon-mobile">{{value.title}}</i>
 
-    <el-container direction="vertical" class="note-col-body scroll-if-need">
+        <span>
+          <i class="el-icon-more" style="cursor:pointer"></i>
+          <i class="el-icon-plus" @click="adding = !adding" style="cursor:pointer"></i>
+        </span>
+      </template>
+      <template v-else>
+        <el-input
+          ref="editing_name"
+          autofocus
+          v-model="editing_name"
+          class="no-border-input"
+          @blur="editing_name=null"
+        ></el-input>
+      </template>
+    </el-header>
+
+    <el-container class="scroll-if-need">
       <draggable :list="value.notes" group="note" handle=".note-card-head" ghostClass="ghost">
         <note-card v-for="(note) in value.notes" :key="note.id" :value="note"></note-card>
       </draggable>
+
+      <el-main v-if="adding" style="padding:10px 0;width:fit-content">
+        <el-card shadow="never">
+          <el-form label-width="auto" label-position="left">
+            <el-form-item label="标题:">
+              <el-input size="mini" />
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -21,29 +51,48 @@ export default {
   components: { NoteCard, draggable },
   props: {
     value: Object
+  },
+  data() {
+    return {
+      editing_name: null,
+      adding: false
+    };
+  },
+  methods: {
+    edit_name() {
+      this.editing_name = this.value.title;
+      this.$nextTick(() => {
+        this.$refs.editing_name.focus();
+      });
+    }
   }
 };
 </script>
 
 <style>
 .note-col {
-  width: 250px;
   -webkit-transition: 0.3s;
   transition: 0.3s;
+  min-width: 250px;
+  width: auto;
+  height: 100%;
   margin-right: 10px;
 }
 
 .note-col-head {
   overflow: hidden;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   background-color: #75b367;
   background-image: linear-gradient(to right, #75b367, #bfdcb9);
 
-  border: 1px solid #ebeef5;
+  border: 1px solid #dcdfe6;
   border-radius: 4px;
   color: white;
+}
+.note-col-head i {
+  margin-right: 10px;
 }
 
 .note-col-body {
@@ -52,5 +101,10 @@ export default {
 
 .note-col:last-child {
   margin-right: 0;
+}
+
+.no-border-input input {
+  border: none;
+  border-radius: 4px;
 }
 </style>

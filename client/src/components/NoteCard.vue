@@ -21,28 +21,25 @@ export default {
 <style>
 .note-card {
   border-radius: 4px;
-  border: 1px solid #ebeef5;
+  border: 1px solid #dcdfe6;
   background-color: #ffffff;
   overflow: hidden;
   color: #303133;
   -webkit-transition: 0.3s;
   transition: 0.3s;
-  padding: 5px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  width: 250px;
 }
 
-.note-card:last-child {
-  margin-bottom: 0;
-}
-
-.note-card-head {
+header.note-card-head {
   overflow: hidden;
-  padding: 0 5px;
-  border-bottom: 1px solid #ebeef5;
+  padding: 0 10px;
+  border-bottom: 1px solid #dcdfe6;
+  background-color: #eff5ed;
   width: 100%;
 }
 
 .note-card-body {
-  padding: 5px;
+  padding: 10px;
 }
 </style>
