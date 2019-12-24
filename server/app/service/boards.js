@@ -213,7 +213,6 @@ module.exports = class Current extends Service
         }
 
         planner.curr.push(col._id)
-
     }
 
     del_col(planner, col)

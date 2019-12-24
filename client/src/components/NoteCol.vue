@@ -151,7 +151,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #75b367;
+  background-color: #8ea29e;
 
   border: 1px solid #dcdfe6;
   border-radius: 4px;

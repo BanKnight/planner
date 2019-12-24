@@ -12,15 +12,12 @@
         </draggable>
       </el-container>
 
-      <el-aside width="auto">
-        <el-button
-          style="margin-left:10px;width:50px;height:100%"
-          plain
-          size="mini"
-          icon="el-icon-plus"
-          @click="add_col"
-        ></el-button>
-      </el-aside>
+      <el-button
+        style="height:50px;width:50px;color:white;background-color: #8ea29e;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);"
+        size="mini"
+        icon="el-icon-plus"
+        @click="add_col"
+      ></el-button>
     </el-container>
   </el-main>
 </template>
