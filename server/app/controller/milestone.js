@@ -144,4 +144,24 @@ module.exports = class Current extends Controller
         ctx.body = {}
 
     }
+
+    detail()
+    {
+        const { ctx, service } = this
+
+        const current = service.milestone
+
+        const stone = ctx.params.milestone
+
+        if (stone == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "milestone id required"
+            }
+            return
+        }
+
+        ctx.body = current.get(ctx.params.milestone)
+    }
 }

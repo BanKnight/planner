@@ -1,17 +1,28 @@
 <template>
   <el-container class="note-card">
     <el-header class="note-card-head" height="fit-content">
-      <span style="cursor:pointer">{{value.title}}</span>
+      <span>{{value.title}}</span>
+      <el-button size="mini" type="text" icon="el-icon-more" @click="$emit('edit',value)" />
     </el-header>
+    <el-main
+      v-if="value.content && value.content.length > 0"
+      class="note-card-body markdown-body"
+      v-html="$md(value.content)"
+    ></el-main>
 
-    <el-main class="note-card-body">
-      <p>{{value.body}}</p>
-    </el-main>
+    <el-footer class="note-card-footer el-row el-row--flex" height="fit-content">
+      <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
+      <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
+    </el-footer>
   </el-container>
 </template>
 
 <script>
+import MemberPreview from "./MemberPreview";
+import MilestonePreview from "./MilestonePreview";
+
 export default {
+  components: { MemberPreview, MilestonePreview },
   props: {
     value: Object
   }
@@ -21,7 +32,7 @@ export default {
 <style>
 .note-card {
   border-radius: 4px;
-  border: 1px solid #dcdfe6;
+  border: 1px dashed #75b367;
   background-color: #ffffff;
   overflow: hidden;
   color: #303133;
@@ -32,14 +43,24 @@ export default {
 }
 
 header.note-card-head {
+  cursor: move;
+
+  display: flex;
   overflow: hidden;
   padding: 0 10px;
-  border-bottom: 1px solid #dcdfe6;
-  background-color: #eff5ed;
   width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.note-card-body {
+main.note-card-body {
   padding: 10px;
+  background-color: #f4f5f5;
+}
+
+.note-card-footer {
+  border-top: 1px solid #f5f6f8;
+  justify-content: start;
+  align-items: center;
 }
 </style>

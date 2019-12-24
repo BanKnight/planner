@@ -12,6 +12,7 @@ module.exports = function (app)
 
     router.post("/api/user/login", app.controller.user.login)
     router.post("/api/user/regist", app.controller.user.regist)
+    router.post("/api/user/search", logined, app.controller.user.search)
     router.get("/api/user/:user", logined, app.controller.user.detail)
 
     router.get("/api/planner", logined, app.controller.planner.list)
@@ -27,6 +28,7 @@ module.exports = function (app)
     router.get("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.list)
     router.put("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.create)
     router.post("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.update)
+    router.get("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.detail)
     router.delete("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.destroy)
 
     router.get("/api/planner/:planner/backlogs", logined, in_project, app.controller.backlogs.list)

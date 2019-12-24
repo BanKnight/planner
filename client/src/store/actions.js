@@ -5,14 +5,21 @@ export default {
 
     async login(context, payload)
     {
-        await Vue.axios.post("/api/user/login", payload)
+        return await Vue.axios.post("/api/user/login", payload)
     },
 
     async regist(context, payload)
     {
-        await Vue.axios.post("/api/user/regist", payload)
+        return await Vue.axios.post("/api/user/regist", payload)
     },
 
+    /**
+     * payload = ["",""]
+     */
+    async user_search(context, payload)
+    {
+        return await Vue.axios.post("/api/user/search", payload)
+    },
     //-----------------------
     async planner_list(context, payload)
     {
@@ -41,6 +48,11 @@ export default {
     async milestone_list(context, payload)
     {
         return await Vue.axios.get(`/api/planner/${payload.planner}/milestone`, payload)
+    },
+
+    async milestone_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/milestone/${payload.milestone}`)
     },
 
     async milestone_create(context, payload)

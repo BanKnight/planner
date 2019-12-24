@@ -160,6 +160,16 @@ module.exports = class Current extends Controller
         body.col = ctx.params.col
         body.planner = ctx.params.planner
 
+        if (body.start)
+        {
+            body.start = new Date(body.start)
+        }
+
+        if (body.stop)
+        {
+            body.stop = new Date(body.stop)
+        }
+
         const note = current.create_note(body)
 
         ctx.body = { _id: note._id }

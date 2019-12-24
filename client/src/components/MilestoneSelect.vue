@@ -34,31 +34,52 @@ export default {
     value: String,
     disabled: Boolean
   },
-  async mounted() {
+  mounted() {
     this.current = this.value;
-    this.loading = true;
 
-    for (let curr = 1; curr < 100; ++curr) {
-      let page_info = await this.$store.dispatch("milestone_list", {
-        planner: this.planner,
-        params: {
-          curr: curr,
-          closed: false
-        }
-      });
-
-      for (let one of page_info.data) {
-        this.options.push(one);
-      }
-
-      if (page_info.count == curr) {
-        break;
-      }
+    this.init_options();
+  },
+  watch: {
+    value() {
+      this.current = this.value;
+    },
+    planner() {
+      this.init_options();
     }
-
-    this.loading = false;
   },
   methods: {
+    async init_options() {
+      if (this.loading == true) {
+        return;
+      }
+
+      if (this.planner == null) {
+        return;
+      }
+
+      this.loading = true;
+      this.options = [];
+
+      for (let curr = 1; curr < 100; ++curr) {
+        let page_info = await this.$store.dispatch("milestone_list", {
+          planner: this.planner,
+          params: {
+            curr: curr,
+            closed: false
+          }
+        });
+
+        for (let one of page_info.data) {
+          this.options.push(one);
+        }
+
+        if (page_info.count == curr) {
+          break;
+        }
+      }
+
+      this.loading = false;
+    },
     input(value) {
       this.current = value;
       this.$emit("input", value);

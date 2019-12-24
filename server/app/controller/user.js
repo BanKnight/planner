@@ -99,6 +99,31 @@ module.exports = class Current extends Controller
 
     }
 
+    search()
+    {
+        const { ctx, service } = this
+
+        const current = service.user
+
+        const body = ctx.request.body
+
+        const resp = []
+
+        for (let user_id of body)
+        {
+            let user = current.get(user_id)
+            if (user)
+            {
+                resp.push({
+                    _id: user._id,
+                    name: user.name,
+                })
+            }
+        }
+
+        ctx.body = resp
+    }
+
     detail()
     {
         const { ctx, service } = this

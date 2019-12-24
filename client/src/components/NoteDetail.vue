@@ -4,20 +4,20 @@
       height="auto"
       style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
     >
-      <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
-      <el-button size="mini" icon="el-icon-upload" @click="save">保存</el-button>
-
-      <el-input style="margin-left:10px" placeholder="标题" size="mini" v-model="form.title" />
+      <el-button-group>
+        <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
+        <el-button size="mini" icon="el-icon-upload" @click="save">保存</el-button>
+      </el-button-group>
     </el-header>
 
     <el-container class="full scroll-if-need">
       <el-aside width="180px" class="el-card" style="margin-right:10px;padding:10px">
         <el-form label-position="top" label-width="auto">
           <el-form-item label="指派:">
-            <member-select v-model="form.assignee" :planner="planner" />
+            <member-select v-model="form.assignee" :planner="value.planner" />
           </el-form-item>
           <el-form-item label="里程碑:">
-            <milestone-select v-model="form.milestone" :planner="planner" />
+            <milestone-select v-model="form.milestone" :planner="value.planner" />
           </el-form-item>
           <el-form-item label="开始时间:">
             <el-date-picker
@@ -42,6 +42,9 @@
       <el-container class="el-card" style="min-width:520px;padding:10px">
         <el-form label-position="top" label-width="auto" class="full">
           <el-form-item>
+            <el-input class="no-border-input" placeholder="标题" v-model="form.title" />
+          </el-form-item>
+          <el-form-item>
             <el-input
               type="textarea"
               :autosize="{minRows:10}"
@@ -64,38 +67,40 @@ export default {
   components: { MemberSelect, MilestoneSelect },
   props: {
     planner: String,
-    col: String
+    value: Object
   },
   data() {
     return {
       editable: false,
-      form: {
-        title: "",
-        assignee: "",
-        milestone: "",
-        start: null,
-        stop: null,
-        content: ""
-      }
+      form: {}
     };
   },
-  computed: {
-    options() {
-      return {
-        imagelink: true, // 图片链接
-        fullscreen: true, // 全屏编辑
-        undo: true, // 上一步
-        redo: true, // 下一步
-        trash: true, // 清空
-        table: true, // 表格
 
-        save: true, // 保存（触发events中的save事件）,
-        subfield: true, // 单双栏模式
-        preview: true // 预览
-      };
+  mounted() {
+    this.init();
+  },
+  watch: {
+    value() {
+      this.init();
     }
   },
   methods: {
+    init() {
+      this.form = {
+        title: "",
+        content: "",
+        assignee: "",
+        milestone: "",
+        start: null,
+        stop: null
+      };
+
+      for (let name in this.form) {
+        this.form[name] = this.value[name] || this.form[name];
+      }
+
+      console.log(this.form);
+    },
     cancel() {
       this.$emit("cancel");
     },

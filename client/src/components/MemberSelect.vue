@@ -39,12 +39,34 @@ export default {
     disabled: Boolean
   },
   async mounted() {
-    this.current = this.value;
-    this.loading = true;
-    this.options = await this.$store.dispatch("member_list", this.planner);
-    this.loading = false;
+    this.init_value();
+    this.init_options();
+  },
+  watch: {
+    value(new_val) {
+      this.current = new_val;
+    },
+    planner() {
+      this.init_options();
+    }
   },
   methods: {
+    async init_value() {
+      this.current = this.value;
+    },
+    async init_options() {
+      if (this.planner == null) {
+        this.options = [];
+        return;
+      }
+
+      this.loading = true;
+      this.options = await this.$store.dispatch("member_list", this.planner);
+      this.loading = false;
+
+      console.log(this.options);
+      console.log(this.current);
+    },
     input(value) {
       this.current = value;
       this.$emit("input", value);
