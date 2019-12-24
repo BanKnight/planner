@@ -137,7 +137,7 @@ module.exports = class Current extends Controller
     create_note()
     {
         const { ctx, service, config } = this
-        const planner = ctx.planner
+        const { user, planner } = ctx
 
         const current = service.boards
 
@@ -157,6 +157,8 @@ module.exports = class Current extends Controller
         body.content = body.content || ""
         body.author = user._id
         body.planner = planner._id
+        body.col = ctx.params.col
+        body.planner = ctx.params.planner
 
         const note = current.create_note(body)
 

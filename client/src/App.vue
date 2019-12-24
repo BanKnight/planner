@@ -157,4 +157,8 @@ p {
   background-color: transparent;
   padding: 0;
 }
+
+.el-form-item {
+  margin-bottom: 5px;
+}
 </style>

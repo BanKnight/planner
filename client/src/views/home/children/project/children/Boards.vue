@@ -1,17 +1,28 @@
 <template>
-  <el-container style="padding:10px">
-    <el-container class="scroll-if-need full">
-      <draggable
-        :list="cols"
-        handle=".note-col-head.moveable"
-        ghostClass="ghost"
-        class="col-layout el-row el-row--flex"
-      >
-        <note-col v-for="col in cols" :key="col" :planner="planner_id" :col="col" />
-      </draggable>
-      <el-button style="margin-left:10px;width:200px" plain icon="el-icon-plus" @click="add_col"></el-button>
+  <el-main class="full" style="padding:10px">
+    <el-container class="full">
+      <el-container class="scroll-if-need">
+        <draggable
+          :list="cols"
+          handle=".note-col-head.moveable"
+          ghostClass="ghost"
+          class="col-layout el-row el-row--flex"
+        >
+          <note-col v-for="col in cols" :key="col" :planner="planner_id" :col="col" />
+        </draggable>
+      </el-container>
+
+      <el-aside width="auto">
+        <el-button
+          style="margin-left:10px;width:50px;height:100%"
+          plain
+          size="mini"
+          icon="el-icon-plus"
+          @click="add_col"
+        ></el-button>
+      </el-aside>
     </el-container>
-  </el-container>
+  </el-main>
 </template>
 
 <script>

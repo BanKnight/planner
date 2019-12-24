@@ -1,5 +1,5 @@
 <template>
-  <el-container class="note-col">
+  <el-container class="note-col full-height">
     <el-header
       :class="{'note-col-head':true,'moveable':!editing}"
       height="24px"
@@ -27,25 +27,29 @@
       </template>
     </el-header>
 
-    <el-container class="scroll-if-need full" v-loading="loading">
-      <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
-        <note-card v-for="(note) in curr" :key="note.id" :value="note"></note-card>
-      </draggable>
+    <el-main v-loading="loading" style="padding:0">
+      <el-container class="full">
+        <el-aside class="scroll-if-need" width="auto">
+          <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
+            <note-card v-for="(note) in curr" :key="note.id" :value="note"></note-card>
+          </draggable>
+        </el-aside>
 
-      <el-main v-if="adding" style="padding:10px 0;width:fit-content">
-        <note :planner="planner" :col="col" />
-      </el-main>
-    </el-container>
+        <el-main v-if="adding" style="margin-left:10px;padding:10px 0;width:fit-content">
+          <new-note :planner="planner" :col="col" @save="add_note" @cancel="adding = false" />
+        </el-main>
+      </el-container>
+    </el-main>
   </el-container>
 </template>
 
 <script>
 import draggable from "vuedraggable";
 import NoteCard from "./NoteCard";
-import Note from "@/components/Note";
+import NewNote from "@/components/NewNote";
 
 export default {
-  components: { Note, NoteCard, draggable },
+  components: { NewNote, NoteCard, draggable },
   props: {
     planner: String,
     col: String
@@ -93,6 +97,15 @@ export default {
       this.$nextTick(() => {
         this.$refs.editing_name.focus();
       });
+    },
+    async add_note(form) {
+      await this.$store.dispatch("note_create", {
+        planner: this.planner,
+        col: this.col,
+        data: form
+      });
+
+      this.refresh();
     }
   }
 };

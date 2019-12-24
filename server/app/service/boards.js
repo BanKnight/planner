@@ -31,6 +31,8 @@ module.exports = class Current extends Service
 
                 const notes = await this.app.db.load("planner.boards.notes", { col: col._id })
 
+                col.notes = {}
+
                 for (let note of notes)
                 {
                     this.add_note(col, note)
@@ -136,6 +138,8 @@ module.exports = class Current extends Service
         this.save_note(note)
 
         this.save_col(col)
+
+        return note
     }
 
     update_note(note, option)
@@ -201,7 +205,15 @@ module.exports = class Current extends Service
         this.cols[col._id] = col
 
         planner.cols[col._id] = col
+
+        let index = planner.curr.indexOf(col._id)
+        if (index >= 0)
+        {
+            return
+        }
+
         planner.curr.push(col._id)
+
     }
 
     del_col(planner, col)
@@ -224,7 +236,12 @@ module.exports = class Current extends Service
     add_note(col, note)
     {
         col.notes[note._id] = note
-        col.curr.push(note._id)
+
+        let index = col.curr.indexOf(col._id)
+        if (index < 0)
+        {
+            col.curr.push(note._id)
+        }
 
         this.notes[note._id] = note
     }

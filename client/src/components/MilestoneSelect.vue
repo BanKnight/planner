@@ -6,7 +6,8 @@
     filterable
     clearable
     :disabled="disabled"
-    placeholder="请输入名称"
+    :size="size"
+    placeholder="请选择里程碑"
     value-key="_id"
     :loading="loading"
   >
@@ -28,6 +29,8 @@ export default {
       type: String,
       required: true
     },
+    size: String,
+
     value: String,
     disabled: Boolean
   },
