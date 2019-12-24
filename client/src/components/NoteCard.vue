@@ -40,6 +40,7 @@ export default {
   transition: 0.3s;
   margin-top: 10px;
   width: 250px;
+  padding: 5px 0;
 }
 
 header.note-card-head {

@@ -4,11 +4,10 @@
       height="auto"
       style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
     >
-      <el-button icon="el-icon-s-fold" @click="folding=!folding" style="margin-right:20px"></el-button>
-
-      <el-input placeholder="请输入标题" v-model="article.title" clearable>
-        <el-button slot="append" type="primary" icon="el-icon-upload" @click="summit">提交</el-button>
-      </el-input>
+      <el-button-group>
+        <el-button icon="el-icon-s-fold" @click="folding=!folding">选项</el-button>
+        <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
+      </el-button-group>
     </el-header>
 
     <el-container class="full scroll-if-need">
@@ -46,7 +45,9 @@
         </el-form>
       </el-aside>
 
-      <el-container class="el-card">
+      <el-container class="el-card" direction="vertical">
+        <el-input placeholder="请输入标题" v-model="article.title" clearable />
+
         <mavon-editor
           v-model="article.content"
           @save="summit"

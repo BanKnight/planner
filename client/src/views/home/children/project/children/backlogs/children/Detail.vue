@@ -1,24 +1,17 @@
 <template>
   <el-container class="full">
-    <el-header
-      height="auto"
-      style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
-    >
+    <el-header height="auto" style="padding:0;margin-bottom:10px">
       <template v-if="editing">
-        <el-button icon="el-icon-back" @click="editing=false" style="margin-right:20px"></el-button>
-
-        <el-input placeholder="请输入标题" v-model="article.title" clearable>
-          <el-button slot="append" type="primary" icon="el-icon-upload" @click="summit">提交</el-button>
-        </el-input>
+        <el-button-group>
+          <el-button icon="el-icon-close" @click="editing=false">取消</el-button>
+          <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
+        </el-button-group>
       </template>
 
       <template v-else>
-        <el-button icon="el-icon-s-fold" @click="folding=!folding" style="margin-right:20px"></el-button>
-
-        <h2>{{article.title}}</h2>
-
         <el-button-group>
-          <el-button icon="el-icon-edit" @click="editing = !editing" />
+          <el-button icon="el-icon-s-fold" @click="folding=!folding">选项</el-button>
+          <el-button icon="el-icon-edit" @click="editing = !editing">编辑</el-button>
         </el-button-group>
       </template>
     </el-header>
@@ -62,7 +55,11 @@
         </el-form>
       </el-aside>
 
-      <el-container class="el-card">
+      <el-container class="el-card" direction="vertical">
+        <div v-if="!editing" style="text-align:center;">
+          <h2>{{article.title}}</h2>
+        </div>
+        <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
         <mavon-editor
           v-model="article.content"
           :boxShadow="false"
@@ -114,7 +111,6 @@ export default {
           trash: true, // 清空
           table: true, // 表格
 
-          save: true, // 保存（触发events中的save事件）,
           subfield: true, // 单双栏模式
           preview: true // 预览
         };

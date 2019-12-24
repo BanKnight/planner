@@ -36,7 +36,7 @@
         <el-aside v-if="!adding" class="scroll-if-need" width="auto">
           <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
             <note-card
-              v-for="(note) in curr"
+              v-for="note in curr"
               :class="{editing:note == editing_note}"
               :key="note.id"
               :value="note"
@@ -45,7 +45,7 @@
           </draggable>
         </el-aside>
 
-        <el-main v-else style="margin-left:10px;padding:10px 0;width:fit-content">
+        <el-main v-else style="padding:10px 0;width:fit-content">
           <new-note :planner="planner" :col="col" @save="add_note" @cancel="adding = false" />
         </el-main>
 
@@ -106,6 +106,9 @@ export default {
       for (let one of col.curr) {
         this.curr.push(one);
       }
+
+      console.log(this.curr);
+
       this.loading = false;
     },
     edit_name() {
@@ -149,7 +152,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   background-color: #75b367;
-  background-image: linear-gradient(to right, #75b367, #bfdcb9);
 
   border: 1px solid #dcdfe6;
   border-radius: 4px;

@@ -237,10 +237,10 @@ module.exports = class Current extends Service
     {
         col.notes[note._id] = note
 
-        let index = col.curr.indexOf(col._id)
+        let index = col.curr.indexOf(note._id)
         if (index < 0)
         {
-            col.curr.push(note._id)
+            col.curr.unshift(note._id)
         }
 
         this.notes[note._id] = note

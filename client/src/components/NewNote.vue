@@ -1,13 +1,10 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-header
-      height="auto"
-      style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
-    >
-      <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
-      <el-button size="mini" icon="el-icon-upload" @click="save">保存</el-button>
-
-      <el-input style="margin-left:10px" placeholder="标题" size="mini" v-model="form.title" />
+    <el-header height="auto" style="padding:0;margin-bottom:10px">
+      <el-button-group>
+        <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
+      </el-button-group>
     </el-header>
 
     <el-container class="full scroll-if-need">
@@ -39,18 +36,22 @@
         </el-form>
       </el-aside>
 
-      <el-container class="el-card" style="min-width:520px;padding:10px">
-        <el-form label-position="top" label-width="auto" class="full">
-          <el-form-item>
-            <el-input
-              type="textarea"
-              :autosize="{minRows:10}"
-              placeholder="请输入内容"
-              v-model="form.content"
-              class="no-border-input"
-            ></el-input>
-          </el-form-item>
-        </el-form>
+      <el-container class="el-card" style="width:100%" direction="vertical">
+        <el-input placeholder="标题" v-model="form.title" />
+
+        <mavon-editor
+          v-model="form.content"
+          :boxShadow="false"
+          :ishljs="false"
+          :subfield="false"
+          :editable="true"
+          :toolbarsFlag="true"
+          defaultOpen="edit"
+          :toolbars="options"
+          toolbarsBackground="#f0f9eb"
+          class="full"
+          style="border:none"
+        />
       </el-container>
     </el-container>
   </el-container>
@@ -83,14 +84,7 @@ export default {
     options() {
       return {
         imagelink: true, // 图片链接
-        fullscreen: true, // 全屏编辑
-        undo: true, // 上一步
-        redo: true, // 下一步
-        trash: true, // 清空
         table: true, // 表格
-
-        save: true, // 保存（触发events中的save事件）,
-        subfield: true, // 单双栏模式
         preview: true // 预览
       };
     }
