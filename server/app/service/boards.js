@@ -106,6 +106,29 @@ module.exports = class Current extends Service
         this.save_col(one)
     }
 
+    move(planner_id, option)
+    {
+        let planner = this.get_planner(planner_id)
+        if (planner == null)
+        {
+            return false
+        }
+
+        let from_id = planner.curr[option.from]
+
+        if (from_id == null || planner.curr[option.to] == null)
+        {
+            return false
+        }
+
+        planner.curr.splice(option.from, 1)
+        planner.curr.splice(option.to, 0, from_id)
+
+        this.save_planner(planner)
+
+        return true
+    }
+
     /**
      * option = {
      *  col:

@@ -122,9 +122,9 @@ export default {
         return await Vue.axios.post(`/api/planner/${payload.planner}/boards/${payload.col}`, payload.data)
     },
 
-    async boards_swap(context, payload)
+    async boards_move(context, payload)
     {
-        return await Vue.axios.post(`/api/planner/${payload.planner}/boards/swap`, payload.data)
+        return await Vue.axios.post(`/api/planner/${payload.planner}/boards/move`, payload.data)
     },
 
     //-----------------------

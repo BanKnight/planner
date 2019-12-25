@@ -42,8 +42,7 @@ export default {
   components: { NoteCol, draggable },
   data() {
     return {
-      cols: [],
-      drag: false
+      cols: []
     };
   },
   computed: {
@@ -52,10 +51,12 @@ export default {
     }
   },
   mounted() {
-    this.fetch();
+    this.refresh();
   },
   methods: {
-    async fetch() {
+    async refresh() {
+      this.cols = [];
+
       let data = await this.$store.dispatch("boards_list", {
         planner: this.planner_id
       });
@@ -97,20 +98,28 @@ export default {
 
       this.cols.splice(this.cols.indexOf(col), 1);
     },
-    on_drag_end(evt) {
+
+    /**
+     * 参考：https://github.com/SortableJS/Sortable#options
+     */
+    async on_drag_end(evt) {
       console.log("on_drag_end", evt.oldIndex, evt.newIndex);
 
       if (evt.oldIndex == evt.newIndex) {
         return;
       }
 
-      // this.$store.dispatch("boards_swap", {
-      //   planner: this.planner_id,
-      //   data: {
-      //     first: evt.oldIndex,
-      //     second: evt.newIndex
-      //   }
-      // });
+      try {
+        await this.$store.dispatch("boards_move", {
+          planner: this.planner_id,
+          data: {
+            from: evt.oldIndex,
+            to: evt.newIndex
+          }
+        });
+      } catch (e) {
+        this.refresh();
+      }
 
       // var itemEl = evt.item;  // dragged HTMLElement
       // 		evt.to;    // target list

@@ -124,15 +124,16 @@ module.exports = class Current extends Controller
         ctx.body = {}
     }
 
-    swap()
+    move()
     {
         const { ctx, service } = this
+        const { planner } = ctx
 
         const current = service.boards
 
         const body = ctx.request.body
 
-        if (body.first == body.second)
+        if (body.from == body.to || body.from == null || body.to == null)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
@@ -140,6 +141,19 @@ module.exports = class Current extends Controller
             }
             return
         }
+
+        let result = current.move(planner._id, body)
+        if (!result)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "swap error"
+            }
+
+            return
+        }
+
+        ctx.body = {}
     }
 
     destroy()
