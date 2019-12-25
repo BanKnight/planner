@@ -124,6 +124,24 @@ module.exports = class Current extends Controller
         ctx.body = {}
     }
 
+    swap()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        const body = ctx.request.body
+
+        if (body.first == body.second)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "two swap index must be different"
+            }
+            return
+        }
+    }
+
     destroy()
     {
         const { ctx, service } = this

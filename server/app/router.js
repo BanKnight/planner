@@ -40,6 +40,7 @@ module.exports = function (app)
     router.get("/api/planner/:planner/boards", logined, in_project, app.controller.boards.list)
     router.get("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.col_detail)
     router.put("/api/planner/:planner/boards", logined, in_project, app.controller.boards.create)
+    router.post("/api/planner/:planner/boards/swap", logined, in_project, app.controller.boards.swap)
     router.post("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.update)
     router.delete("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.destroy)
 

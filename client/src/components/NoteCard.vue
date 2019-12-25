@@ -13,7 +13,7 @@
       <el-button size="mini" type="text" icon="el-icon-more" @click="$emit('edit',value)" />
     </el-header>
 
-    <span>{{value.title}}</span>
+    <i class="el-icon-document">{{value.title}}</i>
 
     <el-main
       v-if="value.content && value.content.length > 0"
@@ -66,8 +66,8 @@ header.note-card-head {
 }
 
 main.note-card-body {
-  padding: 10px;
-  background-color: #f4f5f5;
+  padding: 5px 0 5px 5px;
+  font-size: 0.8em;
 }
 
 .note-card-footer {

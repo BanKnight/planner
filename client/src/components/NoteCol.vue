@@ -36,8 +36,14 @@
 
     <el-main v-loading="loading" style="padding:0">
       <el-container class="full">
-        <el-aside v-if="!adding" class="scroll-if-need" width="auto">
-          <draggable :list="curr" group="note" handle=".note-card-head" ghostClass="ghost">
+        <el-aside v-if="!adding" class="scroll-if-need" width="250px">
+          <draggable
+            :list="curr"
+            group="note"
+            handle=".note-card-head"
+            class="list-group"
+            ghostClass="ghost"
+          >
             <note-card
               v-for="note in curr"
               :class="{editing:note == editing_note}"
@@ -212,5 +218,11 @@ export default {
 .editing {
   border: 2px solid#75b367;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.list-group {
+  width: 100%;
+  min-height: 80px;
+  padding: 0 0 20px 0;
 }
 </style>

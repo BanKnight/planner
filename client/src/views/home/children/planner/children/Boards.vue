@@ -5,8 +5,10 @@
         <draggable
           :list="cols"
           handle=".note-col-head.moveable"
+          draggable=".note-col"
           ghostClass="ghost"
           class="col-layout el-row el-row--flex"
+          @end="on_drag_end"
         >
           <note-col
             v-for="col in cols"
@@ -94,6 +96,31 @@ export default {
       });
 
       this.cols.splice(this.cols.indexOf(col), 1);
+    },
+    on_drag_end(evt) {
+      console.log("on_drag_end", evt.oldIndex, evt.newIndex);
+
+      if (evt.oldIndex == evt.newIndex) {
+        return;
+      }
+
+      // this.$store.dispatch("boards_swap", {
+      //   planner: this.planner_id,
+      //   data: {
+      //     first: evt.oldIndex,
+      //     second: evt.newIndex
+      //   }
+      // });
+
+      // var itemEl = evt.item;  // dragged HTMLElement
+      // 		evt.to;    // target list
+      // 		evt.from;  // previous list
+      // 		evt.oldIndex;  // element's old index within old parent
+      // 		evt.newIndex;  // element's new index within new parent
+      // 		evt.oldDraggableIndex; // element's old index within old parent, only counting draggable elements
+      // 		evt.newDraggableIndex; // element's new index within new parent, only counting draggable elements
+      // 		evt.clone // the clone element
+      // 		evt.pullMode;  // when item is in another sortable: `"clone"` if cloning, `true` if moving
     }
   }
 };

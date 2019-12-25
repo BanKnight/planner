@@ -121,6 +121,12 @@ export default {
     {
         return await Vue.axios.post(`/api/planner/${payload.planner}/boards/${payload.col}`, payload.data)
     },
+
+    async boards_swap(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/boards/swap`, payload.data)
+    },
+
     //-----------------------
     async note_create(context, payload)
     {
