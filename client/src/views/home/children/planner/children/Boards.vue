@@ -110,7 +110,7 @@ export default {
       }
 
       try {
-        await this.$store.dispatch("boards_move", {
+        this.cols = await this.$store.dispatch("boards_move", {
           planner: this.planner_id,
           data: {
             from: evt.oldIndex,

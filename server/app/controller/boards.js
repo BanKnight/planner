@@ -153,7 +153,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        ctx.body = {}
+        ctx.body = result
     }
 
     destroy()

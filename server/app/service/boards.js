@@ -126,7 +126,7 @@ module.exports = class Current extends Service
 
         this.save_planner(planner)
 
-        return true
+        return planner.curr
     }
 
     /**
