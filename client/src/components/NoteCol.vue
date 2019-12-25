@@ -43,6 +43,8 @@
             handle=".note-card-head"
             class="list-group"
             ghostClass="ghost"
+            draggable=".note-card"
+            @end="$emit('drag-card',$event)"
           >
             <note-card
               v-for="note in curr"
