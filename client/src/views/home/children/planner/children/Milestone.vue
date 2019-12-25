@@ -174,7 +174,7 @@ export default {
   },
   computed: {
     planner_id() {
-      return this.$route.params.id;
+      return this.$route.params.planner;
     }
   },
   methods: {

@@ -88,7 +88,7 @@ export default {
       return "el-icon-s-unfold";
     },
     root() {
-      return `/project/${this.$route.params.id}/wiki`;
+      return `/planner/${this.$route.params.planner}/wiki`;
     },
     test_markdown() {
       return this.$md(

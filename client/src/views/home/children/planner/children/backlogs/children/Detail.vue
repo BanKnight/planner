@@ -125,10 +125,10 @@ export default {
       return "el-icon-s-unfold";
     },
     root() {
-      return `/project/${this.planner_id}/backlogs`;
+      return `/planner/${this.planner_id}/backlogs`;
     },
     planner_id() {
-      return this.$route.params.id;
+      return this.$route.params.planner;
     },
     backlogs_id() {
       return this.$route.params.backlogs;

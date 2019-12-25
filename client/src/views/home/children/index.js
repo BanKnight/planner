@@ -1,4 +1,4 @@
-import project from "./project"
+import planner from "./planner"
 
 const files = require.context(".", false, /\.vue$/);
 const children = [];
@@ -13,7 +13,7 @@ files.keys().forEach(key =>
     children.push(mod);
 });
 
-children.push(project)
+children.push(planner)
 
 children.sort((first, second) =>
 {

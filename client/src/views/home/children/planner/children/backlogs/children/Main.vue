@@ -123,13 +123,13 @@ export default {
   },
   computed: {
     root() {
-      return `/project/${this.planner_id}/backlogs`;
+      return `/planner/${this.planner_id}/backlogs`;
     },
     milestone() {
-      return `/project/${this.planner_id}/milestone`;
+      return `/planner/${this.planner_id}/milestone`;
     },
     planner_id() {
-      return this.$route.params.id;
+      return this.$route.params.planner;
     }
   },
   beforeRouteEnter(to, from, next) {

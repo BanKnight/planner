@@ -34,8 +34,8 @@
 import children from "./children";
 
 export default {
-  name: "project",
-  path: "project/:id",
+  name: "planner",
+  path: "planner/:planner",
   weight: 0,
   meta: { require_logined: true },
   components: {},
@@ -59,13 +59,13 @@ export default {
       });
     },
     root() {
-      return `/project/${this.$route.params.id}`;
+      return `/planner/${this.$route.params.planner}`;
     }
   },
   methods: {
     async fetch() {
       const detail = await this.$store.dispatch("planner_detail", {
-        planner: this.$route.params.id
+        planner: this.$route.params.planner
       });
 
       Object.assign(this.detail, detail);
