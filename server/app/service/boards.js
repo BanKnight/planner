@@ -85,12 +85,12 @@ module.exports = class Current extends Service
 
         let planner = this.get_planner(col.planner)
 
-        this.del_col(planner, one)
+        this.del_col(planner, col)
 
-        this.save_planner(planer)
+        this.save_planner(planner)
 
-        this.app.delete("planner.boards.cols", one._id)
-        this.app.delete_cond("planner.boards.notes", { col: one._id })
+        this.app.db.delete("planner.boards.cols", col._id)
+        this.app.db.delete_cond("planner.boards.notes", { col: col._id })
 
         return col
     }
@@ -103,7 +103,7 @@ module.exports = class Current extends Service
 
         one.updated = Date.now()
 
-        this.save_col(col)
+        this.save_col(one)
     }
 
     /**
@@ -183,7 +183,7 @@ module.exports = class Current extends Service
         this.del_note(col, note)
 
         this.save_col(col)
-        this.app.delete("planner.boards.notes", note._id)
+        this.app.db.delete("planner.boards.notes", note._id)
     }
 
     create_planner(id)

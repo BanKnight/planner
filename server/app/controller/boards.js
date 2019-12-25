@@ -94,7 +94,7 @@ module.exports = class Current extends Controller
     {
         const { ctx, service } = this
 
-        const boards = service.boards
+        const current = service.boards
 
         const col_id = ctx.params.col
 
@@ -107,7 +107,19 @@ module.exports = class Current extends Controller
             return
         }
 
-        boards.destroy_col(col_id)
+        const col = current.get_col(col_id)
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "col is not exists"
+            }
+            return
+        }
+
+        const body = ctx.request.body
+
+        current.update_col(col, body)
 
         ctx.body = {}
     }

@@ -1,9 +1,20 @@
 <template>
   <el-container class="note-card">
     <el-header class="note-card-head" height="fit-content">
-      <span>{{value.title}}</span>
+      <el-tag
+        size="mini"
+        v-if="value.stop"
+        effect="dark"
+        type="danger"
+        class="el-icon-date"
+      >{{ $format_md(value.stop) }}</el-tag>
+      <el-tag size="mini" v-else effect="dark" type="danger" class="el-icon-date">无</el-tag>
+
       <el-button size="mini" type="text" icon="el-icon-more" @click="$emit('edit',value)" />
     </el-header>
+
+    <span>{{value.title}}</span>
+
     <el-main
       v-if="value.content && value.content.length > 0"
       class="note-card-body markdown-body"
@@ -40,7 +51,7 @@ export default {
   transition: 0.3s;
   margin-top: 10px;
   width: 250px;
-  padding: 5px 0;
+  padding: 5px;
 }
 
 header.note-card-head {
@@ -48,7 +59,7 @@ header.note-card-head {
 
   display: flex;
   overflow: hidden;
-  padding: 0 10px;
+  padding: 0;
   width: 100%;
   justify-content: space-between;
   align-items: center;

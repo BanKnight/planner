@@ -8,7 +8,13 @@
           ghostClass="ghost"
           class="col-layout el-row el-row--flex"
         >
-          <note-col v-for="col in cols" :key="col" :planner="planner_id" :col="col" />
+          <note-col
+            v-for="col in cols"
+            :key="col"
+            :planner="planner_id"
+            :col="col"
+            @destroy="destroy(col)"
+          />
         </draggable>
       </el-container>
 
@@ -80,6 +86,14 @@ export default {
         type: "success",
         message: "创建成功"
       });
+    },
+    async destroy(col) {
+      await this.$store.dispatch("boards_destroy", {
+        planner: this.planner_id,
+        col: col
+      });
+
+      this.cols.splice(this.cols.indexOf(col), 1);
     }
   }
 };

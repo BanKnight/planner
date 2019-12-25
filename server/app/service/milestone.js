@@ -114,7 +114,7 @@ module.exports = class Milestone extends Service
 
         extend(one, option)
 
-        if (option.closed == false)
+        if (!option.closed)
         {
             one.closed = null
         }

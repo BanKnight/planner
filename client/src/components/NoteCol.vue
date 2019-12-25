@@ -4,13 +4,15 @@
       :class="{'note-col-head':true,'moveable':!editing && !adding && !editing_note}"
       height="24px"
       style="cursor:move;min-width:250px"
-      @dblclick.native="edit_name"
     >
       <template v-if="!editing">
-        <i class="el-icon-mobile">{{title}}</i>
+        <el-popconfirm title="是否确定删除" @onConfirm="destroy">
+          <i class="el-icon-delete" slot="reference" style="cursor:pointer"></i>
+        </el-popconfirm>
+
+        <span @dblclick="edit_name">{{title}}</span>
 
         <span>
-          <i class="el-icon-more" style="cursor:pointer"></i>
           <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>
 
           <i
@@ -26,7 +28,8 @@
           autofocus
           v-model="editing_form.title"
           class="no-border-input"
-          @blur="editing=false"
+          @keydown.enter.native="change_name"
+          @blur="editing = false;"
         ></el-input>
       </template>
     </el-header>
@@ -78,7 +81,7 @@ export default {
       editing: false,
       editing_note: null,
       editing_form: {
-        title: ""
+        title: null
       }
     };
   },
@@ -92,6 +95,7 @@ export default {
       this.editing_note = null;
       this.fetch();
     },
+
     async fetch() {
       this.loading = true;
       this.curr = [];
@@ -111,12 +115,32 @@ export default {
 
       this.loading = false;
     },
+    async destroy() {
+      this.$emit("destroy");
+    },
     edit_name() {
+      if (this.editing) {
+        return;
+      }
       this.editing = true;
       this.editing_form.title = this.title;
       this.$nextTick(() => {
         this.$refs.editing_name.focus();
       });
+    },
+    async change_name() {
+      this.editing = false;
+      if (this.editing_form.title.length == 0) {
+        return;
+      }
+
+      await this.$store.dispatch("boards_update", {
+        planner: this.planner,
+        col: this.col,
+        data: this.editing_form
+      });
+
+      this.title = this.editing_form.title;
     },
     start_edit(note) {
       this.adding = false;

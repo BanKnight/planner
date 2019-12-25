@@ -36,7 +36,7 @@
         </el-form>
       </el-aside>
 
-      <el-container class="el-card" style="width:100%" direction="vertical">
+      <el-container class="el-card" style="min-width:400px;width:100%" direction="vertical">
         <el-input placeholder="标题" v-model="form.title" />
         <mavon-editor
           v-model="form.content"
