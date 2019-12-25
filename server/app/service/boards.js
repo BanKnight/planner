@@ -151,22 +151,22 @@ module.exports = class Current extends Service
 
         extend(note, option)
 
-        if (option.closed == false)
+        note.updated = Date.now()
+
+        if (!option.closed)
         {
             note.closed = null
         }
         else if (!is_closed)
         {
+            note.closed = Date.now()
+
             let index = col.curr.indexOf(note._id)
             if (index >= 0)
             {
                 col.curr.splice(index)
             }
-
-            note.closed = Date.now()
         }
-
-        note.updated = Date.now()
 
         this.save_col(col)
 

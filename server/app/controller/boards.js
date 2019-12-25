@@ -224,9 +224,30 @@ module.exports = class Current extends Controller
             return
         }
 
-        current.update_note(note, ctx.request.body)
+        const body = ctx.request.body
 
-        ctx.body = {}
+        if (body.title.length == 0)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "title is invalid"
+            }
+            return
+        }
+
+        if (body.start)
+        {
+            body.start = new Date(body.start)
+        }
+
+        if (body.stop)
+        {
+            body.stop = new Date(body.stop)
+        }
+
+        current.update_note(note, body)
+
+        ctx.body = note
     }
 
     destroy_note()

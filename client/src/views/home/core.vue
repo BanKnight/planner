@@ -13,7 +13,7 @@
           style="border-right:0px;height:200px"
         >
           <el-menu-item
-            :index="`${root}/${child.path}`"
+        :index="child.meta.menu_title"
             v-for="child in children"
             :key="child.path"
           >

@@ -59,15 +59,13 @@
       </el-table-column>
       <el-table-column label="指派给" width="120">
         <template slot-scope="scope">
-          <i v-if="scope.row.assignee" class="el-icon-user">{{scope.row.assignee.name }}</i>
-          <el-tag v-else>无</el-tag>
+          <member-preview :value="scope.row.assignee" size="mini" :planner="planner_id" />
         </template>
       </el-table-column>
 
       <el-table-column label="里程碑" width="120">
         <template slot-scope="scope">
-          <i v-if="scope.row.milestone" class="el-icon-s-opportunity">{{scope.row.milestone.title }}</i>
-          <el-tag v-else>无</el-tag>
+          <milestone-preview :value="scope.row.milestone" size="mini" :planner="planner_id" />
         </template>
       </el-table-column>
 
@@ -101,10 +99,15 @@
 </template>
 
 <script>
+import MemberPreview from "@/components/MemberPreview";
+import MilestonePreview from "@/components/MilestonePreview";
+
 export default {
   path: "",
   weight: -1,
   meta: { require_logined: true },
+  components: { MemberPreview, MilestonePreview },
+
   data() {
     return {
       loading: false,

@@ -63,9 +63,6 @@ export default {
       this.loading = true;
       this.options = await this.$store.dispatch("member_list", this.planner);
       this.loading = false;
-
-      console.log(this.options);
-      console.log(this.current);
     },
     input(value) {
       this.current = value;

@@ -50,7 +50,7 @@
         </el-main>
 
         <el-main v-if="editing_note" style="margin-left:10px;padding:10px 0;width:fit-content">
-          <note-detail :value="editing_note" @save="add_note" @cancel="editing_note = null" />
+          <note-detail :value="editing_note" @save="save_note" @cancel="editing_note = null" />
         </el-main>
       </el-container>
     </el-main>
@@ -131,6 +131,18 @@ export default {
       });
 
       this.refresh();
+    },
+    async save_note(form) {
+      let note = await this.$store.dispatch("note_update", {
+        planner: this.planner,
+        col: this.col,
+        note: this.editing_note._id,
+        data: form
+      });
+
+      Object.assign(this.editing_note, note);
+
+      this.editing_note = null;
     }
   }
 };
@@ -174,7 +186,7 @@ export default {
 }
 
 .editing {
-  border: 1px solid#75b367;
+  border: 2px solid#75b367;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

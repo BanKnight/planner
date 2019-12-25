@@ -5,7 +5,7 @@
       <i class="el-icon-user">{{one.name}}</i>
     </el-tag>
     <el-tag v-if="current.length == 0" :size="size" effect="plain" type="info">
-      <i class="el-icon-user">无</i>
+      <i class="el-icon-user"></i>
     </el-tag>
   </div>
 </template>
@@ -31,30 +31,42 @@ export default {
       default: false
     }
   },
+  watch: {
+    value() {
+      this.init();
+    }
+  },
   async mounted() {
-    if (this.value == null) {
-      return;
+    this.init();
+  },
+  methods: {
+    async init() {
+      if (this.value == null) {
+        this.current = [];
+        return;
+      }
+
+      let ids = null;
+      if (typeof this.value == "string" && this.value.length > 0) {
+        ids = [this.value];
+      } else if (this.value instanceof Array) {
+        ids = this.value;
+      }
+      if (ids == null || ids.length == 0) {
+        this.current = [];
+        return;
+      }
+
+      this.loading = true;
+
+      let resp = await this.$store.dispatch("user_search", ids);
+
+      for (let one of resp) {
+        this.current.push(one);
+      }
+
+      this.loading = false;
     }
-
-    let ids = null;
-    if (typeof this.value == "string" && this.value.length > 0) {
-      ids = [this.value];
-    } else if (this.value instanceof Array) {
-      ids = this.value;
-    }
-    if (ids == null || ids.length == 0) {
-      return;
-    }
-
-    this.loading = true;
-
-    let resp = await this.$store.dispatch("user_search", ids);
-
-    for (let one of resp) {
-      this.current.push(one);
-    }
-
-    this.loading = false;
   }
 };
 </script>

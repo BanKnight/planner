@@ -4,7 +4,7 @@
     <i class="el-icon-s-opportunity">{{current.title}}</i>
   </el-tag>
   <el-tag v-else :size="size" effect="plain" type="info">
-    <i class="el-icon-s-opportunity">无</i>
+    <i class="el-icon-s-opportunity"></i>
   </el-tag>
 </template>
 
@@ -25,21 +25,32 @@ export default {
       required: true
     }
   },
-  async mounted() {
-    if (this.value == null || this.value.length == 0) {
-      return;
+  watch: {
+    value() {
+      this.init();
     }
+  },
+  async mounted() {
+    this.init();
+  },
+  methods: {
+    async init() {
+      if (this.value == null || this.value.length == 0) {
+        this.current = null;
+        return;
+      }
 
-    this.loading = true;
+      this.loading = true;
 
-    let resp = await this.$store.dispatch("milestone_detail", {
-      planner: this.planner,
-      milestone: this.value
-    });
+      let resp = await this.$store.dispatch("milestone_detail", {
+        planner: this.planner,
+        milestone: this.value
+      });
 
-    this.current = resp;
+      this.current = resp;
 
-    this.loading = false;
+      this.loading = false;
+    }
   }
 };
 </script>

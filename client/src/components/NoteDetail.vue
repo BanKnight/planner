@@ -45,11 +45,13 @@
           :subfield="false"
           :editable="true"
           :toolbarsFlag="true"
-          defaultOpen="preview"
+          :autofocus="true"
+          :defaultOpen="default_open"
           :toolbars="options"
           toolbarsBackground="#f0f9eb"
           class="full"
           style="border:none"
+          @click.native="editing = true;"
         />
       </el-container>
     </el-container>
@@ -79,6 +81,12 @@ export default {
         table: true, // 表格
         preview: true // 预览
       };
+    },
+    default_open() {
+      if (this.editing) {
+        return "edit";
+      }
+      return "preview";
     }
   },
   mounted() {
