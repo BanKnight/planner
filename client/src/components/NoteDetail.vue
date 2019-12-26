@@ -7,54 +7,81 @@
       </el-button-group>
     </el-header>
 
-    <el-container class="full scroll-if-need">
-      <el-aside width="180px" class="el-card" style="margin-right:10px;padding:10px">
-        <el-form label-position="top" label-width="auto">
-          <el-form-item label="指派:">
-            <member-select v-model="form.assignee" :planner="value.planner" />
-          </el-form-item>
-          <el-form-item label="里程碑:">
-            <milestone-select v-model="form.milestone" :planner="value.planner" />
-          </el-form-item>
-          <el-form-item label="开始时间:">
-            <el-date-picker
-              type="datetime"
-              placeholder="开始时间"
-              v-model="form.start"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
+    <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
 
-          <el-form-item label="结束时间:">
-            <el-date-picker
-              type="datetime"
-              placeholder="结束时间"
-              v-model="form.stop"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
-        </el-form>
-      </el-aside>
+    <el-row
+      type="flex"
+      justify="space-between"
+      class="el-card"
+      align="middle"
+      style="padding:5px 10px"
+    >
+      <el-col :span="12">
+        指派：
+        <member-select
+          v-model="form.assignee"
+          size="mini"
+          :planner="value.planner"
+          class="no-border-input"
+        ></member-select>
+      </el-col>
 
-      <el-container class="el-card" style="min-width:400px;width:100%" direction="vertical">
-        <el-input placeholder="标题" v-model="form.title" />
-        <mavon-editor
-          v-model="form.content"
-          :boxShadow="false"
-          :ishljs="false"
-          :subfield="false"
-          :editable="true"
-          :toolbarsFlag="true"
-          :autofocus="true"
-          :defaultOpen="default_open"
-          :toolbars="options"
-          toolbarsBackground="#f0f9eb"
-          class="full"
-          style="border:none"
-          @click.native="editing = true;"
+      <el-col :span="12">
+        里程碑
+        <milestone-select
+          v-model="form.milestone"
+          size="mini"
+          :planner="value.planner"
+          class="no-border-input"
         />
-      </el-container>
-    </el-container>
+      </el-col>
+    </el-row>
+    <el-row
+      type="flex"
+      justify="space-between"
+      class="el-card"
+      align="middle"
+      style="padding:5px 10px"
+    >
+      <el-col :span="12">
+        开始时间
+        <el-date-picker
+          type="date"
+          size="mini"
+          placeholder="开始时间"
+          v-model="form.start"
+          class="no-border-input"
+        ></el-date-picker>
+      </el-col>
+
+      <el-col :span="12">
+        结束时间
+        <el-date-picker
+          type="date"
+          size="mini"
+          placeholder="结束时间"
+          v-model="form.stop"
+          class="no-border-input"
+        ></el-date-picker>
+      </el-col>
+    </el-row>
+    <el-main class="el-card full" direction="vertical" style="padding:0">
+      <mavon-editor
+        v-model="form.content"
+        :boxShadow="false"
+        :ishljs="false"
+        :subfield="false"
+        :editable="true"
+        :toolbarsFlag="true"
+        :autofocus="true"
+        :defaultOpen="default_open"
+        :toolbars="options"
+        toolbarsBackground="#f0f9eb"
+        class="full"
+        style="border:none"
+        @click.native="editing = true;"
+      />
+    </el-main>
   </el-container>
 </template>
 
