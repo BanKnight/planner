@@ -45,9 +45,6 @@
             class="list-group"
             ghostClass="ghost"
             draggable=".note-card"
-            :move="check_move"
-            @add="on_add"
-            @remove="on_remove"
             @end="on_end"
           >
             <note-card
@@ -193,29 +190,22 @@ export default {
 
       this.refresh();
     },
-    check_move(evt) {
-      console.log("card-move", evt.draggedContext, evt.relatedContext);
 
-      return 1;
-
-      // evt.dragged; // dragged HTMLElement
-      // 		evt.draggedRect; // DOMRect {left, top, right, bottom}
-      // 		evt.related; // HTMLElement on which have guided
-      // 		evt.relatedRect; // DOMRect
-      // 		evt.willInsertAfter; // Boolean that is true if Sortable will insert drag element after target by default
-      // 		originalEvent.clientY; // mouse position
-      // 		// return false; — for cancel
-      // 		// return -1; — insert before target
-      // 		// return 1; — insert after target
-    },
-    on_add(event) {
-      console.log("add", event);
-    },
-    on_remove(event) {
-      console.log("remove", event);
-    },
-    on_end(evt) {
-      console.log("end", evt.from.id, evt.to.id, evt.item.id);
+    async on_end(evt) {
+      try {
+        await this.$store.dispatch("note_move", {
+          planner: this.planner,
+          data: {
+            from: evt.from.id,
+            to: evt.to.id,
+            target: evt.item.id,
+            old: evt.oldDraggableIndex,
+            new: evt.newDraggableIndex
+          }
+        });
+      } finally {
+        this.refresh();
+      }
     }
   }
 };

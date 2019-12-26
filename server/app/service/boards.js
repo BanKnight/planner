@@ -140,6 +140,52 @@ module.exports = class Current extends Service
         return planner.curr
     }
 
+    move_note(planner_id, option)
+    {
+        let planner = this.get_planner(planner_id)
+
+        let from = this.get_col(planner, option.from)
+        let to = this.get_col(planner, option.to)
+
+        if (from == null || to == null)
+        {
+            throw new Error("no such col")
+        }
+
+        let note_id = from.curr[option.old]
+
+        if (note_id == null)
+        {
+            throw new Error("数据太旧请先刷新")
+        }
+
+        if (option.target && note_id != option.target)
+        {
+            option.old = from.curr.indexOf(option.target)
+            console.log("数据版本太旧请先刷新")
+        }
+
+        if (option.old < 0)
+        {
+            throw new Error("数据太旧请先刷新")
+        }
+
+        if (option.new > to.curr.length)
+        {
+            option.new = to.curr.length
+        }
+
+        from.curr.splice(option.old, 1)
+        to.curr.splice(option.new, 0, option.target)
+
+        this.save_col(from)
+
+        if (from != to)
+        {
+            this.save_col(to)
+        }
+    }
+
     /**
      * option = {
      *  title:          //可选
@@ -191,9 +237,9 @@ module.exports = class Current extends Service
             let index = col.curr.indexOf(note._id)
 
             col.curr.splice(index)
-        }
 
-        this.save_col(col)
+            this.save_col(col)
+        }
 
         this.save_note(note)
     }
@@ -203,9 +249,8 @@ module.exports = class Current extends Service
      */
     destroy_note(planner, col, id)
     {
-        let index = col.curr.indexOf(id)
-
         let note = planner.notes[id]
+        let index = col.curr.indexOf(id)
 
         col.curr.splice(index, 1)
 

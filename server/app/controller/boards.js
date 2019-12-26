@@ -51,15 +51,8 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = null
-        for (let one of planner.curr)
-        {
-            if (one._id == ctx.params.col)
-            {
-                col = one
-                break
-            }
-        }
+        let col = current.get_col(planner, ctx.params.col)
+
         if (col == null)
         {
             ctx.status = 404
@@ -129,14 +122,14 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = null
-        for (let one of planner.curr)
+        let col = current.get_col(planner, ctx.params.col)
+        if (planner == null)
         {
-            if (one._id == ctx.params.col)
-            {
-                col = one
-                break
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
             }
+            return
         }
 
         const body = ctx.request.body
@@ -149,7 +142,6 @@ module.exports = class Current extends Controller
     move()
     {
         const { ctx, service } = this
-        const { planner } = ctx
 
         const current = service.boards
 
@@ -164,7 +156,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        let result = current.move(planner._id, body)
+        let result = current.move(ctx.params.planner, body)
         if (!result)
         {
             ctx.status = error.BAD_REQUEST
@@ -175,7 +167,10 @@ module.exports = class Current extends Controller
             return
         }
 
-        ctx.body = result
+        ctx.body = result.map((one) =>
+        {
+            return one._id
+        })
     }
 
     destroy()
@@ -206,16 +201,8 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = null
-        for (let one of planner.curr)
-        {
-            if (one._id == ctx.params.col)
-            {
-                col = one
-                break
-            }
-        }
-        if (col == null)
+        let col = current.get_col(planner, ctx.params.col)
+        if (planner == null)
         {
             ctx.status = 404
             ctx.body = {
@@ -287,15 +274,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = null
-        for (let one of planner.curr)
-        {
-            if (one._id == ctx.params.col)
-            {
-                col = one
-                break
-            }
-        }
+        let col = current.get_col(planner, ctx.params.col)
         if (col == null)
         {
             ctx.status = 404
@@ -335,7 +314,7 @@ module.exports = class Current extends Controller
             body.stop = new Date(body.stop)
         }
 
-        current.update_note(col, body)
+        current.update_note(col, note, body)
 
         ctx.body = note
     }
@@ -391,6 +370,28 @@ module.exports = class Current extends Controller
         }
 
         current.destroy_note(planner, col, note._id)
+
+        ctx.body = {}
+    }
+
+    move_note()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        const body = ctx.request.body
+
+        if (body.old < 0 || body.new < 0)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "old or new is invalid"
+            }
+            return
+        }
+
+        current.move_note(ctx.params.planner, ctx.request.body)
 
         ctx.body = {}
     }

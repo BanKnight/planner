@@ -45,8 +45,8 @@ module.exports = function (app)
     router.delete("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.destroy)
 
     router.put("/api/planner/:planner/boards/:col", logined, in_project, app.controller.boards.create_note)
+    router.post("/api/planner/:planner/boards/notes/move", logined, in_project, app.controller.boards.move_note)
     router.post("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.update_note)
     router.delete("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.destroy_note)
-
 
 }
