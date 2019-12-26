@@ -3,7 +3,7 @@
     <el-header
       :class="{'note-col-head':true,'moveable':!editing && !adding && !editing_note}"
       height="24px"
-      style="cursor:move;min-width:250px"
+      style="cursor:move;min-width:250px;"
     >
       <template v-if="!editing">
         <el-popconfirm title="是否确定删除" @onConfirm="destroy">
@@ -39,20 +39,24 @@
           />
 
           <draggable
+            :id="col"
             :list="curr"
             group="note"
-            handle=".note-card-head"
             class="list-group"
             ghostClass="ghost"
             draggable=".note-card"
-            @end="$emit('drag-card',$event)"
+            :move="check_move"
+            @add="on_add"
+            @remove="on_remove"
+            @end="on_end"
           >
             <note-card
               v-for="note in curr"
               :class="{editing:note == editing_note}"
-              :key="note.id"
+              :key="note._id"
               :value="note"
               @edit="start_edit"
+              @remove="remove_note"
             ></note-card>
           </draggable>
         </el-aside>
@@ -107,7 +111,11 @@ export default {
 
     async fetch() {
       this.loading = true;
-      this.curr = [];
+
+      Object.defineProperty(this.curr, "col", {
+        value: this.col,
+        enumerable: false
+      });
 
       let col = await this.$store.dispatch("boards_col_detail", {
         planner: this.planner,
@@ -115,12 +123,11 @@ export default {
       });
 
       this.title = col.title;
+      this.curr = [];
 
       for (let one of col.curr) {
         this.curr.push(one);
       }
-
-      console.log(this.curr);
 
       this.loading = false;
     },
@@ -176,6 +183,39 @@ export default {
       Object.assign(this.editing_note, note);
 
       this.editing_note = null;
+    },
+    async remove_note(note) {
+      await this.$store.dispatch("note_destroy", {
+        planner: this.planner,
+        col: this.col,
+        note: note._id
+      });
+
+      this.refresh();
+    },
+    check_move(evt) {
+      console.log("card-move", evt.draggedContext, evt.relatedContext);
+
+      return 1;
+
+      // evt.dragged; // dragged HTMLElement
+      // 		evt.draggedRect; // DOMRect {left, top, right, bottom}
+      // 		evt.related; // HTMLElement on which have guided
+      // 		evt.relatedRect; // DOMRect
+      // 		evt.willInsertAfter; // Boolean that is true if Sortable will insert drag element after target by default
+      // 		originalEvent.clientY; // mouse position
+      // 		// return false; — for cancel
+      // 		// return -1; — insert before target
+      // 		// return 1; — insert after target
+    },
+    on_add(event) {
+      console.log("add", event);
+    },
+    on_remove(event) {
+      console.log("remove", event);
+    },
+    on_end(evt) {
+      console.log("end", evt.from.id, evt.to.id, evt.item.id);
     }
   }
 };

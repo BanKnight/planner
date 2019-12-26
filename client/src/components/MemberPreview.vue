@@ -1,11 +1,11 @@
 
 <template>
   <div>
-    <el-tag v-for="one in current" :key="one._id" :size="size" effect="dark" type="success">
-      <i class="el-icon-user">{{one.name}}</i>
-    </el-tag>
     <el-tag v-if="current.length == 0" :size="size" effect="plain" type="info">
       <i class="el-icon-user"></i>
+    </el-tag>
+    <el-tag v-else v-for="one in current" :key="one._id" :size="size" effect="dark" type="success">
+      <i class="el-icon-user">{{one.name}}</i>
     </el-tag>
   </div>
 </template>

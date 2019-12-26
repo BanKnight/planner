@@ -27,7 +27,10 @@ module.exports = class Current extends Controller
             return
         }
 
-        ctx.body = col_planner.curr
+        ctx.body = col_planner.curr.map((one) =>
+        {
+            return one._id
+        })
     }
     /**
      * 获得一列的具体信息
@@ -38,7 +41,25 @@ module.exports = class Current extends Controller
 
         const current = service.boards
 
-        let col = current.get_col(ctx.params.col)
+        const planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
+
+        let col = null
+        for (let one of planner.curr)
+        {
+            if (one._id == ctx.params.col)
+            {
+                col = one
+                break
+            }
+        }
         if (col == null)
         {
             ctx.status = 404
@@ -49,14 +70,16 @@ module.exports = class Current extends Controller
         }
 
         ctx.body = {
-            _id: col._id, title: col.title, curr: [], updated: col.updated
+            _id: col._id, title: col.title, updated: col.updated
         }
 
-        for (let id of col.curr)
+        ctx.body.curr = col.curr.map(id =>
         {
-            let note = col.notes[id]
-            ctx.body.curr.push(note)
-        }
+            let note = planner.notes[id]
+
+            return note
+        })
+
     }
 
     /**
@@ -64,7 +87,7 @@ module.exports = class Current extends Controller
      */
     create()
     {
-        const { ctx, service, config } = this
+        const { ctx, service } = this
         const { user, planner } = ctx
 
         const current = service.boards
@@ -96,25 +119,24 @@ module.exports = class Current extends Controller
 
         const current = service.boards
 
-        const col_id = ctx.params.col
-
-        if (col_id == null)
+        const planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
         {
-            ctx.status = error.BAD_REQUEST
+            ctx.status = 404
             ctx.body = {
-                error: "col id required"
+                error: "no such planner exists"
             }
             return
         }
 
-        const col = current.get_col(col_id)
-        if (col == null)
+        let col = null
+        for (let one of planner.curr)
         {
-            ctx.status = 404
-            ctx.body = {
-                error: "col is not exists"
+            if (one._id == ctx.params.col)
+            {
+                col = one
+                break
             }
-            return
         }
 
         const body = ctx.request.body
@@ -162,28 +184,45 @@ module.exports = class Current extends Controller
 
         const boards = service.boards
 
-        const col_id = ctx.params.col
-
-        if (col_id == null)
-        {
-            ctx.status = error.BAD_REQUEST
-            ctx.body = {
-                error: "col id required"
-            }
-            return
-        }
-
-        boards.destroy_col(col_id)
+        boards.destroy_col(ctx.params.planner, ctx.params.col)
 
         ctx.body = {}
     }
 
     create_note()
     {
-        const { ctx, service, config } = this
-        const { user, planner } = ctx
+        const { ctx, service } = this
+        const { user } = ctx
 
         const current = service.boards
+
+        let planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such planner exists"
+            }
+            return
+        }
+
+        let col = null
+        for (let one of planner.curr)
+        {
+            if (one._id == ctx.params.col)
+            {
+                col = one
+                break
+            }
+        }
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
 
         const body = ctx.request.body
 
@@ -201,8 +240,6 @@ module.exports = class Current extends Controller
         body.content = body.content || ""
         body.author = user._id
         body.planner = planner._id
-        body.col = ctx.params.col
-        body.planner = ctx.params.planner
 
         if (body.start)
         {
@@ -214,56 +251,65 @@ module.exports = class Current extends Controller
             body.stop = new Date(body.stop)
         }
 
-        const note = current.create_note(body)
+        const note = current.create_note(planner, col, body)
 
         ctx.body = { _id: note._id }
     }
 
+    /**
+     * 更新某个列中的note
+     */
     update_note()
     {
-        const { ctx, service, config } = this
-        const planner = ctx.planner
+        const { ctx, service } = this
 
         const current = service.boards
 
-        const col_id = ctx.params.col
-        const note_id = ctx.params.note
-
-        if (col_id == null || note_id == null)
-        {
-            ctx.status = error.BAD_REQUEST
-            ctx.body = {
-                error: "col id && note id required"
-            }
-            return
-        }
-
-        const col = current.get_col(col_id)
-        if (col == null)
+        let planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
         {
             ctx.status = 404
             ctx.body = {
-                error: "no such col"
+                error: "no such planner exists"
             }
             return
         }
 
-        if (col.planner != planner._id)
-        {
-            ctx.status = error.NO_AUTH
-            ctx.body = {
-                error: "you are not in this planner"
-            }
-            return
-        }
 
-        const note = col.notes[note_id]
+        const note = planner.notes[ctx.params.note]
 
         if (note == null)
         {
             ctx.status = 404
             ctx.body = {
                 error: "no such note"
+            }
+            return
+        }
+
+        let col = null
+        for (let one of planner.curr)
+        {
+            if (one._id == ctx.params.col)
+            {
+                col = one
+                break
+            }
+        }
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
+
+        if (col.curr.indexOf(note._id) < 0)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such note in col"
             }
             return
         }
@@ -289,50 +335,32 @@ module.exports = class Current extends Controller
             body.stop = new Date(body.stop)
         }
 
-        current.update_note(note, body)
+        current.update_note(col, body)
 
         ctx.body = note
     }
 
+    /**
+     * 删除col中的note
+     * 
+     */
     destroy_note()
     {
-        const { ctx, service, config } = this
-        const planner = ctx.planner
+        const { ctx, service } = this
 
         const current = service.boards
 
-        const col_id = ctx.params.col
-        const note_id = ctx.params.note
-
-        if (col_id == null || note_id == null)
-        {
-            ctx.status = error.BAD_REQUEST
-            ctx.body = {
-                error: "col id && note id required"
-            }
-            return
-        }
-
-        const col = current.get_col(col_id)
-        if (col == null)
+        let planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
         {
             ctx.status = 404
             ctx.body = {
-                error: "no such col"
+                error: "no such planner exists"
             }
             return
         }
 
-        if (col.planner != planner._id)
-        {
-            ctx.status = error.NO_AUTH
-            ctx.body = {
-                error: "you are not in this planner"
-            }
-            return
-        }
-
-        const note = col.notes[note_id]
+        const note = planner.notes[ctx.params.note]
 
         if (note == null)
         {
@@ -343,7 +371,26 @@ module.exports = class Current extends Controller
             return
         }
 
-        current.destroy_note(note_id)
+        let col = current.get_col(planner, ctx.params.col)
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
+
+        if (col.curr.indexOf(note._id) < 0)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such note in col"
+            }
+            return
+        }
+
+        current.destroy_note(planner, col, note._id)
 
         ctx.body = {}
     }

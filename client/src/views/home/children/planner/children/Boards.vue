@@ -56,12 +56,11 @@ export default {
   },
   methods: {
     async refresh() {
-      this.cols = [];
-
       let data = await this.$store.dispatch("boards_list", {
         planner: this.planner_id
       });
 
+      this.cols = [];
       for (let one of data) {
         this.cols.push(one); //全部都是id
       }

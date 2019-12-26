@@ -135,7 +135,7 @@ export default {
 
     async note_destroy(context, payload)
     {
-        return await Vue.axios.delete(`/api/planner/${payload.planner}/boards/${payload.col}`)
+        return await Vue.axios.delete(`/api/planner/${payload.planner}/boards/${payload.col}/${payload.note}`)
     },
 
     async note_update(context, payload)
