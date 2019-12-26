@@ -19,14 +19,14 @@
             @drag-card="on_drag_card"
           />
         </draggable>
-      </el-container>
 
-      <el-button
-        style="height:50px;width:50px;color:white;background-color: #8ea29e;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);"
-        size="mini"
-        icon="el-icon-plus"
-        @click="add_col"
-      ></el-button>
+        <el-button
+          style="width:250px;margin-left:10px;background-color:transparent;color:#8ea29e;font-size:2em;border:2px dashed #8ea29e"
+          plain
+          icon="el-icon-plus"
+          @click="add_col"
+        >添加</el-button>
+      </el-container>
     </el-container>
   </el-main>
 </template>
@@ -132,7 +132,7 @@ export default {
       // 		evt.clone // the clone element
       // 		evt.pullMode;  // when item is in another sortable: `"clone"` if cloning, `true` if moving
     },
-    async on_drag_card(evt) {
+    on_drag_card(evt) {
       console.log(
         "on_drag_card",
         evt.from._id,

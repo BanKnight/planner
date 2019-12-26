@@ -13,9 +13,10 @@
           style="border-right:0px;height:200px"
         >
           <el-menu-item
-        :index="child.meta.menu_title"
+            :index="child.meta.menu_title"
             v-for="child in children"
             :key="child.path"
+            :route="{path:child.path}"
           >
             <i class="el-icon-finished"></i>
             <span slot="title">{{child.meta.menu_title}}</span>

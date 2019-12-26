@@ -14,12 +14,6 @@
 
         <span>
           <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>
-
-          <i
-            class="el-icon-plus"
-            @click="adding = !adding,editing_note = null"
-            style="cursor:pointer"
-          ></i>
         </span>
       </template>
       <template v-else>
@@ -36,7 +30,14 @@
 
     <el-main v-loading="loading" style="padding:0">
       <el-container class="full">
-        <el-aside v-if="!adding" class="scroll-if-need" width="250px">
+        <el-aside class="scroll-if-need" width="250px">
+          <el-button
+            size="mini"
+            icon="el-icon-plus"
+            style="width:100%;margin-top:10px; border: 1px dashed #75b367;"
+            @click="adding = !adding,editing_note = null"
+          />
+
           <draggable
             :list="curr"
             group="note"
@@ -56,7 +57,7 @@
           </draggable>
         </el-aside>
 
-        <el-main v-else style="padding:10px 0;width:fit-content">
+        <el-main v-if="adding" style="margin-left:10px;padding:10px 0;width:fit-content">
           <new-note :planner="planner" :col="col" @save="add_note" @cancel="adding = false" />
         </el-main>
 
@@ -218,7 +219,7 @@ export default {
 }
 
 .editing {
-  border: 2px solid#75b367;
+  border: 2px solid #75b367;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 

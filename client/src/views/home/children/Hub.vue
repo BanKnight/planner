@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  path: "",
+  path: "/",
   weight: 0,
   meta: { menu_title: "项目", require_logined: true },
   data() {
