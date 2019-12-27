@@ -12,7 +12,7 @@ module.exports = class Current extends Service
 
         this.ids = {}
         this.planners = {}
-        this.cache = new LRU({ max: 100 })         //根据关键字缓存搜索结果
+        this.cache = {}        //根据关键字缓存搜索结果
     }
 
     async start()
@@ -86,7 +86,9 @@ module.exports = class Current extends Service
 
         this.add(one)
 
-        this.cache.forEach((val, keyword) =>
+        let cache = this.get_cache(one.planner)
+
+        cache.forEach((val, keyword) =>
         {
             if (one.title.includes(keyword))
             {
@@ -109,7 +111,9 @@ module.exports = class Current extends Service
             return
         }
 
-        this.cache.forEach((val) =>
+        let cache = this.get_cache(one.planner)
+
+        cache.forEach((val) =>
         {
             val.pop(one)
         })
@@ -129,7 +133,9 @@ module.exports = class Current extends Service
 
         this.del(one)
 
-        this.cache.forEach((val) =>
+        let cache = this.get_cache(one.planner)
+
+        cache.forEach((val) =>
         {
             val.pop(one)
         })
@@ -147,7 +153,7 @@ module.exports = class Current extends Service
 
         one.updated = Date.now()
 
-        this.cache.forEach((val, keyword) =>
+        cache.forEach((val, keyword) =>
         {
             if (one.title.includes(keyword))
             {
@@ -171,7 +177,9 @@ module.exports = class Current extends Service
             return planner.items.data
         }
 
-        let result = this.cache.get(keyword)
+        let cache = this.get_cache(planner._id)
+
+        let result = cache.get(keyword)
         if (result)
         {
             return result.data
@@ -191,9 +199,21 @@ module.exports = class Current extends Service
             }
         }
 
-        this.cache.set(keyword, result)
+        cache.set(keyword, result)
 
         return result.data
+    }
+
+    get_cache(planner_id)
+    {
+        let one = this.cache[planner_id]
+        if (one == null)
+        {
+            one = new LRU({ max: 10 })
+            this.cache[planner_id] = one
+        }
+
+        return one
     }
 
     add(one)

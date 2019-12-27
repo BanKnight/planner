@@ -1,15 +1,16 @@
 <template>
-  <el-container style="padding:10px" class="full">
+  <layout>
     <router-view />
-  </el-container>
+  </layout>
 </template>
 
 <script>
+import layout from "../../layout";
+
 export default {
   path: "wiki",
   weight: 5,
   meta: { menu_title: "Wiki", require_logined: true },
-
-  components: {}
+  components: { layout }
 };
 </script>

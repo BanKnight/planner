@@ -28,7 +28,7 @@ export default {
 
     async planner_create(context, payload)
     {
-        await Vue.axios.put("/api/planner", payload)
+        return await Vue.axios.put("/api/planner", payload)
     },
     async planner_detail(context, payload)
     {
@@ -57,7 +57,7 @@ export default {
 
     async milestone_create(context, payload)
     {
-        await Vue.axios.put(`/api/planner/${payload.planner}/milestone`, payload.data)
+        return await Vue.axios.put(`/api/planner/${payload.planner}/milestone`, payload.data)
     },
 
     async milestone_destroy(context, payload)
@@ -83,7 +83,7 @@ export default {
 
     async backlogs_create(context, payload)
     {
-        await Vue.axios.put(`/api/planner/${payload.planner}/backlogs`, payload.data)
+        return await Vue.axios.put(`/api/planner/${payload.planner}/backlogs`, payload.data)
     },
 
     async backlogs_destroy(context, payload)
@@ -109,7 +109,7 @@ export default {
 
     async issues_create(context, payload)
     {
-        await Vue.axios.put(`/api/planner/${payload.planner}/issues`, payload.data)
+        return await Vue.axios.put(`/api/planner/${payload.planner}/issues`, payload.data)
     },
 
     async issues_destroy(context, payload)
@@ -173,4 +173,32 @@ export default {
     {
         return await Vue.axios.post(`/api/planner/${payload.planner}/boards/notes/move`, payload.data)
     },
+    //-----------------------  
+
+    async wiki_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/wiki`, payload)
+    },
+
+    async wiki_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/wiki/${payload.article}`)
+    },
+
+    async wiki_create(context, payload)
+    {
+        return await Vue.axios.put(`/api/planner/${payload.planner}/wiki`, payload.data)
+    },
+
+    async wiki_destroy(context, payload)
+    {
+        return await Vue.axios.delete(`/api/planner/${payload.planner}/wiki/${payload.article}`)
+    },
+
+    async wiki_update(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/wiki/${payload.article}`, payload.data)
+    },
+
+    //-----------------------  
 }

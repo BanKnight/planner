@@ -7,25 +7,30 @@
       <i class="el-icon-s-home">{{detail.name}}</i>
       <i class="el-icon-s-tools" style="cursor:pointer"></i>
     </el-header>
-    <el-menu
-      :default-active="$route.meta.menu_title"
-      mode="horizontal"
-      background-color="transparent"
-      active-text-color="#77b36b"
-      text-color="#000"
-      style="width:fit-content;"
-      :router="true"
-    >
-      <el-menu-item
-        v-for="child in children"
-        :index="child.meta.menu_title"
-        :key="child.meta.menu_title"
-        :route="{path: `${root}/${child.path}`}"
+
+    <el-row type="flex">
+      <el-menu
+        :collapse="collapse"
+        :default-active="$route.meta.menu_title"
+        mode="horizontal"
+        background-color="transparent"
+        active-text-color="#77b36b"
+        text-color="#000"
+        style="width:fit-content;"
+        :router="true"
       >
-        <i class="el-icon-menu"></i>
-        <span slot="title">{{child.meta.menu_title}}</span>
-      </el-menu-item>
-    </el-menu>
+        <el-menu-item
+          v-for="child in children"
+          :index="child.meta.menu_title"
+          :key="child.meta.menu_title"
+          :route="{path: `${root}/${child.path}`}"
+        >
+          <i class="el-icon-menu"></i>
+          <span slot="title">{{child.meta.menu_title}}</span>
+        </el-menu-item>
+      </el-menu>
+    </el-row>
+
     <router-view />
   </el-container>
 </template>
@@ -41,6 +46,7 @@ export default {
   components: {},
   data() {
     return {
+      collapse: false,
       detail: {
         name: ""
       }

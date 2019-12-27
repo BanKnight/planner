@@ -1,83 +1,27 @@
 <template>
   <el-container class="full">
-    <el-aside width="180px" v-if="folding==false">
-      <el-container class="full" direction="vertical">
-        <el-table :data="articles" style="width: 100%" height="100%" size="small" :border="true">
-          <el-table-column>
-            <template slot="header">
-              <el-input
-                class="search"
-                placeholder="输入关键字"
-                v-model="keyword"
-                clearable
-                size="mini"
-                prefix-icon="el-icon-search"
-                @clear="on_clear"
-                @keydown.enter.native.stop="on_search"
-              ></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-container>
+    <el-aside width="180px" style="margin-right:10px">
+      <articles :planner="planner_id" />
     </el-aside>
-    <el-container>
-      <el-main style="padding:2px">
-        <el-row type="flex" justify="space-between" align="middle">
-          <el-button-group>
-            <el-button size="mini" :icon="fold_icon" @click="folding=!folding"></el-button>
-            <el-button size="mini" type="primary" icon="el-icon-plus"></el-button>
-          </el-button-group>
-          <el-button-group>
-            <el-button size="mini" icon="el-icon-edit" />
-            <el-button size="mini" icon="el-icon-more" />
-          </el-button-group>
-        </el-row>
-        <el-card shadow="never" class="full-width">
-          <div slot="header">
-            <h2>文章标题</h2>
 
-            <span>
-              <el-tag type="success" size="small">标签二</el-tag>
-              <el-tag type="info" size="small">标签三</el-tag>
-              <el-tag type="warning" size="small">标签四</el-tag>
-              <el-tag type="danger" size="small">标签五</el-tag>
-            </span>
-          </div>
-          <div class="markdown-body" v-html="test_markdown"></div>
-        </el-card>
-      </el-main>
-      <el-aside></el-aside>
-    </el-container>
+    <el-row type="flex" justify="center" align="middle" class="full">
+      <el-button plain type="primary" icon="el-icon-plus" @click="$router.push(`${root}/new`)">新建文章</el-button>
+    </el-row>
   </el-container>
 </template>
 
 <script>
+import Articles from "@/components/Articles";
+
 export default {
   path: "",
   weight: -1,
   meta: { require_logined: true },
-
+  components: { Articles },
   data() {
     return {
-      articles: [
-        {
-          title: "文章标题1",
-          content: `# this is content`
-        },
-        {
-          title: "文章标题1",
-          content: `# this is content`
-        },
-        {
-          title: "文章标题3",
-          content: `# this is content`
-        },
-        {
-          title: "文章标题4",
-          content: `# this is content`
-        }
-      ],
-      folding: false
+      keyword: "",
+      current: "" //当前显示的wiki
     };
   },
   computed: {
@@ -88,7 +32,10 @@ export default {
       return "el-icon-s-unfold";
     },
     root() {
-      return `/planner/${this.$route.params.planner}/wiki`;
+      return `/planner/${this.planner_id}/wiki`;
+    },
+    planner_id() {
+      return this.$route.params.planner;
     },
     test_markdown() {
       return this.$md(

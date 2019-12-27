@@ -55,4 +55,10 @@ module.exports = function (app)
     router.post("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.update_note)
     router.delete("/api/planner/:planner/boards/:col/:note", logined, in_project, app.controller.boards.destroy_note)
 
+    router.get("/api/planner/:planner/wiki", logined, in_project, app.controller.wiki.list)
+    router.get("/api/planner/:planner/wiki/:article", logined, in_project, app.controller.wiki.detail)
+    router.put("/api/planner/:planner/wiki", logined, in_project, app.controller.wiki.create)
+    router.post("/api/planner/:planner/wiki/:article", logined, in_project, app.controller.wiki.update)
+    router.delete("/api/planner/:planner/wiki/:article", logined, in_project, app.controller.wiki.destroy)
+
 }
