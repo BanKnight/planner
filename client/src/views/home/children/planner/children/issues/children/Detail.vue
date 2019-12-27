@@ -83,7 +83,7 @@ import MemberSelect from "@/components/MemberSelect";
 import MilestoneSelect from "@/components/MilestoneSelect";
 
 export default {
-  path: "detail/:backlog",
+  path: "detail/:issue",
   weight: 10,
   meta: { require_logined: true },
   components: { MilestoneSelect, MemberSelect },
@@ -125,13 +125,13 @@ export default {
       return "el-icon-s-unfold";
     },
     root() {
-      return `/planner/${this.planner_id}/backlogs`;
+      return `/planner/${this.planner_id}/issues`;
     },
     planner_id() {
       return this.$route.params.planner;
     },
     id() {
-      return this.$route.params.backlog;
+      return this.$route.params.issue;
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -147,9 +147,9 @@ export default {
 
   methods: {
     async fetch() {
-      let article = await this.$store.dispatch("backlogs_detail", {
+      let article = await this.$store.dispatch("issues_detail", {
         planner: this.planner_id,
-        backlog: this.id
+        issue: this.id
       });
 
       this.article = article;
@@ -163,9 +163,9 @@ export default {
         return;
       }
 
-      await this.$store.dispatch("backlogs_update", {
+      await this.$store.dispatch("issues_update", {
         planner: this.planner_id,
-        backlog: this.id,
+        issue: this.id,
         data: this.article
       });
 

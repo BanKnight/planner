@@ -184,7 +184,7 @@ export default {
       }
 
       if (row.closed) {
-        return "warning-row";
+        return "closed-row";
       }
 
       if (rowIndex % 2 == 0) {
@@ -275,14 +275,14 @@ export default {
         type: "warning"
       });
 
-      this.$message({
-        type: "success",
-        message: "删除成功!"
-      });
-
       await this.$store.dispatch("milestone_destroy", {
         planner: this.planner_id,
         milestone: milestone._id
+      });
+
+      this.$message({
+        type: "success",
+        message: "删除成功!"
       });
 
       this.fetch(this.page.curr);

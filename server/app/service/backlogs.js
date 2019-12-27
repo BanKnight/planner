@@ -1,6 +1,7 @@
 const shortid = require('shortid');
 const extend = require("extend2")
 const utils = require("../utils")
+const LRU = require("lru-cache")
 const { Service } = require("../core")
 
 module.exports = class Current extends Service
@@ -11,6 +12,7 @@ module.exports = class Current extends Service
 
         this.ids = {}
         this.planners = {}
+        this.cache = new LRU({ max: 100 })         //根据关键字缓存搜索结果
     }
 
     async start()
@@ -77,12 +79,24 @@ module.exports = class Current extends Service
             ...option,
             created: Date.now(),
             updated: Date.now(),
-
         }
 
+        one.content = one.content || ""
         one.tags = one.tags || []
 
         this.add(one)
+
+        this.cache.forEach((val, keyword) =>
+        {
+            if (one.title.includes(keyword))
+            {
+                val.push(one)
+            }
+            else if (one.content.includes(keyword))
+            {
+                val.push(one)
+            }
+        })
 
         this.app.db.set("planner.backlogs", one._id, one)
     }
@@ -94,6 +108,11 @@ module.exports = class Current extends Service
         {
             return
         }
+
+        this.cache.forEach((val) =>
+        {
+            val.pop(one)
+        })
 
         this.app.db.delete("planner.backlogs", id)
 
@@ -110,6 +129,11 @@ module.exports = class Current extends Service
 
         this.del(one)
 
+        this.cache.forEach((val) =>
+        {
+            val.pop(one)
+        })
+
         extend(one, option)
 
         if (!option.closed)
@@ -123,9 +147,53 @@ module.exports = class Current extends Service
 
         one.updated = Date.now()
 
+        this.cache.forEach((val, keyword) =>
+        {
+            if (one.title.includes(keyword))
+            {
+                val.push(one)
+            }
+            else if (one.content.includes(keyword))
+            {
+                val.push(one)
+            }
+        })
+
         this.add(one)
 
-        this.app.db.set("planner.milestone", one._id, one)
+        this.app.db.set("planner.backlogs", one._id, one)
+    }
+
+    search(planner, keyword)
+    {
+        if (keyword == null || keyword.length == 0)
+        {
+            return planner.items.data
+        }
+
+        let result = this.cache.get(keyword)
+        if (result)
+        {
+            return result.data
+        }
+
+        result = new utils.SortedArray(Current.cmp)
+
+        for (let one of planner.items.data)
+        {
+            if (one.title.includes(keyword))
+            {
+                result.push(one)
+            }
+            else if (one.content.includes(keyword))
+            {
+                result.push(one)
+            }
+        }
+
+        this.cache.set(keyword, result)
+
+        return result.data
     }
 
     add(one)
@@ -137,15 +205,14 @@ module.exports = class Current extends Service
         {
             planner = {
                 _id: one.planner,
-                backlogs: new utils.SortedArray(Current.cmp),
-
+                items: new utils.SortedArray(Current.cmp),
                 tags: {},
             }
 
             this.planners[one.planner] = planner
         }
 
-        planner.backlogs.push(one)
+        planner.items.push(one)
 
         for (let tag of one.tags)
         {
@@ -166,7 +233,7 @@ module.exports = class Current extends Service
 
         let planner = this.planners[one.planner]
 
-        planner.backlogs.pop(one)
+        planner.items.pop(one)
 
         for (let tag of one.tags)
         {

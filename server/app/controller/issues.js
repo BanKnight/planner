@@ -13,7 +13,7 @@ module.exports = class Current extends Controller
     {
         const { ctx, service, config } = this
 
-        const current = service.backlogs
+        const current = service.issues
 
         const planner = current.get_planner(ctx.params.planner)
 
@@ -46,9 +46,9 @@ module.exports = class Current extends Controller
     {
         const { ctx, service } = this
 
-        const current = service.backlogs
+        const current = service.issues
 
-        const one = current.get(ctx.params.backlog)
+        const one = current.get(ctx.params.issue)
 
         if (one == null)
         {
@@ -79,7 +79,7 @@ module.exports = class Current extends Controller
         const { ctx, service } = this
         const { user, planner } = ctx
 
-        const current = service.backlogs
+        const current = service.issues
 
         const body = ctx.request.body
 
@@ -105,16 +105,16 @@ module.exports = class Current extends Controller
     {
         const { ctx, service } = this
 
-        const current = service.backlogs
+        const current = service.issues
 
-        const id = ctx.params.backlog
+        const id = ctx.params.issue
         const body = ctx.request.body
 
         if (id == null)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "backlogs id required"
+                error: "issues id required"
             }
             return
         }
@@ -124,7 +124,7 @@ module.exports = class Current extends Controller
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "backlogs is not exist"
+                error: "issues is not exist"
             }
             return
         }
@@ -138,15 +138,15 @@ module.exports = class Current extends Controller
     {
         const { ctx, service } = this
 
-        const current = service.backlogs
+        const current = service.issues
 
-        const id = ctx.params.backlog
+        const id = ctx.params.issue
 
         if (id == null)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "backlogs id required"
+                error: "issue id required"
             }
             return
         }

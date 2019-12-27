@@ -78,7 +78,7 @@ export default {
 
     async backlogs_detail(context, payload)
     {
-        return await Vue.axios.get(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`)
+        return await Vue.axios.get(`/api/planner/${payload.planner}/backlogs/${payload.backlog}`)
     },
 
     async backlogs_create(context, payload)
@@ -88,12 +88,38 @@ export default {
 
     async backlogs_destroy(context, payload)
     {
-        await Vue.axios.delete(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`)
+        await Vue.axios.delete(`/api/planner/${payload.planner}/backlogs/${payload.backlog}`)
     },
 
     async backlogs_update(context, payload)
     {
-        await Vue.axios.post(`/api/planner/${payload.planner}/backlogs/${payload.backlogs}`, payload.data)
+        await Vue.axios.post(`/api/planner/${payload.planner}/backlogs/${payload.backlog}`, payload.data)
+    },
+
+    //-----------------------   
+    async issues_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/issues`, payload)
+    },
+
+    async issues_detail(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/issues/${payload.issue}`)
+    },
+
+    async issues_create(context, payload)
+    {
+        await Vue.axios.put(`/api/planner/${payload.planner}/issues`, payload.data)
+    },
+
+    async issues_destroy(context, payload)
+    {
+        await Vue.axios.delete(`/api/planner/${payload.planner}/issues/${payload.issue}`)
+    },
+
+    async issues_update(context, payload)
+    {
+        await Vue.axios.post(`/api/planner/${payload.planner}/issues/${payload.issue}`, payload.data)
     },
 
     //-----------------------

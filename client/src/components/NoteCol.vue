@@ -256,6 +256,6 @@ export default {
 .list-group {
   width: 100%;
   min-height: 80px;
-  padding: 0 0 20px 0;
+  padding: 0 0 40px 0;
 }
 </style>

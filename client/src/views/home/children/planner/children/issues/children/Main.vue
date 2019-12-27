@@ -78,7 +78,6 @@
             @click="$router.push(`${root}/new`)"
           ></el-button>
         </template>
-
         <template slot-scope="scope">
           <el-button-group>
             <el-button size="mini" icon="el-icon-delete" type="danger" @click="destroy(scope.row)"></el-button>
@@ -128,7 +127,7 @@ export default {
   },
   computed: {
     root() {
-      return `/planner/${this.planner_id}/backlogs`;
+      return `/planner/${this.planner_id}/issues`;
     },
     milestone() {
       return `/planner/${this.planner_id}/milestone`;
@@ -149,7 +148,7 @@ export default {
       this.loading = true;
 
       try {
-        const page_info = await this.$store.dispatch("backlogs_list", {
+        const page_info = await this.$store.dispatch("issues_list", {
           planner: this.planner_id,
           params: {
             curr: page, //页码
@@ -172,15 +171,6 @@ export default {
 
       this.loading = false;
     },
-    row_class({ row, rowIndex }) {
-      if (row.closed) {
-        return "closed-row";
-      }
-
-      if (rowIndex % 2 == 0) {
-        return "normal-row";
-      }
-    },
     async destroy(item) {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
@@ -188,9 +178,9 @@ export default {
         type: "warning"
       });
 
-      await this.$store.dispatch("backlogs_destroy", {
+      await this.$store.dispatch("issues_destroy", {
         planner: this.planner_id,
-        backlog: item._id
+        issue: item._id
       });
 
       this.$message({
@@ -201,9 +191,9 @@ export default {
       this.fetch(this.page.curr);
     },
     async close(item, value) {
-      await this.$store.dispatch("backlogs_update", {
+      await this.$store.dispatch("issues_update", {
         planner: this.planner_id,
-        backlog: item._id,
+        issue: item._id,
         data: { closed: value }
       });
 
