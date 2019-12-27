@@ -66,4 +66,19 @@ module.exports = class User extends Service
 
         this.app.db.set("user", user._id, user)
     }
+
+    search(keyword)
+    {
+        let ret = []
+        for (let user_id in this.ids)
+        {
+            let user = this.ids[user_id]
+            if (user.name.includes(keyword))
+            {
+                ret.push(user)
+            }
+        }
+
+        return ret
+    }
 }

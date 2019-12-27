@@ -48,6 +48,22 @@ module.exports = class Current extends Service
         return one
     }
 
+    try_create(option)
+    {
+        let planner = this.planners[option.planner]
+        if (planner == null)
+        {
+            throw new Error("no such planner in member")
+        }
+
+        if (planner.members[option.user])
+        {
+            return
+        }
+
+        return this.create(option)
+    }
+
     destroy(planner_id, user)
     {
         let planner = this.planners[planner_id]

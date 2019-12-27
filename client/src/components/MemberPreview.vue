@@ -1,34 +1,28 @@
 
 <template>
-  <div>
-    <el-tag v-if="current.length == 0" :size="size" effect="plain" type="info">
-      <i class="el-icon-user"></i>
-    </el-tag>
-    <el-tag v-else v-for="one in current" :key="one._id" :size="size" effect="dark" type="success">
-      <i class="el-icon-user">{{one.name}}</i>
-    </el-tag>
-  </div>
+  <el-tag v-if="current" :size="size" effect="dark" type="success">
+    <i class="el-icon-user">{{current.name}}</i>
+  </el-tag>
+  <el-tag v-else :size="size" effect="plain" type="info">
+    <i class="el-icon-user"></i>
+  </el-tag>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      current: [],
+      current: null,
       loading: false,
       options: []
     };
   },
   props: {
-    value: [String, Array],
+    value: String,
     size: String,
     planner: {
       type: String,
       required: true
-    },
-    multiple: {
-      type: Boolean,
-      default: false
     }
   },
   watch: {
@@ -41,30 +35,22 @@ export default {
   },
   methods: {
     async init() {
-      if (this.value == null) {
-        this.current = [];
+      if (this.value == null || this.value.length == 0) {
+        this.current = null;
         return;
       }
 
-      let ids = null;
-      if (typeof this.value == "string" && this.value.length > 0) {
-        ids = [this.value];
-      } else if (this.value instanceof Array) {
-        ids = this.value;
-      }
-      if (ids == null || ids.length == 0) {
-        this.current = [];
-        return;
-      }
+      let ids = [this.value];
 
       this.loading = true;
 
-      let resp = await this.$store.dispatch("user_search", ids);
+      let resp = await this.$store.dispatch("user_search", {
+        ids
+      });
 
-      for (let one of resp) {
-        this.current.push(one);
+      if (resp.length > 0) {
+        this.current = resp[0];
       }
-
       this.loading = false;
     }
   }

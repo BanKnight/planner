@@ -14,7 +14,7 @@ export default {
     },
 
     /**
-     * payload = ["",""]
+     * payl
      */
     async user_search(context, payload)
     {
@@ -30,11 +30,18 @@ export default {
     {
         return await Vue.axios.put("/api/planner", payload)
     },
+    async planner_public(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/public`)
+    },
     async planner_detail(context, payload)
     {
         return await Vue.axios.get(`/api/planner/${payload.planner}`)
     },
-
+    async planner_update(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}`, payload.data)
+    },
     //-----------------------
 
     async member_list(context, id)
@@ -42,6 +49,15 @@ export default {
         return await Vue.axios.get(`/api/planner/${id}/member`)
     },
 
+    async member_create(context, payload)
+    {
+        return await Vue.axios.put(`/api/planner/${payload.planner}/member`, payload)
+    },
+
+    async member_destroy(context, payload)
+    {
+        return await Vue.axios.delete(`/api/planner/${payload.planner}/member/${payload.member}`)
+    },
     //-----------------------
 
 

@@ -1,6 +1,7 @@
 const shortid = require("shortid")
 const utils = require("../utils")
 const { Service } = require("../core")
+const extend = require("extend2")
 
 
 /**
@@ -95,6 +96,18 @@ module.exports = class Planner extends Service
         this.del(one)
 
         this.app.db.delete("planner", planner._id)
+    }
+
+    update(planner, option)
+    {
+        delete option._id
+
+        planner.name = option.name || planner.name
+        planner.desc = option.desc || planner.desc
+
+        planner.owner = option.owner || planner.owner
+
+        this.app.db.set("planner", planner._id, planner)
     }
 
     add(one)

@@ -39,7 +39,7 @@ module.exports = class Current extends Controller
 
     /**
      *
-     *
+     * 查询某个member的具体信息
      */
     detail()
     {
@@ -96,13 +96,11 @@ module.exports = class Current extends Controller
     destroy()
     {
         const { ctx, service } = this
-        const { planner, me } = ctx
+        const { planner, user } = ctx
 
         const current = service.member
 
-        const body = ctx.request.body
-
-        const quitter = body.user || me._id
+        const quitter = ctx.params.member
 
         const that = current.get(planner._id, quitter)
 
@@ -110,12 +108,21 @@ module.exports = class Current extends Controller
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
-                error: "拥有者不允许退出"
+                error: "查无此人"
             }
             return
         }
 
-        if (planner.owner == that._id)     //持有者，不允许退出
+        if (user._id != planner.owner)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "只有拥有者才能操作"
+            }
+            return
+        }
+
+        if (planner.owner == that.user)     //持有者，不允许退出
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
@@ -126,8 +133,9 @@ module.exports = class Current extends Controller
 
         const member = current.destroy(planner._id, that._id)
 
-        console.log("kick member in planner", planner._id, body.user, member._id)
+        console.log("kick member in planner", planner._id, user._id, member._id)
 
         ctx.body = {}
     }
+
 }

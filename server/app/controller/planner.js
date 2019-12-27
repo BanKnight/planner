@@ -79,7 +79,10 @@ module.exports = class Current extends Controller
         ctx.body = {}
     }
 
-    detail()
+    /**
+     * 公共信息
+     */
+    public()
     {
         const { ctx, service } = this
 
@@ -101,5 +104,65 @@ module.exports = class Current extends Controller
             _id: that._id,
             name: that.name,
         }
+    }
+
+    /**
+     * 私有信息
+     */
+    detail()
+    {
+        const { ctx, service } = this
+
+        const current = service.planner
+
+        const that = current.get(ctx.params.planner)
+
+        if (that == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                errror: "planner is not exists"
+            }
+
+            return
+        }
+
+        ctx.body = { ...that }
+    }
+
+    update()
+    {
+        const { ctx, service } = this
+
+        const current = service.planner
+
+        const body = ctx.request.body
+
+        const that = current.get(ctx.params.planner)
+
+        if (that == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                errror: "planner is not exists"
+            }
+
+            return
+        }
+
+        const member_planner = service.member.get_planner(ctx.params.planner)
+
+        if (body.owner && body.owner != that.owner && member_planner.members[body.owner] == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                errror: "new owner must be one of members"
+            }
+            return
+        }
+
+        that.update(that, body)
+
+        ctx.body = {}
     }
 }

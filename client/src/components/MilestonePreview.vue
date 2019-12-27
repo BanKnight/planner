@@ -1,6 +1,6 @@
 
 <template>
-  <el-tag v-if="current" :size="size" effect="plain" type="warning">
+  <el-tag v-if="current" :size="size" effect="dark" type="warning">
     <i class="el-icon-s-opportunity">{{current.title}}</i>
   </el-tag>
   <el-tag v-else :size="size" effect="plain" type="info">

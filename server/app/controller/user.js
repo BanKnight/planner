@@ -109,15 +109,26 @@ module.exports = class Current extends Controller
 
         const resp = []
 
-        for (let user_id of body)
+        if (body.ids)
         {
-            let user = current.get(user_id)
-            if (user)
+            for (let user_id of body.ids)
             {
-                resp.push({
-                    _id: user._id,
-                    name: user.name,
-                })
+                let user = current.get(user_id)
+                if (user)
+                {
+                    resp.push({
+                        _id: user._id,
+                        name: user.name,
+                    })
+                }
+            }
+        }
+        else if (body.keyword && body.keyword.length > 0)
+        {
+            let users = current.search(body.keyword)
+            for (let one of users)
+            {
+                resp.push(one)
             }
         }
 

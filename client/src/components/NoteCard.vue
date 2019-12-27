@@ -32,7 +32,7 @@
         type="danger"
         class="el-icon-date"
       >{{ $format_md(value.stop) }}</el-tag>
-      <el-tag size="mini" v-else effect="dark" type="danger" class="el-icon-date">无</el-tag>
+      <el-tag size="mini" v-else effect="plain" type="danger" class="el-icon-date"></el-tag>
     </el-footer>
   </el-container>
 </template>

@@ -16,7 +16,6 @@ module.exports = (options, app) =>
 
         ctx.user = app.service.user.get(user_id)
 
-
         return next()
     }
 }
