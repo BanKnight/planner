@@ -31,6 +31,7 @@
       size="small"
       :stripe="true"
       border
+      :row-class-name="row_class"
       row-key="_id"
     >
       <el-table-column width="38">
@@ -173,13 +174,17 @@ export default {
       this.loading = false;
     },
     row_class({ row, rowIndex }) {
+      let classes = [];
+
       if (row.closed) {
-        return "closed-row";
+        classes.push("closed-row");
       }
 
       if (rowIndex % 2 == 0) {
-        return "normal-row";
+        classes.push("normal-row");
       }
+
+      return classes.concat(" ");
     },
     async destroy(item) {
       await this.$confirm("是否确认删除?", "提示", {

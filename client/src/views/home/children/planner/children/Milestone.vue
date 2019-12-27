@@ -179,17 +179,20 @@ export default {
   },
   methods: {
     row_class({ row, rowIndex }) {
+      let classes = [];
+
       if (row == this.editing) {
-        return "primary-row";
+        classes.push("primary-row");
       }
 
       if (row.closed) {
-        return "closed-row";
+        classes.push("closed-row");
       }
 
       if (rowIndex % 2 == 0) {
-        return "normal-row";
+        classes.push("normal-row");
       }
+      return classes.concat(" ");
     },
     on_create() {
       this.$refs.new_one.validate(async valid => {

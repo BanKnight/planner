@@ -32,6 +32,7 @@
       :stripe="true"
       border
       row-key="_id"
+      :row-class-name="row_class"
     >
       <el-table-column width="38">
         <template slot="header">
@@ -170,6 +171,19 @@ export default {
       }
 
       this.loading = false;
+    },
+    row_class({ row, rowIndex }) {
+      let classes = [];
+
+      if (row.closed) {
+        classes.push("closed-row");
+      }
+
+      if (rowIndex % 2 == 0) {
+        classes.push("normal-row");
+      }
+
+      return classes.concat(" ");
     },
     async destroy(item) {
       await this.$confirm("是否确认删除?", "提示", {

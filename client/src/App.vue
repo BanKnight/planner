@@ -144,6 +144,10 @@ p {
   background: #ff572229;
 }
 
+.el-table .closed-row {
+  text-decoration: line-through;
+}
+
 .no-border-input input {
   border: none;
 }
