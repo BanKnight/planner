@@ -24,7 +24,14 @@
       <el-tab-pane label="成员" class="full" style="padding:10px">
         <el-form label-width="100px" label-position="top">
           <el-form-item label="当前成员:">
-            <el-tag v-for="one in members" :key="one._id" closable @close="remove_member(one)">
+            <el-tag
+              v-for="one in members"
+              :key="one._id"
+              effect="dark"
+              :type="one._id == basic.owner?'danger':'info'"
+              :closable="one._id != basic.owner"
+              @close="remove_member(one)"
+            >
               <i class="el-icon-user">{{one.name}}</i>
             </el-tag>
           </el-form-item>
