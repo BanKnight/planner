@@ -10,7 +10,11 @@ import layout from "../../layout";
 export default {
   path: "issues",
   weight: 7,
-  meta: { menu_title: "Issues", require_logined: true },
+  meta: {
+    menu_title: "Issues",
+    menu_icon: "el-icon-question",
+    require_logined: true
+  },
   components: { layout }
 };
 </script>

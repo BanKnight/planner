@@ -25,7 +25,7 @@
           :key="child.meta.menu_title"
           :route="{path: `${root}/${child.path}`}"
         >
-          <i class="el-icon-menu"></i>
+          <i :class="child.meta.menu_icon"></i>
           <span slot="title">{{child.meta.menu_title}}</span>
         </el-menu-item>
       </el-menu>

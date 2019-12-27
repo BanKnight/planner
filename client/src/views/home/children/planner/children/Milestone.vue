@@ -148,7 +148,11 @@ import layout from "../layout";
 export default {
   path: "",
   weight: 10,
-  meta: { menu_title: "里程碑", require_logined: true },
+  meta: {
+    menu_title: "里程碑",
+    menu_icon: "el-icon-s-opportunity",
+    require_logined: true
+  },
   components: { layout },
   data() {
     return {

@@ -10,7 +10,11 @@ import layout from "../../layout";
 export default {
   path: "backlogs",
   weight: 9,
-  meta: { menu_title: "需求池", require_logined: true },
+  meta: {
+    menu_title: "需求池",
+    menu_icon: "el-icon-s-order",
+    require_logined: true
+  },
   components: { layout }
 };
 </script>

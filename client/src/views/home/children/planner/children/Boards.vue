@@ -38,7 +38,11 @@ import draggable from "vuedraggable";
 export default {
   path: "boards",
   weight: 8,
-  meta: { menu_title: "开发", require_logined: true },
+  meta: {
+    menu_title: "开发",
+    menu_icon: "el-icon-s-cooperation",
+    require_logined: true
+  },
 
   components: { NoteCol, draggable },
   data() {
