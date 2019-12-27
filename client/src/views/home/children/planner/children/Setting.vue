@@ -107,8 +107,6 @@ export default {
 
       let info = await this.$store.dispatch("member_list", this.planner_id);
 
-      console.log("fetch_members", info);
-
       this.members = info;
 
       this.loading = false;
