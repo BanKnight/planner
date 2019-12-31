@@ -217,4 +217,24 @@ export default {
     },
 
     //-----------------------  
+
+    async pan_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/pan`, payload)
+    },
+
+    async pan_mkdir(context, payload)
+    {
+        return await Vue.axios.put(`/api/planner/${payload.planner}/pan`, payload.data)
+    },
+
+    async pan_upload(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/pan`, payload.data)
+    },
+
+    async pan_destroy(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/pan/delete`, payload.data)
+    },
 }

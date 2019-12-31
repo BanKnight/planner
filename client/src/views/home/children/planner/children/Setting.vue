@@ -84,7 +84,10 @@ export default {
       loading: false,
       adding: null, //
       users: [],
-      basic: {},
+      basic: {
+        name: "",
+        desc: ""
+      },
       members: []
     };
   },

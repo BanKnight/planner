@@ -76,21 +76,31 @@ module.exports = class Current extends Controller
             return
         }
 
+        let that_user = service.user.get(body.user)
+
         const member_planner = current.get_planner(planner._id)
-        if (member_planner.members[body.user])       //已经加入了,当做成功
+        let new_member = member_planner.members[body.user]
+
+        if (new_member)       //已经加入了,当做成功
         {
-            ctx.body = {}
+            ctx.body = {
+                _id: new_member._id,
+                name: that_user.name,
+            }
             return
         }
 
-        let new_member = service.member.create({
+        new_member = service.member.create({
             planner: planner._id,
             user: body.user
         })
 
         console.log("create new member in planner", planner._id, body.user, new_member._id)
 
-        ctx.body = {}
+        ctx.body = {
+            _id: new_member._id,
+            name: that_user.name,
+        }
     }
 
     destroy()
@@ -131,7 +141,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        const member = current.destroy(planner._id, that._id)
+        const member = current.destroy(planner._id, that.user)
 
         console.log("kick member in planner", planner._id, user._id, member._id)
 

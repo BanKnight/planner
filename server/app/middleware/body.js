@@ -1,1 +1,2 @@
-module.exports = require('koa-bodyparser');
+
+module.exports = require('koa-body');

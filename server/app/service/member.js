@@ -80,7 +80,7 @@ module.exports = class Current extends Service
 
         this.del(one)
 
-        this.app.db.delete("planner.member", one._id, one)
+        this.app.db.delete("planner.member", one._id)
 
         return one
     }

@@ -68,26 +68,40 @@ module.exports = class Application extends KoaApplication
 
     load_middleware()
     {
-        this.middlewares = utils.load_folder(path.join(this.app_path, "middleware"))    //koa 中已经有middleware 的字段，所以这里换成middlewares
+        let middlewares = utils.load_folder(path.join(this.app_path, "middleware"))    //koa 中已经有middleware 的字段，所以这里换成middlewares
 
-        for (let name of this.config.middleware)         //按照配置里面的顺序use
+        for (let name in middlewares)
         {
             let options = this.config[name] || {}
-            let middleware = this.middlewares[name]
-
-            if (middleware == null)
-            {
-                throw new Error(`middleware[${name}] not found`)
-            }
+            let middleware = middlewares[name]
 
             middleware = middleware(options, this)
 
             middleware = this.to_middleware(middleware, options)
 
-            if (middleware)
+            if (middleware == null)
             {
-                this.use(middleware)
+                continue
             }
+
+            Object.defineProperty(this.middleware, name, {
+                enumerable: false,
+                configurable: false,
+                writable: false,
+                value: middleware
+            })
+        }
+
+        for (let name of this.config.middleware)         //按照配置里面的顺序use
+        {
+            let middleware = this.middleware[name]
+
+            if (middleware == null)
+            {
+                continue
+            }
+
+            this.use(middleware)
         }
     }
 

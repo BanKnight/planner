@@ -133,6 +133,7 @@ module.exports = class Current extends Controller
     update()
     {
         const { ctx, service } = this
+        const { user } = ctx
 
         const current = service.planner
 
@@ -150,6 +151,16 @@ module.exports = class Current extends Controller
             return
         }
 
+        if (that.owner != user._id)
+        {
+            ctx.status = error.NO_AUTH
+            ctx.body = {
+                error: "权限不足"
+            }
+
+            return
+        }
+
         const member_planner = service.member.get_planner(ctx.params.planner)
 
         if (body.owner && body.owner != that.owner && member_planner.members[body.owner] == null)
@@ -161,7 +172,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        that.update(that, body)
+        current.update(that, body)
 
         ctx.body = {}
     }

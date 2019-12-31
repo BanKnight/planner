@@ -2,8 +2,10 @@ module.exports = function (app)
 {
     const router = app.router
 
-    const logined = app.middlewares.logined({}, app)
-    const in_project = app.middlewares.in_project({}, app)
+    const logined = app.middleware.logined
+    const in_project = app.middleware.in_project
+    const upload = app.middleware.upload
+    const static = app.middleware.static
 
     if (process.env.NODE_ENV === "development")
     {
@@ -63,4 +65,10 @@ module.exports = function (app)
     router.post("/api/planner/:planner/wiki/:article", logined, in_project, app.controller.wiki.update)
     router.delete("/api/planner/:planner/wiki/:article", logined, in_project, app.controller.wiki.destroy)
 
+    router.get("/api/planner/:planner/pan", logined, in_project, app.controller.pan.list)                   //通过query 获得路径
+    router.put("/api/planner/:planner/pan", logined, in_project, app.controller.pan.mkdir)                  //post body
+    router.post("/api/planner/:planner/pan", logined, in_project, upload, app.controller.pan.upload)        //通过query 获得路径
+    router.post("/api/planner/:planner/pan/delete", logined, in_project, app.controller.pan.destroy)             // post body
+
+    router.get("/public/upload/*", static)             // post body
 }
