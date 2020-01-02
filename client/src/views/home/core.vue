@@ -33,19 +33,16 @@
           active-text-color="#ff9800"
           style="border-right:0px"
         >
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-star-on"></i>
-              <span slot="title">收藏</span>
-            </template>
+          <el-menu-item
+            v-for="star in stars"
+            :key="star._id"
+            :index="star._id"
+            :route="{path:'/planner/' + star._id}"
+          >
+            <i class="el-icon-star-on"></i>
 
-            <el-menu-item
-              v-for="star in stars"
-              :key="star._id"
-              :index="star._id"
-              :route="{path:'/planner/' + star._id}"
-            >{{star.name}}</el-menu-item>
-          </el-submenu>
+            <span slot="title">{{star.name}}</span>
+          </el-menu-item>
         </el-menu>
 
         <el-footer height="auto">
