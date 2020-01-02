@@ -14,3 +14,93 @@ export function utc_to_local(time)
         + formatNum(localDate.getMinutes()) + ":"
         + formatNum(localDate.getSeconds())
 }
+
+export function do_together(together)
+{
+    let waiting = null;
+    let running = null;
+
+    let do_ = (id) =>
+    {
+        waiting = waiting || {};
+
+        let existed = waiting[id];
+        if (existed == null)
+        {
+            existed = [];
+            waiting[id] = existed;
+        }
+
+        let pro = new Promise((resolve, reject) =>
+        {
+            existed.push({
+                resolve,
+                reject
+            });
+        });
+
+        if (!running)
+        {
+            run();
+        }
+
+        return pro;
+    }
+
+    let run = () =>
+    {
+        running = true;
+        setImmediate(async () =>
+        {
+            let temp = waiting;
+
+            waiting = null;
+
+            let ids = [];
+
+            for (let id in temp)
+            {
+                ids.push(id);
+            }
+
+            try
+            {
+                let resps = await together(ids)
+
+                for (let index = 0; index < ids.length; ++index)
+                {
+                    let id = ids[index];
+                    let resp = resps[index]
+
+                    for (let pro of temp[id])
+                    {
+                        pro.resolve(resp);
+                    }
+                }
+            }
+            catch (e)
+            {
+                for (let index = 0; index < ids.length; ++index)
+                {
+                    let id = ids[index];
+
+                    for (let pro of temp[id])
+                    {
+                        pro.reject(e);
+                    }
+                }
+            }
+
+            if (waiting == null)
+            {
+                running = false;
+            }
+            else
+            {
+                run();
+            }
+        });
+    }
+
+    return do_
+}

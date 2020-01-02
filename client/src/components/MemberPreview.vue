@@ -9,6 +9,10 @@
 </template>
 
 <script>
+import { do_together } from "@/utils";
+
+let fetch = null;
+
 export default {
   data() {
     return {
@@ -40,17 +44,20 @@ export default {
         return;
       }
 
-      let ids = [this.value];
-
       this.loading = true;
 
-      let resp = await this.$store.dispatch("user_search", {
-        ids
-      });
-
-      if (resp.length > 0) {
-        this.current = resp[0];
+      if (fetch == null) {
+        fetch = do_together(async ids => {
+          return await this.$store.dispatch("user_search", {
+            ids
+          });
+        });
       }
+
+      let resp = await fetch(this.value);
+
+      this.current = resp;
+
       this.loading = false;
     }
   }

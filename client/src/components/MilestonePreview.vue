@@ -9,6 +9,10 @@
 </template>
 
 <script>
+import { do_together } from "@/utils";
+
+let fetchs = {};
+
 export default {
   data() {
     return {
@@ -42,10 +46,24 @@ export default {
 
       this.loading = true;
 
-      let resp = await this.$store.dispatch("milestone_detail", {
-        planner: this.planner,
-        milestone: this.value
-      });
+      let fetch = fetchs[this.planner];
+
+      let planner_id = this.planner;
+
+      if (fetch == null) {
+        fetch = do_together(async ids => {
+          return await this.$store.dispatch("milestone_detail", {
+            planner: planner_id,
+            data: {
+              ids
+            }
+          });
+        });
+
+        fetchs[planner_id] = fetch;
+      }
+
+      let resp = await fetch(this.value);
 
       this.current = resp;
 

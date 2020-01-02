@@ -68,7 +68,7 @@ export default {
 
     async milestone_detail(context, payload)
     {
-        return await Vue.axios.get(`/api/planner/${payload.planner}/milestone/${payload.milestone}`)
+        return await Vue.axios.post(`/api/planner/${payload.planner}/milestone`, payload.data)
     },
 
     async milestone_create(context, payload)
