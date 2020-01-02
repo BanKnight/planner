@@ -22,7 +22,15 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="标题" prop="title" width="150"></el-table-column>
+            <el-table-column label="标题" prop="title" width="150">
+              <template slot-scope="scope">
+                <i
+                  class="el-icon-s-opportunity"
+                  style="cursor:pointer"
+                  @click="edit(scope.row)"
+                >{{scope.row.title}}</i>
+              </template>
+            </el-table-column>
 
             <el-table-column label="描述" prop="desc"></el-table-column>
 
@@ -56,12 +64,6 @@
                     type="danger"
                     @click="del(scope.row)"
                   ></el-button>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-edit"
-                    type="primary"
-                    @click="edit(scope.row)"
-                  ></el-button>
                 </el-button-group>
               </template>
             </el-table-column>
@@ -82,6 +84,13 @@
 
       <transition name="el-zoom-in-center">
         <el-main width="300px" v-if="adding" class="el-card">
+          <el-row type="flex" justify="end" align="middle">
+            <el-button
+              size="mini"
+              icon="el-message-box__close el-icon-close"
+              @click="adding = !adding"
+            />
+          </el-row>
           <el-form label-position="top" :model="form" ref="new_one">
             <el-form-item label="标题">
               <el-input v-model="form.title"></el-input>
@@ -111,9 +120,15 @@
 
       <transition name="el-zoom-in-center">
         <el-main width="300px" v-if="editing" class="el-card">
+          <el-row type="flex" justify="space-between" align="middle">
+            <h1>{{editing.title}}</h1>
+            <el-button
+              size="mini"
+              icon="el-message-box__close el-icon-close"
+              @click="edit(editing)"
+            />
+          </el-row>
           <el-form label-position="top" :model="editing_form" ref="new_one">
-            <h3>{{editing_form.title}}</h3>
-
             <el-form-item label="标题">
               <el-input v-model="editing_form.title"></el-input>
             </el-form-item>

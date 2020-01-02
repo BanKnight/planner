@@ -22,7 +22,11 @@
       v-html="$md(value.content)"
     ></el-main>
 
-    <el-footer class="note-card-footer el-row el-row--flex" height="fit-content">
+    <el-footer
+      class="note-card-footer el-row el-row--flex"
+      height="fit-content"
+      style="flex-wrap: wrap;"
+    >
       <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
       <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
       <el-tag

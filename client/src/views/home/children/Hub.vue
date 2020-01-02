@@ -23,9 +23,16 @@
           <template slot="header">
             <el-button type="primary" icon="el-icon-plus" @click="adding =!adding"></el-button>
           </template>
-          <el-button-group>
-            <el-button size="mini" icon="el-icon-star-off" type="success"></el-button>
-          </el-button-group>
+          <template slot-scope="scope">
+            <el-button-group>
+              <el-button
+                size="mini"
+                :icon="star_icon(scope.row)"
+                :type="star_type(scope.row)"
+                @click="star(scope.row)"
+              ></el-button>
+            </el-button-group>
+          </template>
         </el-table-column>
       </el-table>
     </el-main>
@@ -54,7 +61,12 @@
 export default {
   path: "/",
   weight: 0,
-  meta: { menu_title: "项目", require_logined: true },
+  meta: {
+    menu_title: "项目",
+    menu_icon: "el-icon-finished",
+    require_logined: true
+  },
+  inject: ["reload_menu"],
   data() {
     return {
       form: {
@@ -63,14 +75,40 @@ export default {
       },
       adding: false,
       loading: false,
-      planners: []
+      planners: [],
+      stars: []
     };
   },
 
   mounted() {
-    this.init_planners();
+    this.fetch_planners();
+    this.fetch_stars();
   },
   methods: {
+    async fetch_planners() {
+      this.planners = [];
+
+      let data = await this.$store.dispatch("planner_list");
+
+      for (let one of data) {
+        this.planners.push(one);
+      }
+    },
+    star_icon(planner) {
+      if (this.stars.includes(planner._id)) {
+        return "el-icon-star-on";
+      }
+      return "el-icon-star-off";
+    },
+    star_type(planner) {
+      if (this.stars.includes(planner._id)) {
+        return "danger";
+      }
+      return "info";
+    },
+    async fetch_stars() {
+      this.stars = await this.$store.dispatch("planner_list_star");
+    },
     on_create() {
       this.$refs.new_plan.validate(async valid => {
         if (!valid) {
@@ -84,21 +122,22 @@ export default {
           this.loading = false;
           this.adding = false;
 
-          this.init_planners();
+          this.fetch_planners();
         } catch (e) {
           this.adding = false;
           this.loading = false;
         }
       });
     },
-    async init_planners() {
-      this.planners = [];
+    async star(planner) {
+      this.stars = await this.$store.dispatch("planner_star", {
+        data: {
+          planner: planner._id,
+          value: !this.stars.includes(planner._id)
+        }
+      });
 
-      let data = await this.$store.dispatch("planner_list");
-
-      for (let one of data) {
-        this.planners.push(one);
-      }
+      this.reload_menu();
     }
   }
 };

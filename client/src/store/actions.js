@@ -32,7 +32,7 @@ export default {
     },
     async planner_public(context, payload)
     {
-        return await Vue.axios.get(`/api/planner/${payload.planner}/public`)
+        return await Vue.axios.post(`/api/planner/public`, payload.data)
     },
     async planner_detail(context, payload)
     {
@@ -42,6 +42,17 @@ export default {
     {
         return await Vue.axios.post(`/api/planner/${payload.planner}`, payload.data)
     },
+
+    async planner_star(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/star`, payload.data)
+    },
+
+    async planner_list_star()
+    {
+        return await Vue.axios.get(`/api/planner/star`)
+    },
+
     //-----------------------
 
     async member_list(context, id)

@@ -70,11 +70,11 @@ export default {
   },
   methods: {
     async fetch() {
-      const detail = await this.$store.dispatch("planner_public", {
-        planner: this.$route.params.planner
+      const public_info = await this.$store.dispatch("planner_public", {
+        data: [this.$route.params.planner]
       });
 
-      Object.assign(this.detail, detail);
+      Object.assign(this.detail, public_info[0]);
     }
   }
 };

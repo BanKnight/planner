@@ -95,7 +95,7 @@ module.exports = class Current extends Controller
         this.ctx.session = { user: user._id }
         this.ctx.user = user
 
-        this.ctx.body = {}
+        this.ctx.body = user
 
     }
 

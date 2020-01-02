@@ -19,7 +19,10 @@ module.exports = function (app)
 
     router.get("/api/planner", logined, app.controller.planner.list)
     router.put("/api/planner", logined, app.controller.planner.create)
-    router.get("/api/planner/:planner/public", logined, app.controller.planner.public)
+    router.post("/api/planner/star", logined, app.controller.planner.star)
+    router.get("/api/planner/star", logined, app.controller.planner.list_star)
+
+    router.post("/api/planner/public", logined, app.controller.planner.public)
     router.get("/api/planner/:planner", logined, in_project, app.controller.planner.detail)
     router.delete("/api/planner", logined, in_project, app.controller.planner.destroy)
     router.post("/api/planner/:planner", logined, in_project, app.controller.planner.update)

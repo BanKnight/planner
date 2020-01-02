@@ -1,8 +1,31 @@
 <template>
   <el-container id="app" class="full">
-    <router-view />
+    <router-view v-if="is_showing" />
   </el-container>
 </template>
+
+<script>
+export default {
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  data() {
+    return {
+      is_showing: true
+    };
+  },
+  methods: {
+    reload() {
+      this.is_showing = false;
+      this.$nextTick(() => {
+        this.is_showing = true;
+      });
+    }
+  }
+};
+</script>
 
 <style >
 @import "~github-markdown-css";

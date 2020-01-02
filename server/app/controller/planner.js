@@ -88,22 +88,21 @@ module.exports = class Current extends Controller
 
         const current = service.planner
 
-        const that = current.get(ctx.params.planner)
+        const body = ctx.request.body
 
-        if (that == null)
+        let resp = []
+
+        for (let id of body)
         {
-            ctx.status = 404
-            ctx.body = {
-                errror: "planner is not exists"
-            }
+            let one = current.get(id)
 
-            return
+            resp.push({
+                _id: one._id,
+                name: one.name,
+            })
         }
 
-        ctx.body = {
-            _id: that._id,
-            name: that.name,
-        }
+        ctx.body = resp
     }
 
     /**
@@ -175,5 +174,37 @@ module.exports = class Current extends Controller
         current.update(that, body)
 
         ctx.body = {}
+    }
+
+    star()
+    {
+        const { ctx, service } = this
+        const { user } = ctx
+
+        const current = service.planner
+        const body = ctx.request.body
+
+        let planner = current.get(body.planner)
+
+        if (planner == null)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                errror: "no such planner"
+            }
+            return
+        }
+
+        service.user.star(user, body)
+
+        ctx.body = user.star
+    }
+
+    list_star()
+    {
+        const { ctx, service } = this
+        const { user } = ctx
+
+        ctx.body = user.star || []
     }
 }

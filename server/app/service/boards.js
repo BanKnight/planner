@@ -236,7 +236,7 @@ module.exports = class Current extends Service
 
             let index = col.curr.indexOf(note._id)
 
-            col.curr.splice(index)
+            col.curr.splice(index, 1)
 
             this.save_col(col)
         }

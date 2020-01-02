@@ -81,4 +81,25 @@ module.exports = class User extends Service
 
         return ret
     }
+
+    star(user, option)
+    {
+        user.star = user.star || []
+
+        let index = user.star.indexOf(option.planner)
+
+        if (option.value == true)
+        {
+            if (index < 0)
+            {
+                user.star.push(option.planner)
+            }
+        }
+        else if (index >= 0)
+        {
+            user.star.splice(index, 1)
+        }
+
+        this.app.db.set("user", user._id, user)
+    }
 }

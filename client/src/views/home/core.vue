@@ -18,15 +18,16 @@
             :key="child.path"
             :route="{path:child.path}"
           >
-            <i class="el-icon-finished"></i>
+            <i :class="child.meta.menu_icon"></i>
             <span slot="title">{{child.meta.menu_title}}</span>
           </el-menu-item>
         </el-menu>
 
         <el-menu
+          :router="true"
           class="full"
           :collapse="collapse"
-          default-active="2"
+          :default-active="planner_id"
           background-color="#334444"
           text-color="#fff"
           active-text-color="#ff9800"
@@ -38,18 +39,12 @@
               <span slot="title">收藏</span>
             </template>
 
-            <el-menu-item index="1-1">项目</el-menu-item>
-            <el-menu-item index="1-2">项目2</el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-more"></i>
-              <span slot="title">更多</span>
-            </template>
-
-            <el-menu-item index="2-1">项目</el-menu-item>
-            <el-menu-item index="2-2">项目2</el-menu-item>
+            <el-menu-item
+              v-for="star in stars"
+              :key="star._id"
+              :index="star._id"
+              :route="{path:'/planner/' + star._id}"
+            >{{star.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
 
@@ -72,12 +67,18 @@ export default {
   path: "/",
   weight: 0,
   meta: { require_logined: true },
+  provide() {
+    return {
+      reload_menu: this.fetch
+    };
+  },
   data() {
     return {
       collapse: false,
       width: "200px",
       default_route: children[0].menu_title,
-      array: []
+      array: [],
+      stars: {}
     };
   },
   computed: {
@@ -92,10 +93,22 @@ export default {
     },
     root() {
       return "";
+    },
+    planner_id() {
+      return this.$route.params.planner;
     }
   },
   mounted() {
-    console.log(this.$route);
+    this.fetch();
+  },
+  methods: {
+    async fetch() {
+      let stars = await this.$store.dispatch("planner_list_star");
+
+      this.stars = await this.$store.dispatch("planner_public", {
+        data: stars
+      });
+    }
   }
 };
 </script>
