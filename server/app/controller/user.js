@@ -168,7 +168,29 @@ module.exports = class Current extends Controller
 
         const body = ctx.request.body
 
-        if (md5(body.old) != user.password)
+        if (body.basic)
+        {
+            body.basic.name = body.basic.name.trim()
+
+            if (body.basic.name.length == 0)
+            {
+                this.ctx.status = error.BAD_REQUEST
+                this.ctx.body = {
+                    error: '名字不能为空',
+                }
+                return
+            }
+
+
+            current.update(user, body.basic)
+
+            ctx.body = {}
+            return
+        }
+
+        let password_info = body.password
+
+        if (md5(password_info.old) != user.password)
         {
             this.ctx.status = error.BAD_REQUEST
             this.ctx.body = {
@@ -177,9 +199,9 @@ module.exports = class Current extends Controller
             return
         }
 
-        body.new = body.new.trim()
+        password_info.new = password_info.new.trim()
 
-        if (body.new.length == 0)
+        if (password_info.new.length == 0)
         {
             this.ctx.status = error.WRONG_PASSWORD
             this.ctx.body = {
@@ -189,7 +211,7 @@ module.exports = class Current extends Controller
         }
 
         current.update(user, {
-            password: md5(body.new)
+            password: md5(password_info.new)
         })
 
         ctx.body = {}

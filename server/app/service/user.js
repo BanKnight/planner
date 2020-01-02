@@ -62,6 +62,10 @@ module.exports = class User extends Service
 
     update(one, option)
     {
+        delete option._id
+        delete option.account
+        delete option.star
+
         extend(one, option)
 
         this.app.db.set("user", one._id, one)

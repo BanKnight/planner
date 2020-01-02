@@ -1,5 +1,5 @@
 <template>
-  <el-container class="full" direction="vertical">
+  <el-container class="full" direction="vertical" :key="planner_id">
     <el-header
       style=" display:flex;padding:2px 10px;justify-content:space-between;align-content:center;background-color:#75b368;color:white;"
       height="auto"
@@ -64,14 +64,24 @@ export default {
         }
       });
     },
+    planner_id() {
+      return this.$route.params.planner;
+    },
     root() {
-      return `/planner/${this.$route.params.planner}`;
+      return `/planner/${this.planner_id}`;
+    }
+  },
+  watch: {
+    planner_id(new_val) {
+      if (new_val != null && new_val.length > 0) {
+        this.fetch();
+      }
     }
   },
   methods: {
     async fetch() {
       const public_info = await this.$store.dispatch("planner_public", {
-        data: [this.$route.params.planner]
+        data: [this.planner_id]
       });
 
       Object.assign(this.detail, public_info[0]);
