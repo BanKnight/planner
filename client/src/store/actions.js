@@ -20,6 +20,12 @@ export default {
     {
         return await Vue.axios.post("/api/user/search", payload)
     },
+
+    async user_reset(context, payload)
+    {
+        return await Vue.axios.post("/api/user/reset", payload)
+    },
+
     //-----------------------
     async planner_list(context, payload)
     {

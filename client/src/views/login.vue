@@ -73,9 +73,7 @@
                 autocomplete="on"
                 prefix-icon="el-icon-lock"
                 @keyup.enter.native="regist"
-              >
-                <el-button icon="el-icon-view" slot="append" />
-              </el-input>
+              ></el-input>
             </el-form-item>
 
             <el-form-item prop="name">

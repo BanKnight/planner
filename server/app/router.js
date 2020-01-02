@@ -15,6 +15,7 @@ module.exports = function (app)
     router.post("/api/user/login", app.controller.user.login)
     router.post("/api/user/regist", app.controller.user.regist)
     router.post("/api/user/search", logined, app.controller.user.search)
+    router.post("/api/user/reset", logined, app.controller.user.reset)
     router.get("/api/user/:user", logined, app.controller.user.detail)
 
     router.get("/api/planner", logined, app.controller.planner.list)

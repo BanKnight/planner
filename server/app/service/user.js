@@ -64,7 +64,7 @@ module.exports = class User extends Service
     {
         extend(one, option)
 
-        this.app.db.set("user", user._id, user)
+        this.app.db.set("user", one._id, one)
     }
 
     search(keyword)

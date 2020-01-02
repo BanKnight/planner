@@ -158,4 +158,40 @@ module.exports = class Current extends Controller
             name: that.name
         }
     }
+
+    reset()
+    {
+        const { ctx, service } = this
+        const { user } = ctx
+
+        const current = service.user
+
+        const body = ctx.request.body
+
+        if (md5(body.old) != user.password)
+        {
+            this.ctx.status = error.BAD_REQUEST
+            this.ctx.body = {
+                error: '密码错误',
+            }
+            return
+        }
+
+        body.new = body.new.trim()
+
+        if (body.new.length == 0)
+        {
+            this.ctx.status = error.WRONG_PASSWORD
+            this.ctx.body = {
+                error: '新密码不能为空',
+            }
+            return
+        }
+
+        current.update(user, {
+            password: md5(body.new)
+        })
+
+        ctx.body = {}
+    }
 }
