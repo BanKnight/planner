@@ -151,17 +151,18 @@ module.exports = class Current extends Controller
 
         const current = service.milestone
 
-        const stone = ctx.params.milestone
+        const body = ctx.request.body
 
-        if (stone == null)
+        const resp = []
+
+        for (let id of body.ids)
         {
-            ctx.status = error.BAD_REQUEST
-            ctx.body = {
-                error: "milestone id required"
-            }
-            return
+            let one = current.get(id)
+
+            resp.push(one)
         }
 
-        ctx.body = current.get(ctx.params.milestone)
+        ctx.body = resp
     }
+
 }

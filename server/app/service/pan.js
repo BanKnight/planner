@@ -41,7 +41,7 @@ module.exports = class Current extends Service
             throw new Error("目标目录不存在父目录")
         }
 
-        let whole_path = path.join(parent_path, name).replace("\\", "/")
+        let whole_path = path.join(parent_path, name).replace(/\\/g, "/")
 
         let file = pan.files[whole_path]
 
@@ -62,6 +62,7 @@ module.exports = class Current extends Service
             pan: pan_id,
             path: whole_path,
             directory: true,
+            updated: Date.now(),
         }
 
         pan.files[whole_path] = file
@@ -78,7 +79,7 @@ module.exports = class Current extends Service
     {
         let pan = this.get_pan(pan_id)
 
-        let whole_path = path.join(parent_path, name).replace("\\", "/")
+        let whole_path = path.join(parent_path, name).replace(/\\/g, "/")
 
         let files = []
 
@@ -133,7 +134,7 @@ module.exports = class Current extends Service
         {
             name = `${base_name}${ext}`
 
-            whole_path = path.join(parent_path, name).replace("\\", "/")
+            whole_path = path.join(parent_path, name).replace(/\\/g, "/")
 
             let file = pan.files[whole_path]
 
@@ -155,7 +156,9 @@ module.exports = class Current extends Service
             ext: ext,
             base: base_name,
             path: whole_path,
-            res: `${_id}${ext}`
+            res: `${_id}${ext}`,
+            updated: Date.now(),
+
         }
 
         pan.files[whole_path] = file
@@ -183,7 +186,7 @@ module.exports = class Current extends Service
             throw new Error("目标目录不存在父目录")
         }
 
-        let new_path = path.join(parent_path, file.name).replace("\\", "/")
+        let new_path = path.join(parent_path, file.name).replace(/\\/g, "/")
 
         if (pan.files[new_path])
         {
@@ -218,7 +221,7 @@ module.exports = class Current extends Service
 
         let parent_path = path.dirname(whole_path)
 
-        let new_path = path.join(parent_path, new_name).replace("\\", "/")
+        let new_path = path.join(parent_path, new_name).replace(/\\/g, "/")
 
         let existed = pan.files[new_path]
 
