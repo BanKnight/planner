@@ -75,8 +75,6 @@ module.exports = class Application extends KoaApplication
             let options = this.config[name] || {}
             let middleware = middlewares[name]
 
-            middleware = middleware(options, this)
-
             middleware = this.to_middleware(middleware, options)
 
             if (middleware == null)
@@ -205,6 +203,8 @@ module.exports = class Application extends KoaApplication
             return
         }
 
-        return func
+        let middleware = func(options, this)
+
+        return middleware
     }
 }

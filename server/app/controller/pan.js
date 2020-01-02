@@ -22,11 +22,11 @@ module.exports = class Current extends Controller
 
         let pan = current.get_pan(ctx.params.planner)
 
-        let target_path = ctx.query.path
+        let target_path = ctx.query.path || "/"
 
         let file = pan.files[target_path]
 
-        if (target_path != "/" && file == null)
+        if (file == null)
         {
             ctx.status = 404
             ctx.body = {
@@ -35,7 +35,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        if (file != null && !file.directory)
+        if (!file.directory)
         {
             ctx.status = error.BAD_REQUEST
             ctx.body = {
@@ -46,28 +46,17 @@ module.exports = class Current extends Controller
 
         let children = []
 
-        for (let whole_path in pan.files)
+        current.under(pan, file, (child) =>
         {
-            if (whole_path == target_path)
-            {
-                continue
-            }
+            children.push(child)
 
-            let child = pan.files[whole_path]
-
-            if (path.dirname(whole_path) == target_path)
-            {
-                children.push(child)
-            }
-        }
+        })
 
         ctx.body = {
             file,
             children,
         }
     }
-
-
 
     async mkdir()
     {
@@ -115,24 +104,21 @@ module.exports = class Current extends Controller
 
         const body = ctx.request.body
 
-        const file = current.unlink(planner_id, body.path, body.name)
+        const files = current.unlink(planner_id, body.path, body.name)
 
         const pan_directory = path.join(config.upload.dir, ctx.params.planner)
 
-        if (file == null)
+        for (let file of files)
         {
-            ctx.body = {}
-            return
+            if (!file.directory)
+            {
+                const whole_path = path.join(pan_directory, file.res)
+
+                fs.unlink(whole_path)
+            }
         }
 
-        if (!file.directory)
-        {
-            const whole_path = path.join(pan_directory, file.res)
-
-            fs.unlink(whole_path)
-        }
-
-        ctx.body = file
+        ctx.body = {}
     }
 
     _save(file, path)

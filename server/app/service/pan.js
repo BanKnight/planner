@@ -71,41 +71,45 @@ module.exports = class Current extends Service
         return file
     }
 
+    /**
+     * 删除
+     */
     unlink(pan_id, parent_path, name)
     {
         let pan = this.get_pan(pan_id)
 
         let whole_path = path.join(parent_path, name).replace("\\", "/")
 
+        let files = []
+
         let file = pan.files[whole_path]
 
         if (file == null)
         {
-            return
+            return files
         }
+
+        files.push(file)
 
         delete pan.files[whole_path]
 
+        this.app.db.delete("pan.files", file._id)
+
         if (!file.directory)
         {
-            this.app.db.delete("pan.files", file._id)
-
-            return file
+            return files
         }
 
-        for (let child_path in pan.files)
+        this.travel(pan, file, (child) =>
         {
-            let one = pan.files[child_path]
+            files.push(child)
 
-            if (path.dirname(child_path) == whole_path)
-            {
-                delete pan.files[child_path]
+            delete pan.files[child.path]
 
-                this.app.db.delete("pan.files", one._id)
-            }
-        }
+            this.app.db.delete("pan.files", child._id)
+        })
 
-        return file
+        return files
     }
 
     upload(pan_id, parent_path, name, author_id, raw_file)
@@ -188,7 +192,12 @@ module.exports = class Current extends Service
 
         if (file.directory)
         {
+            this.travel(pan, file, (one) =>
+            {
+                one.path.replace(file.path, new_path)
 
+                this.app.db.set("pan.files", one._id, one)
+            })
         }
 
         file.path = new_path
@@ -218,9 +227,51 @@ module.exports = class Current extends Service
             throw new Error("has already had the same name file")
         }
 
+        if (file.directory)
+        {
+            this.travel(pan, file, (one) =>
+            {
+                one.path.replace(file.path, new_path)
+
+                this.app.db.set("pan.files", one._id, one)
+            })
+        }
+
         file.path = new_path
 
         this.app.db.set("pan.files", file._id, file)
+    }
+
+    under(pan, file, cb)
+    {
+        let parent_path = file.path
+
+        for (let child_path in pan.files)
+        {
+            let one = pan.files[child_path]
+
+            if (child_path != parent_path && path.dirname(child_path) == parent_path)
+            {
+                cb(one)
+            }
+        }
+    }
+
+    travel(pan, file, cb)
+    {
+        let parent_path = file.path
+
+        for (let child_path in pan.files)
+        {
+            let one = pan.files[child_path]
+
+            if (one.path.startsWith(parent_path) == false)
+            {
+                continue
+            }
+
+            cb(one)
+        }
     }
 
     get_pan(id)
@@ -230,7 +281,9 @@ module.exports = class Current extends Service
         {
             pan = {
                 _id: id,
-                files: {},          //[path] = file
+                files: {
+                    "/": { directory: true, path: "/" }
+                },          //[path] = file
             }
 
             this.ids[id] = pan
