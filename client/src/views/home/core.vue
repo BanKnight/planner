@@ -1,7 +1,7 @@
 <template>
   <el-container class="full">
-    <el-aside class="sidebar full-height" width="auto">
-      <el-container class="full" direction="vertical">
+    <el-container class="full" direction="vertical" :style="{width:collapse?'68px':'200px'}">
+      <el-main style="padding:0;background-color:#334444">
         <el-menu
           :router="true"
           :collapse="collapse"
@@ -10,7 +10,7 @@
           background-color="#334444"
           text-color="#fff"
           active-text-color="#ff9800"
-          style="border-right:0px;height:200px"
+          style="border-right:0px;height:200px;border-bottom:1px solid #6b6f6f"
         >
           <el-menu-item
             :index="child.meta.menu_title"
@@ -25,7 +25,6 @@
 
         <el-menu
           :router="true"
-          class="full"
           :collapse="collapse"
           :default-active="planner_id"
           background-color="#334444"
@@ -44,14 +43,18 @@
             <span slot="title">{{star.name}}</span>
           </el-menu-item>
         </el-menu>
+      </el-main>
 
-        <el-footer height="auto">
-          <el-row class="full" type="flex" justify="space-around" align="middle">
-            <el-button type="text" icon="el-icon-s-fold" @click="collapse = !collapse"></el-button>
-          </el-row>
-        </el-footer>
-      </el-container>
-    </el-aside>
+      <el-footer
+        height="40px"
+        style="background-color:#334444;color:white;padding:0 5px;border-top:1px solid #6b6f6f"
+      >
+        <el-row class="full" type="flex" justify="space-around" align="middle">
+          <i class="el-icon-setting clickable" @click="$router.replace('/setting')" />
+          <i class="el-icon-s-fold clickable" @click="collapse = !collapse" />
+        </el-row>
+      </el-footer>
+    </el-container>
 
     <router-view />
   </el-container>

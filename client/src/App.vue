@@ -185,4 +185,8 @@ p {
 .el-form-item {
   margin-bottom: 5px;
 }
+
+.clickable {
+  cursor: pointer;
+}
 </style>

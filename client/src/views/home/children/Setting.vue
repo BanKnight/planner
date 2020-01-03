@@ -1,5 +1,5 @@
 <template>
-  <el-main style="padding:10px">
+  <el-container class="full" style="padding:10px">
     <el-tabs tab-position="left" type="border-card" class="full">
       <el-tab-pane label="基础" class="full">
         <el-form label-width="100px" label-position="top">
@@ -59,7 +59,7 @@
         </el-form>
       </el-tab-pane>
     </el-tabs>
-  </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -69,8 +69,6 @@ export default {
   path: "/setting",
   weight: 0,
   meta: {
-    menu_title: "设置",
-    menu_icon: "el-icon-setting",
     require_logined: true
   },
   data() {
