@@ -250,6 +250,11 @@ export default {
         return await Vue.axios.post(`/api/planner/${payload.planner}/pan`, payload.data)
     },
 
+    async pan_upload_priavte(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/pan/private`, payload.data)
+    },
+
     async pan_destroy(context, payload)
     {
         return await Vue.axios.post(`/api/planner/${payload.planner}/pan/delete`, payload.data)

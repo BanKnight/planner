@@ -72,7 +72,8 @@ module.exports = function (app)
     router.get("/api/planner/:planner/pan", logined, in_project, app.controller.pan.list)                   //通过query 获得路径
     router.put("/api/planner/:planner/pan", logined, in_project, app.controller.pan.mkdir)                  //post body
     router.post("/api/planner/:planner/pan", logined, in_project, upload, app.controller.pan.upload)        //通过query 获得路径
-    router.post("/api/planner/:planner/pan/delete", logined, in_project, app.controller.pan.destroy)             // post body
+    router.post("/api/planner/:planner/pan/delete", logined, in_project, app.controller.pan.destroy)        //post body
+    router.post("/api/planner/:planner/pan/private", logined, upload, app.controller.pan.upload_private)            //默认路径上传
 
     router.get("/public/upload/*", static)             // post body
 }

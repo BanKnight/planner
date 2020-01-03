@@ -30,10 +30,8 @@ module.exports = class Current extends Service
         }
     }
 
-    mkdir(pan_id, parent_path, name, author_id)
+    mkdir(pan, parent_path, name, author_id)
     {
-        let pan = this.get_pan(pan_id)
-
         let parent_file = pan.files[parent_path]
 
         if (parent_path != "/" && (parent_file == null || !parent_file.directory))
@@ -59,7 +57,7 @@ module.exports = class Current extends Service
             _id: shortid.generate(),
             name: name,
             author: author_id,
-            pan: pan_id,
+            pan: pan._id,
             path: whole_path,
             directory: true,
             updated: Date.now(),
@@ -72,13 +70,35 @@ module.exports = class Current extends Service
         return file
     }
 
+    get_private(pan)
+    {
+        let file = pan.files["/.private"]
+        if (file)
+        {
+            return file
+        }
+
+        file = {
+            _id: shortid.generate(),
+            name: "private",
+            pan: pan._id,
+            path: "/.private",
+            directory: true,
+            updated: Date.now(),
+        }
+
+        pan.files[file.path] = file
+
+        this.app.db.set("pan.files", file._id, file)
+
+        return file
+    }
+
     /**
      * 删除
      */
-    unlink(pan_id, parent_path, name)
+    unlink(pan, parent_path, name)
     {
-        let pan = this.get_pan(pan_id)
-
         let whole_path = path.join(parent_path, name).replace(/\\/g, "/")
 
         let files = []
@@ -113,10 +133,8 @@ module.exports = class Current extends Service
         return files
     }
 
-    upload(pan_id, parent_path, name, author_id, raw_file)
+    upload(pan, parent_path, name, author_id, raw_file)
     {
-        let pan = this.get_pan(pan_id)
-
         let parent_file = pan.files[parent_path]
 
         if (parent_path != "/" && (parent_file == null || !parent_file.directory))
@@ -149,7 +167,7 @@ module.exports = class Current extends Service
         const _id = shortid.generate()
         let file = {
             _id: _id,
-            pan: pan_id,
+            pan: pan._id,
             name: name,
             size: raw_file.size,
             author: author_id,
@@ -168,10 +186,8 @@ module.exports = class Current extends Service
         return file
     }
 
-    move(pan_id, old_path, parent_path)
+    move(pan, old_path, parent_path)
     {
-        let pan = this.get_pan(pan_id)
-
         let file = pan.files[old_path]
 
         if (file == null)
@@ -208,10 +224,8 @@ module.exports = class Current extends Service
         this.app.db.set("pan.files", file._id, file)
     }
 
-    rename(pan_id, whole_path, new_name)
+    rename(pan, whole_path, new_name)
     {
-        let pan = this.get_pan(pan_id)
-
         let file = pan.files[whole_path]
 
         if (file == null)

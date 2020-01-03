@@ -62,12 +62,15 @@ module.exports = class Current extends Controller
     {
         const { ctx, service } = this
         const { user } = ctx
-        const planner_id = ctx.params.planner
         const current = service.pan
+
+        const planner_id = ctx.params.planner
 
         let body = ctx.request.body
 
-        let file = current.mkdir(planner_id, body.path, body.name, user._id)
+        const pan = current.get_pan(planner_id)
+
+        let file = current.mkdir(pan, body.path, body.name, user._id)
 
         ctx.body = file
     }
@@ -82,7 +85,9 @@ module.exports = class Current extends Controller
 
         const file = ctx.request.files.file
 
-        const pan_file = current.upload(planner_id, ctx.query.path, file.name, user._id, file)
+        const pan = current.get_pan(planner_id)
+
+        const pan_file = current.upload(pan, ctx.query.path, file.name, user._id, file)
 
         const pan_directory = path.join(config.upload.dir, ctx.params.planner)
 
@@ -95,6 +100,34 @@ module.exports = class Current extends Controller
         ctx.body = pan_file
     }
 
+    async upload_private()
+    {
+        const { ctx, service, config } = this
+        const { user } = ctx
+
+        const planner_id = ctx.params.planner
+        const current = service.pan
+
+        const file = ctx.request.files.file
+
+        const pan = current.get_pan(planner_id)
+
+        const private_file = current.get_private(pan)
+
+        const pan_file = current.upload(pan, private_file.path, file.name, user._id, file)
+
+        const pan_directory = path.join(config.upload.dir, ctx.params.planner)
+
+        await fs.mkdirp(pan_directory)
+
+        const whole_path = path.join(pan_directory, pan_file.res)
+
+        await this._save(file, whole_path)
+
+        //返回连接
+        ctx.body = file
+    }
+
     destroy()
     {
         const { ctx, service, config } = this
@@ -104,7 +137,9 @@ module.exports = class Current extends Controller
 
         const body = ctx.request.body
 
-        const files = current.unlink(planner_id, body.path, body.name)
+        const pan = current.get_pan(planner_id)
+
+        const files = current.unlink(pan, body.path, body.name)
 
         const pan_directory = path.join(config.upload.dir, ctx.params.planner)
 
