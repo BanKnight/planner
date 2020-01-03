@@ -10,7 +10,10 @@
           <i class="el-icon-delete" slot="reference" style="cursor:pointer"></i>
         </el-popconfirm>
 
-        <span @dblclick="edit_name">{{title}}</span>
+        <span @dblclick="edit_name">
+          {{title}}:
+          <el-tag type="success" size="mini">{{curr.length}}</el-tag>
+        </span>
 
         <span>
           <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>

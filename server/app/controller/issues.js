@@ -23,23 +23,10 @@ module.exports = class Current extends Controller
             return
         }
 
-        const data = current.search(planner, ctx.query.keyword)
 
-        ctx.body = cal_page(data, config.page.size, +ctx.query.curr, (one) =>
-        {
-            let data = {
-                _id: one._id,
-                title: one.title,
-                tags: one.tags,
-                assignee: one.assignee,
-                milestone: one.milestone,
-                created: one.created,
-                updated: one.updated,
-                closed: one.closed,
+        const data = current.search(planner, ctx.query)
 
-            }
-            return data
-        })
+        ctx.body = cal_page(data, config.page.size, +ctx.query.curr)
     }
 
     detail()
@@ -59,19 +46,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        let data = {
-            _id: one._id,
-            title: one.title,
-            content: one.content,
-            assignee: one.assignee,
-            milestone: one.milestone,
-            tags: one.tags,
-            created: one.created,
-            updated: one.updated,
-            closed: one.closed,
-        }
-
-        ctx.body = data
+        ctx.body = one
     }
 
     create()

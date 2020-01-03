@@ -11,7 +11,7 @@ export default {
   path: "issues",
   weight: 7,
   meta: {
-    menu_title: "Issues",
+    menu_title: "问题",
     menu_icon: "el-icon-question",
     require_logined: true
   },

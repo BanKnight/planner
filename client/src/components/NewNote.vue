@@ -9,10 +9,77 @@
 
     <el-main style="padding:0">
       <el-tabs type="border-card">
-        <el-tab-pane label="基础">
-          <el-input placeholder="标题" v-model="form.title" />
+        <el-tab-pane label="指派">
+          <el-form size="mini" label-position="left" label-width="80px">
+            <el-form-item label="指派：">
+              <member-select
+                v-model="form.assignee"
+                size="mini"
+                :planner="planner"
+                class="no-border-input"
+              ></member-select>
+            </el-form-item>
 
-          <el-main class="el-card full" direction="vertical" style="padding:0">
+            <el-divider />
+
+            <el-form-item label="里程碑：">
+              <milestone-select
+                v-model="form.milestone"
+                size="mini"
+                :planner="planner"
+                class="no-border-input"
+              />
+            </el-form-item>
+
+            <el-form-item label="时间：">
+              <el-date-picker
+                type="date"
+                size="mini"
+                placeholder="开始时间"
+                v-model="form.start"
+                class="no-border-input"
+              ></el-date-picker>
+
+              <el-form-item>
+                <el-date-picker
+                  type="date"
+                  size="mini"
+                  placeholder="结束时间"
+                  v-model="form.stop"
+                  class="no-border-input"
+                ></el-date-picker>
+              </el-form-item>
+            </el-form-item>
+
+            <el-divider />
+
+            <el-form-item label="需求：">
+              <backlog-select
+                v-model="form.backlog"
+                size="mini"
+                :planner="planner"
+                class="no-border-input"
+              ></backlog-select>
+
+              <el-checkbox v-model="form.close_backlog">关联关闭</el-checkbox>
+            </el-form-item>
+
+            <el-form-item label="问题：">
+              <issue-select
+                v-model="form.issue"
+                size="mini"
+                :planner="planner"
+                class="no-border-input"
+              ></issue-select>
+              <el-checkbox v-model="form.close_issue">关联关闭</el-checkbox>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+
+        <el-tab-pane label="基础">
+          <el-container class="el-card full" direction="vertical">
+            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+
             <mavon-editor
               v-model="form.content"
               :boxShadow="false"
@@ -26,49 +93,12 @@
               class="full"
               style="border:none"
             />
-          </el-main>
+          </el-container>
         </el-tab-pane>
-        <el-tab-pane label="指派">
-          <el-form size="small" label-position="left" label-width="100px">
-            <el-form-item label="指派：">
-              <member-select
-                v-model="form.assignee"
-                size="mini"
-                :planner="planner"
-                class="no-border-input"
-              ></member-select>
-            </el-form-item>
 
-            <el-form-item label="里程碑：">
-              <milestone-select
-                v-model="form.milestone"
-                size="mini"
-                :planner="planner"
-                class="no-border-input"
-              />
-            </el-form-item>
+        <el-tab-pane label="需求" v-if="form.backlog && form.backlog.length > 0"></el-tab-pane>
 
-            <el-form-item label="开始时间：">
-              <el-date-picker
-                type="date"
-                size="mini"
-                placeholder="开始时间"
-                v-model="form.start"
-                class="no-border-input"
-              ></el-date-picker>
-            </el-form-item>
-
-            <el-form-item label="结束时间：">
-              <el-date-picker
-                type="date"
-                size="mini"
-                placeholder="结束时间"
-                v-model="form.stop"
-                class="no-border-input"
-              ></el-date-picker>
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
+        <el-tab-pane label="问题" v-if="form.issue && form.issue.length > 0"></el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -77,9 +107,11 @@
 <script>
 import MemberSelect from "./MemberSelect";
 import MilestoneSelect from "./MilestoneSelect";
+import BacklogSelect from "./BacklogSelect";
+import IssueSelect from "./IssueSelect";
 
 export default {
-  components: { MemberSelect, MilestoneSelect },
+  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect },
   props: {
     planner: String,
     col: String
@@ -87,14 +119,7 @@ export default {
   data() {
     return {
       editable: false,
-      form: {
-        title: "",
-        assignee: "",
-        milestone: "",
-        start: null,
-        stop: null,
-        content: ""
-      }
+      form: {}
     };
   },
   computed: {
@@ -111,8 +136,13 @@ export default {
       this.$emit("cancel");
     },
     save() {
+      if (!this.form.title) {
+        this.$message.error("请先输入标题");
+        return;
+      }
+
       this.form.title = this.form.title.trim();
-      this.form.content = this.form.content.trim();
+      this.form.content = (this.form.content || "").trim();
 
       if (this.form.title.length == 0) {
         this.$message.error("请先输入标题");

@@ -19,12 +19,13 @@
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="editing = !editing">编辑</el-button>
           </el-button-group>
         </template>
-
-        <member-preview size="mini" :planner="planner_id" v-model="article.author" />
       </el-row>
       <el-container class="el-card" direction="vertical">
         <div v-if="!editing" class style="text-align:center;">
-          <h1>{{article.title}}</h1>
+          <h1>
+            {{article.title}}
+            <member-preview size="mini" :planner="planner_id" v-model="article.author" />
+          </h1>
         </div>
         <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
         <mavon-editor

@@ -170,9 +170,29 @@ module.exports = class Current extends Service
         this.app.db.set("planner.backlogs", one._id, one)
     }
 
-    search(planner, keyword)
+    search(planner, option)
     {
-        if (keyword == null || keyword.length == 0)
+        if (option.keyword != null)
+        {
+            return this.search_keyword(planner, option.keyword)
+        }
+
+        if (option.id)
+        {
+            let existed = this.get(option.id)
+            if (existed)
+            {
+                return [existed]
+            }
+            return []
+        }
+
+        return planner.items.data
+    }
+
+    search_keyword(planner, keyword)
+    {
+        if (keyword.length == 0)
         {
             return planner.items.data
         }

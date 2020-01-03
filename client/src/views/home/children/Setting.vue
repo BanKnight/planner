@@ -3,18 +3,22 @@
     <el-tabs tab-position="left" type="border-card" class="full">
       <el-tab-pane label="基础" class="full">
         <el-form label-width="100px" label-position="top">
-          <el-form-item label="姓名:">
+          <el-form-item label="修改姓名:">
             <el-input v-model="basic_form.name" prefix-icon="el-icon-user" />
           </el-form-item>
 
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" size="medium" @click="reset_name">确定</el-button>
+              <el-button type="primary" size="medium" style="width:200px" @click="reset_name">确定</el-button>
             </el-row>
+          </el-form-item>
+
+          <el-form-item label="登出：">
+            <el-button type="danger" plain size="medium" @click="quit">登出</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="更改密码" class="full">
+      <el-tab-pane label="更改密码：" class="full">
         <el-form label-width="100px" label-position="top">
           <el-form-item label="旧密码:">
             <el-input
@@ -53,7 +57,7 @@
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" size="medium" @click="reset_password">确定</el-button>
+              <el-button type="primary" style="width:200px" size="medium" @click="reset_password">确定</el-button>
             </el-row>
           </el-form-item>
         </el-form>
@@ -127,6 +131,10 @@ export default {
 
       Cookie.remove("token");
 
+      this.$router.replace({ path: "/login" });
+    },
+    quit() {
+      Cookie.remove("token");
       this.$router.replace({ path: "/login" });
     }
   }

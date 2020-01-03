@@ -44,6 +44,7 @@
               placeholder="请输入用户姓名"
               :remote-method="search_user"
               :loading="loading"
+              value-key="_id"
             >
               <el-option
                 v-for="user in users"

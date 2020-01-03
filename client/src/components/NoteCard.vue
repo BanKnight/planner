@@ -29,13 +29,7 @@
     >
       <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
       <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
-      <el-tag
-        size="mini"
-        v-if="value.stop"
-        effect="dark"
-        type="danger"
-        class="el-icon-date"
-      >{{ $format_md(value.stop) }}</el-tag>
+      <el-tag size="mini" v-if="value.stop" v-bind="day_option" class="el-icon-date">剩{{diff }}天</el-tag>
       <el-tag size="mini" v-else effect="plain" type="danger" class="el-icon-date"></el-tag>
     </el-footer>
   </el-container>
@@ -49,6 +43,38 @@ export default {
   components: { MemberPreview, MilestonePreview },
   props: {
     value: Object
+  },
+  computed: {
+    diff() {
+      if (this.value.stop == null) {
+        return Infinity;
+      }
+
+      const first = this.$dayjs(this.value.stop).endOf("day");
+      const second = this.$dayjs().endOf("day");
+
+      return first.diff(second, "day");
+    },
+    day_option() {
+      if (this.diff <= 0) {
+        return {
+          type: "info",
+          effect: "dark"
+        };
+      }
+
+      if (this.diff < 2) {
+        return {
+          type: "",
+          effect: "dark"
+        };
+      }
+
+      return {
+        type: "success",
+        effect: "plain"
+      };
+    }
   },
   methods: {
     on_command(cmd) {
@@ -106,7 +132,7 @@ main.note-card-body {
 }
 
 footer.note-card-footer {
-  padding-left: 0.5em;
+  padding: 0;
   border-top: 1px solid #f5f6f8;
   justify-content: start;
   align-items: center;
