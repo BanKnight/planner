@@ -87,6 +87,11 @@ module.exports = class Current extends Controller
 
         const pan = current.get_pan(planner_id)
 
+        if (ctx.query.path == "/.private")
+        {
+            current.get_private(pan)        //创建秘密目录
+        }
+
         const pan_file = current.upload(pan, ctx.query.path, file.name, user._id, file)
 
         const pan_directory = path.join(config.upload.dir, ctx.params.planner)
@@ -98,34 +103,6 @@ module.exports = class Current extends Controller
         await this._save(file, whole_path)
 
         ctx.body = pan_file
-    }
-
-    async upload_private()
-    {
-        const { ctx, service, config } = this
-        const { user } = ctx
-
-        const planner_id = ctx.params.planner
-        const current = service.pan
-
-        const file = ctx.request.files.file
-
-        const pan = current.get_pan(planner_id)
-
-        const private_file = current.get_private(pan)
-
-        const pan_file = current.upload(pan, private_file.path, file.name, user._id, file)
-
-        const pan_directory = path.join(config.upload.dir, ctx.params.planner)
-
-        await fs.mkdirp(pan_directory)
-
-        const whole_path = path.join(pan_directory, pan_file.res)
-
-        await this._save(file, whole_path)
-
-        //返回连接
-        ctx.body = file
     }
 
     destroy()
@@ -163,7 +140,6 @@ module.exports = class Current extends Controller
             let render = fs.createReadStream(file.path);
             // 创建写入流
             let upStream = fs.createWriteStream(path);
-            render.pipe(upStream);
             upStream.on('finish', () =>
             {
                 resolve(path)
@@ -172,6 +148,8 @@ module.exports = class Current extends Controller
             {
                 reject(err)
             });
+
+            render.pipe(upStream);
         })
     }
 }

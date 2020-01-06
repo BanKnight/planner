@@ -15,6 +15,12 @@ export function utc_to_local(time)
         + formatNum(localDate.getSeconds())
 }
 
+export function planner_res_url(base, planner, res)
+{
+    return `${base}/public/upload/${planner}/${res}`;
+
+}
+
 export function do_together(together)
 {
     let waiting = null;

@@ -245,18 +245,42 @@ export default {
         return await Vue.axios.put(`/api/planner/${payload.planner}/pan`, payload.data)
     },
 
+    /**
+     * payload.data: FormData
+     */
     async pan_upload(context, payload)
     {
-        return await Vue.axios.post(`/api/planner/${payload.planner}/pan`, payload.data)
-    },
-
-    async pan_upload_priavte(context, payload)
-    {
-        return await Vue.axios.post(`/api/planner/${payload.planner}/pan/private`, payload.data)
+        return await Vue.axios({
+            url: `/api/planner/${payload.planner}/pan`,
+            method: 'post',
+            data: payload.data,
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
     },
 
     async pan_destroy(context, payload)
     {
         return await Vue.axios.post(`/api/planner/${payload.planner}/pan/delete`, payload.data)
+    },
+
+    async pan_upload_priavte(context, payload)
+    {
+        return await Vue.axios({
+            url: `/api/planner/${payload.planner}/pan`,
+            method: 'post',
+            params: {
+                path: "/.private",
+            },
+            data: payload.data,
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+    },
+
+    async pan_destroy_priavte(context, payload)
+    {
+        return await Vue.axios.post(`/api/planner/${payload.planner}/pan/delete`, {
+            path: "/.private",
+            name: payload.name
+        })
     },
 }

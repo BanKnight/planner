@@ -48,16 +48,7 @@
       <el-container class="el-card" direction="vertical">
         <el-input placeholder="请输入标题" v-model="article.title" clearable />
 
-        <mavon-editor
-          v-model="article.content"
-          @save="summit"
-          :ishljs="false"
-          :boxShadow="false"
-          :toolbars="options"
-          toolbarsBackground="#f0f9eb"
-          class="full"
-          style="border:none"
-        />
+        <md-editor v-model="article.content" theme="small" :editable="true" @save="summit" />
       </el-container>
     </el-container>
   </el-container>
@@ -66,13 +57,14 @@
 <script>
 import MemberSelect from "@/components/MemberSelect";
 import MilestoneSelect from "@/components/MilestoneSelect";
+import MdEditor from "@/components/MdEditor";
 
 export default {
   path: "new",
   weight: 10,
   meta: { require_logined: true },
-  components: { MilestoneSelect, MemberSelect },
-  data() {
+  components: { MilestoneSelect, MemberSelect, MdEditor },
+  data()  {
     return {
       article: {
         title: "",
@@ -84,7 +76,7 @@ export default {
     };
   },
   computed: {
-    options() {
+    options()    {
       return {
         imagelink: true, // 图片链接
         fullscreen: true, // 全屏编辑
@@ -98,26 +90,26 @@ export default {
         preview: true // 预览
       };
     },
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/issues`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (from.fullPath != "/") {
+  beforeRouteEnter(to, from, next)  {
+    next(vm =>    {
+      if (from.fullPath != "/")      {
         vm.from = from.fullPath;
       }
     });
   },
   methods: {
-    async summit() {
+    async summit()    {
       this.article.title = this.article.title.trim();
       this.articlecontent = this.article.content;
 
-      if (this.article.title.length == 0) {
+      if (this.article.title.length == 0)      {
         this.$message.error("提交前标题不能为空");
         return;
       }
@@ -130,10 +122,10 @@ export default {
 
       this.goback();
     },
-    goback() {
-      if (this.from) {
+    goback()    {
+      if (this.from)      {
         this.$router.push(this.from);
-      } else {
+      } else      {
         this.$router.push(this.root);
       }
     }

@@ -79,19 +79,10 @@
           <el-container class="el-card full" direction="vertical">
             <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
 
-            <mavon-editor
+            <md-editor
               v-model="form.content"
-              :boxShadow="false"
-              :ishljs="false"
-              :subfield="false"
-              :editable="true"
-              :toolbarsFlag="true"
-              :autofocus="true"
-              :defaultOpen="default_open"
-              :toolbars="options"
-              toolbarsBackground="#f0f9eb"
-              class="full"
-              style="border:none"
+              theme="mini"
+              :editable="this.editing"
               @click.native="editing = true;"
             />
           </el-container>
@@ -110,51 +101,38 @@ import MemberSelect from "./MemberSelect";
 import MilestoneSelect from "./MilestoneSelect";
 import BacklogSelect from "./BacklogSelect";
 import IssueSelect from "./IssueSelect";
+import MdEditor from "./MdEditor";
 
 export default {
-  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect },
+  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
   props: {
     planner: String,
     value: Object
   },
-  data() {
+  data()  {
     return {
       editing: false,
       form: {}
     };
   },
-  computed: {
-    options() {
-      return {
-        imagelink: true, // 图片链接
-        table: true, // 表格
-        preview: true // 预览
-      };
-    },
-    default_open() {
-      if (this.editing) {
-        return "edit";
-      }
-      return "preview";
-    }
-  },
-  mounted() {
+
+  mounted()  {
     this.init();
   },
   watch: {
-    value() {
+    value()    {
       this.init();
     }
   },
   methods: {
-    init() {
+    init()    {
       this.form = Object.assign({}, this.value);
     },
-    cancel() {
+    cancel()    {
       this.$emit("cancel");
     },
-    save() {
-      if (!this.form.title) {
+    save()    {
+      if (!this.form.title)      {
         this.$message.error("请先输入标题");
         return;
       }
@@ -162,7 +140,7 @@ export default {
       this.form.title = this.form.title.trim();
       this.form.content = (this.form.content || "").trim();
 
-      if (this.form.title.length == 0) {
+      if (this.form.title.length == 0)      {
         this.$message.error("请先输入标题");
         return;
       }

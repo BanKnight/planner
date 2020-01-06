@@ -3,7 +3,7 @@
     <el-header height="auto" style="padding:0;margin-bottom:10px">
       <template v-if="editing">
         <el-button-group>
-          <el-button icon="el-icon-close" @click="editing=false">取消</el-button>
+          <el-button icon="el-icon-close" @click="reload_curr">取消</el-button>
           <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
         </el-button-group>
       </template>
@@ -60,19 +60,44 @@
           <h2>{{article.title}}</h2>
         </div>
         <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
-        <mavon-editor
+
+        <md-editor
           v-model="article.content"
-          :boxShadow="false"
-          :ishljs="false"
-          :subfield="editing"
+          theme="small"
           :editable="editing"
-          :toolbarsFlag="editing"
-          :defaultOpen="editing?'edit':'preview'"
-          :toolbars="options"
-          toolbarsBackground="#f0f9eb"
-          class="full"
-          style="border:none"
+          :planner="planner_id"
         />
+
+        <el-footer
+          style="background-color:#f0f9eb;"
+          class="scroll-if-need el-card"
+          v-if="article.attachments.length > 0 || editing"
+        >
+          <el-row type="flex" justify="start" align="middle" class="full-height">
+            <el-upload
+              v-if="editing"
+              class="upload-demo"
+              :show-file-list="false"
+              :action="upload_url"
+              multiple
+              with-credentials
+              :on-success="on_upload_ok"
+            >
+              <el-button size="small" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
+            </el-upload>
+
+            <el-tag
+              v-for="one in article.attachments"
+              class="el-icon-document"
+              :key="one._id"
+              :closable="editing"
+              type="info"
+              effect="plain"
+              @click="preview_file(one)"
+              @close="close_file(one)"
+            >{{one.name}}</el-tag>
+          </el-row>
+        </el-footer>
       </el-container>
     </el-container>
   </el-container>
@@ -81,72 +106,62 @@
 <script>
 import MemberSelect from "@/components/MemberSelect";
 import MilestoneSelect from "@/components/MilestoneSelect";
+import MdEditor from "@/components/MdEditor";
 
 export default {
   path: "detail/:backlog",
   weight: 10,
   meta: { require_logined: true },
-  components: { MilestoneSelect, MemberSelect },
-
-  data() {
+  components: { MilestoneSelect, MemberSelect, MdEditor },
+  inject: ["reload_curr"],
+  data()  {
     return {
       article: {
         title: "",
         content: "",
         assignee: null,
-        milestone: null
+        milestone: null,
+        attachments: [],
       },
       editing: false,
+      deleting: [],
       folding: true
     };
   },
   computed: {
-    options() {
-      if (this.editing) {
-        return {
-          imagelink: true, // 图片链接
-          fullscreen: true, // 全屏编辑
-          undo: true, // 上一步
-          redo: true, // 下一步
-          trash: true, // 清空
-          table: true, // 表格
 
-          subfield: true, // 单双栏模式
-          preview: true // 预览
-        };
-      }
-
-      return {};
-    },
-    fold_icon() {
-      if (this.folding == false) {
+    fold_icon()    {
+      if (this.folding == false)      {
         return "el-icon-s-fold";
       }
       return "el-icon-s-unfold";
     },
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/backlogs`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     },
-    id() {
+    id()    {
       return this.$route.params.backlog;
-    }
+    },
+    upload_url()    {
+      return `${this.$http.defaults.baseURL}/api/planner/${this.planner_id}/pan?path=/.private`;
+    },
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (from.fullPath != "/") {
+  beforeRouteEnter(to, from, next)  {
+    next(vm =>    {
+      if (from.fullPath != "/")      {
         vm.from = from.fullPath;
       }
     });
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
 
   methods: {
-    async fetch() {
+    async fetch()    {
       let article = await this.$store.dispatch("backlogs_detail", {
         planner: this.planner_id,
         backlog: this.id
@@ -154,14 +169,24 @@ export default {
 
       this.article = article;
     },
-    async summit() {
+    async summit()    {
       let title = this.article.title.trim();
 
-      if (title.length == 0) {
+      if (title.length == 0)      {
         this.$message.error("请输入完整的标题后再提交");
 
         return;
       }
+
+      for (let file of this.deleting)
+      {
+        this.$store.dispatch("pan_destroy_priavte", {
+          planner: this.planner_id,
+          name: file.name,
+        })
+      }
+
+      this.deleting = []
 
       await this.$store.dispatch("backlogs_update", {
         planner: this.planner_id,
@@ -173,12 +198,35 @@ export default {
 
       this.editing = false;
     },
-    goback() {
-      if (this.from) {
+    goback()    {
+      if (this.from)      {
         this.$router.push(this.from);
-      } else {
+      } else      {
         this.$router.push(this.root);
       }
+    },
+    on_upload_ok(response)    {
+      this.article.attachments = this.article.attachments || []
+
+      this.article.attachments.push(response)
+
+      console.log("upload ok", response)
+    },
+    preview_file(file)
+    {
+      console.log("preview file", file.name)
+    },
+    close_file(file)
+    {
+      let index = this.article.attachments.indexOf(file)
+      if (file < 0)
+      {
+        return
+      }
+
+      this.article.attachments.slice(index, 1)
+
+      this.deleting.push(file)
     }
   }
 };

@@ -34,7 +34,7 @@
         </el-row>
 
         <el-dialog title="文件上传" :visible.sync="upload.visible">
-          <el-upload drag :action="upload_url" multiple with-credentials :file-list="upload.files">
+          <el-upload :action="upload_url" multiple with-credentials :file-list="upload.files">
             <i class="el-icon-upload"></i>
 
             <div class="el-upload__tip" slot="tip">大小不能超过20m</div>
@@ -132,7 +132,7 @@ export default {
     require_logined: true
   },
   components: { layout, MemberPreview },
-  data() {
+  data()  {
     return {
       curr: null,
       children: [],
@@ -142,23 +142,23 @@ export default {
     };
   },
   computed: {
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/pan`;
     },
-    curr_path() {
+    curr_path()    {
       return this.$route.query.path || "/";
     },
-    curr_path_array() {
+    curr_path_array()    {
       let array = [];
 
       let target = this.curr_path;
 
-      for (let i = 0; i < 25; ++i) {
+      for (let i = 0; i < 25; ++i)      {
         let parent = path.dirname(target);
 
         let name = path.basename(target);
 
-        if (parent == target) {
+        if (parent == target)        {
           name = "网盘";
         }
 
@@ -167,7 +167,7 @@ export default {
           name
         });
 
-        if (parent == target) {
+        if (parent == target)        {
           break;
         }
 
@@ -176,27 +176,27 @@ export default {
 
       return array;
     },
-    upload_url() {
+    upload_url()    {
       return `${this.$http.defaults.baseURL}/api/planner/${this.planner_id}/pan?path=${this.curr_path}`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
   watch: {
-    curr_path() {
+    curr_path()    {
       // console.log("query changed");
       this.fetch();
     },
-    "upload.visible": function() {
+    "upload.visible": function()    {
       this.fetch();
     }
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
   methods: {
-    async fetch() {
+    async fetch()    {
       this.loading = true;
       let resp = await this.$store.dispatch("pan_list", {
         planner: this.planner_id,
@@ -210,7 +210,7 @@ export default {
       this.children = resp.children;
     },
 
-    async mkdir() {
+    async mkdir()    {
       let resp = await this.$prompt("文件夹的名称", "提示", {
         confirmButtonText: "确定"
       });
@@ -230,11 +230,11 @@ export default {
 
       this.fetch();
     },
-    watch_img(file) {
+    watch_img(file)    {
       this.preview.visible = true;
       this.preview.url = `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${file.res}`;
     },
-    async destroy(file) {
+    async destroy(file)    {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -256,7 +256,7 @@ export default {
 
       this.fetch();
     },
-    filesize(number) {
+    filesize(number)    {
       return filesize(number).human();
     }
   }

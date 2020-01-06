@@ -31,7 +31,7 @@
       </el-menu>
     </el-row>
 
-    <router-view />
+    <router-view v-if="is_showing" />
   </el-container>
 </template>
 
@@ -44,47 +44,60 @@ export default {
   weight: 0,
   meta: { require_logined: true },
   components: {},
-  data() {
+  provide()  {
+    return {
+      reload_curr: this.reload
+    };
+  },
+  data()  {
     return {
       collapse: false,
+      is_showing: true,
       detail: {
         name: ""
       }
     };
   },
-  mounted() {
+
+  mounted()  {
     this.fetch();
   },
   computed: {
-    children() {
-      return children.map(one => {
+    children()    {
+      return children.map(one =>      {
         let view = one.core || one;
-        if (view.meta && view.meta.menu_title) {
+        if (view.meta && view.meta.menu_title)        {
           return view;
         }
       });
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     },
-    root() {
+    root()    {
       return `/planner/${this.planner_id}`;
     }
   },
   watch: {
-    planner_id(new_val) {
-      if (new_val != null && new_val.length > 0) {
+    planner_id(new_val)    {
+      if (new_val != null && new_val.length > 0)      {
         this.fetch();
       }
     }
   },
   methods: {
-    async fetch() {
+    async fetch()    {
       const public_info = await this.$store.dispatch("planner_public", {
         data: [this.planner_id]
       });
 
       Object.assign(this.detail, public_info[0]);
+    },
+    reload()    {
+      this.is_showing = false;
+      this.$nextTick(() =>      {
+        this.is_showing = true;
+      });
     }
   }
 };

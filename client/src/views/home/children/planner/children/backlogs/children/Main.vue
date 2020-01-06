@@ -22,6 +22,23 @@
       <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{one.title}}</el-checkbox>
     </el-row>
 
+    <el-dialog title="快速添加需求" :visible.sync="add_form_visible">
+      <el-form label-position="left" label-width="60px">
+        <el-form-item label="标题:">
+          <el-input placeholder="请输入标题" v-model="add_form.title" clearable />
+        </el-form-item>
+        <el-form-item label="指派:">
+          <member-select v-model="add_form.assignee" :planner="planner_id" />
+        </el-form-item>
+        <el-form-item label="里程碑:">
+          <milestone-select v-model="add_form.milestone" :planner="planner_id" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="add_backlog">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <el-table
       ref="data"
       v-loading="loading"
@@ -76,7 +93,7 @@
             type="primary"
             size="mini"
             icon="el-icon-plus"
-            @click="$router.push(`${root}/new`)"
+            @click="add_form_visible = true"
           ></el-button>
         </template>
 
@@ -105,13 +122,16 @@
 import MemberPreview from "@/components/MemberPreview";
 import MilestonePreview from "@/components/MilestonePreview";
 
+import MemberSelect from "@/components/MemberSelect";
+import MilestoneSelect from "@/components/MilestoneSelect";
+
 export default {
   path: "",
   weight: -1,
   meta: { require_logined: true },
-  components: { MemberPreview, MilestonePreview },
+  components: { MemberPreview, MilestonePreview, MilestoneSelect, MemberSelect },
 
-  data() {
+  data()  {
     return {
       loading: false,
       page: {
@@ -120,36 +140,42 @@ export default {
         total: 0, //条目总数
         data: [] //当前页的数据
       },
+      add_form_visible: false,
+      add_form: {
+        title: "",
+        assignee: null,
+        milestone: null,
+      },
       tags: [],
       keyword: ""
     };
   },
-  mounted() {
+  mounted()  {
     this.fetch(1);
   },
   computed: {
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/backlogs`;
     },
-    milestone() {
+    milestone()    {
       return `/planner/${this.planner_id}/milestone`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (from.fullPath != "/") {
+  beforeRouteEnter(to, from, next)  {
+    next(vm =>    {
+      if (from.fullPath != "/")      {
         vm.from = from.fullPath;
       }
     });
   },
   methods: {
-    async fetch(page) {
+    async fetch(page)    {
       this.loading = true;
 
-      try {
+      try      {
         const page_info = await this.$store.dispatch("backlogs_list", {
           planner: this.planner_id,
           params: {
@@ -164,29 +190,29 @@ export default {
 
         this.page.data = [];
 
-        for (let one of page_info.data) {
+        for (let one of page_info.data)        {
           this.page.data.push(one);
         }
-      } catch (error) {
+      } catch (error)      {
         console.log(error);
       }
 
       this.loading = false;
     },
-    row_class({ row, rowIndex }) {
+    row_class({ row, rowIndex })    {
       let classes = [];
 
-      if (row.closed) {
+      if (row.closed)      {
         classes.push("closed-row");
       }
 
-      if (rowIndex % 2 == 0) {
+      if (rowIndex % 2 == 0)      {
         classes.push("normal-row");
       }
 
       return classes.concat(" ");
     },
-    async destroy(item) {
+    async destroy(item)    {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -205,7 +231,7 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    async close(item, value) {
+    async close(item, value)    {
       await this.$store.dispatch("backlogs_update", {
         planner: this.planner_id,
         backlog: item._id,
@@ -214,7 +240,29 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    on_search() {
+    on_search()    {
+      this.fetch(1);
+    },
+    async add_backlog()
+    {
+      this.add_form.title = this.add_form.title.trim();
+
+      if (this.add_form.title.length == 0)      {
+        this.$message.error("提交前标题不能为空");
+        return;
+      }
+      await this.$store.dispatch("backlogs_create", {
+        planner: this.planner_id,
+        data: this.add_form
+      });
+
+      this.$message.success("创建成功");
+
+      this.add_form_visible = false
+      this.add_form.title = ""
+      this.add_form.assignee = null
+      this.add_form.milestone = null
+
       this.fetch(1);
     }
   }
