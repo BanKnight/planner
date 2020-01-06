@@ -81,6 +81,7 @@ module.exports = class Current extends Service
             updated: Date.now(),
         }
 
+        one.attachments = []                //附件
         one.content = one.content || ""
         one.tags = one.tags || []
 
@@ -258,10 +259,10 @@ module.exports = class Current extends Service
         for (let tag of one.tags)
         {
             let tag_notes = planner.tags[tag]
-            if (tag_nodes == null)
+            if (tag_notes == null)
             {
-                tag_nodes = new utils.SortedArray(Current.cmp),
-                    planner.tags[tag] = tag_nodes
+                tag_notes = new utils.SortedArray(Current.cmp)
+                planner.tags[tag] = tag_notes
             }
 
             tag_notes.push(one)

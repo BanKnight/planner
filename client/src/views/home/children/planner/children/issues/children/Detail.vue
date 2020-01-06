@@ -62,6 +62,36 @@
         <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
 
         <md-editor v-model="article.content" theme="small" :editable="editing" />
+        <el-footer
+          style="background-color:#f0f9eb;"
+          class="scroll-if-need el-card"
+          v-if="article.attachments.length > 0 || editing"
+        >
+          <el-row type="flex" justify="start" align="middle" class="full-height">
+            <el-upload
+              v-if="editing"
+              class="upload-demo"
+              :show-file-list="false"
+              :action="upload_url"
+              multiple
+              with-credentials
+              :on-success="on_upload_ok"
+            >
+              <el-button size="small" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
+            </el-upload>
+
+            <el-tag
+              v-for="one in article.attachments"
+              class="el-icon-document"
+              :key="one._id"
+              :closable="editing"
+              type="info"
+              effect="plain"
+              @click="preview_file(one)"
+              @close="close_file(one)"
+            >{{one.name}}</el-tag>
+          </el-row>
+        </el-footer>
       </el-container>
     </el-container>
   </el-container>
@@ -84,9 +114,12 @@ export default {
         title: "",
         content: "",
         assignee: null,
-        milestone: null
+        milestone: null,
+        attachments: [],
       },
       editing: false,
+      deleting: [],
+      adding: [],
       folding: true
     };
   },
@@ -106,7 +139,10 @@ export default {
     },
     id()    {
       return this.$route.params.issue;
-    }
+    },
+    upload_url()    {
+      return `${this.$http.defaults.baseURL}/api/planner/${this.planner_id}/pan?path=/.private`;
+    },
   },
   beforeRouteEnter(to, from, next)  {
     next(vm =>    {
@@ -118,7 +154,17 @@ export default {
   mounted()  {
     this.fetch();
   },
+  beforeDestroy()  {
 
+    for (let file of this.adding)
+    {
+      this.$store.dispatch("pan_destroy_priavte", {
+        planner: this.planner_id,
+        name: file.name,
+      })
+    }
+    this.adding = []
+  },
   methods: {
     async fetch()    {
       let article = await this.$store.dispatch("issues_detail", {
@@ -137,15 +183,28 @@ export default {
         return;
       }
 
+      for (let file of this.deleting)
+      {
+        this.$store.dispatch("pan_destroy_priavte", {
+          planner: this.planner_id,
+          name: file.name,
+        })
+      }
+
+      this.deleting = []
+
       await this.$store.dispatch("issues_update", {
         planner: this.planner_id,
         issue: this.id,
         data: this.article
       });
 
+
       this.$message.success("修改成功");
 
       this.editing = false;
+      this.adding = []
+
     },
     goback()    {
       if (this.from)      {
@@ -153,6 +212,35 @@ export default {
       } else      {
         this.$router.push(this.root);
       }
+    },
+    on_upload_ok(response)    {
+      this.article.attachments = this.article.attachments || []
+
+      this.article.attachments.push(response)
+
+      this.adding.push(response)
+
+      console.log("upload ok", response)
+    },
+    preview_file(file)
+    {
+      console.log("preview file", file.name)
+    },
+    close_file(file)
+    {
+      console.log("close_file", file)
+      console.log(this.article.attachments)
+
+      let index = this.article.attachments.indexOf(file)
+      if (index < 0)
+      {
+        console.log("no such file", file)
+        return
+      }
+
+      this.article.attachments.splice(index, 1)
+
+      this.deleting.push(file)
     }
   }
 };

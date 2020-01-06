@@ -22,7 +22,7 @@
       <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{one.title}}</el-checkbox>
     </el-row>
 
-    <el-dialog title="快速添加需求" :visible.sync="add_form_visible">
+    <el-dialog title="快速添加" :visible.sync="add_form_visible">
       <el-form label-position="left" label-width="60px">
         <el-form-item label="标题:">
           <el-input placeholder="请输入标题" v-model="add_form.title" clearable />
@@ -34,7 +34,7 @@
           <milestone-select v-model="add_form.milestone" :planner="planner_id" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="add_backlog">确定</el-button>
+          <el-button type="primary" @click="add_one">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -171,6 +171,7 @@ export default {
       }
     });
   },
+
   methods: {
     async fetch(page)    {
       this.loading = true;
@@ -243,7 +244,7 @@ export default {
     on_search()    {
       this.fetch(1);
     },
-    async add_backlog()
+    async add_one()
     {
       this.add_form.title = this.add_form.title.trim();
 

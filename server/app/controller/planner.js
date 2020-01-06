@@ -95,6 +95,10 @@ module.exports = class Current extends Controller
         for (let id of body)
         {
             let one = current.get(id)
+            if (one == null)
+            {
+                continue
+            }
 
             resp.push({
                 _id: one._id,

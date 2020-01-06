@@ -125,6 +125,7 @@ export default {
       },
       editing: false,
       deleting: [],
+      adding: [],
       folding: true
     };
   },
@@ -159,7 +160,17 @@ export default {
   mounted()  {
     this.fetch();
   },
+  beforeDestroy()  {
 
+    for (let file of this.adding)
+    {
+      this.$store.dispatch("pan_destroy_priavte", {
+        planner: this.planner_id,
+        name: file.name,
+      })
+    }
+    this.adding = []
+  },
   methods: {
     async fetch()    {
       let article = await this.$store.dispatch("backlogs_detail", {
@@ -194,9 +205,12 @@ export default {
         data: this.article
       });
 
+
       this.$message.success("修改成功");
 
       this.editing = false;
+      this.adding = []
+
     },
     goback()    {
       if (this.from)      {
@@ -210,6 +224,8 @@ export default {
 
       this.article.attachments.push(response)
 
+      this.adding.push(response)
+
       console.log("upload ok", response)
     },
     preview_file(file)
@@ -218,13 +234,17 @@ export default {
     },
     close_file(file)
     {
+      console.log("close_file", file)
+      console.log(this.article.attachments)
+
       let index = this.article.attachments.indexOf(file)
-      if (file < 0)
+      if (index < 0)
       {
+        console.log("no such file", file)
         return
       }
 
-      this.article.attachments.slice(index, 1)
+      this.article.attachments.splice(index, 1)
 
       this.deleting.push(file)
     }

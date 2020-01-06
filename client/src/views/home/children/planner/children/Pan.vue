@@ -34,7 +34,7 @@
         </el-row>
 
         <el-dialog title="文件上传" :visible.sync="upload.visible">
-          <el-upload :action="upload_url" multiple with-credentials :file-list="upload.files">
+          <el-upload drag :action="upload_url" multiple with-credentials :file-list="upload.files">
             <i class="el-icon-upload"></i>
 
             <div class="el-upload__tip" slot="tip">大小不能超过20m</div>
