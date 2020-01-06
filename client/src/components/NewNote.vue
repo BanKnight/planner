@@ -9,8 +9,28 @@
 
     <el-main style="padding:0">
       <el-tabs type="border-card">
+        <el-tab-pane label="基础">
+          <el-container class="el-card full" direction="vertical">
+            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+
+            <mavon-editor
+              v-model="form.content"
+              :boxShadow="false"
+              :ishljs="false"
+              :subfield="false"
+              :editable="true"
+              :toolbarsFlag="true"
+              defaultOpen="edit"
+              :toolbars="options"
+              toolbarsBackground="#f0f9eb"
+              class="full"
+              style="border:none"
+            />
+          </el-container>
+        </el-tab-pane>
+
         <el-tab-pane label="指派">
-          <el-form size="mini" label-position="left" label-width="80px">
+          <el-form size="mini" label-position="left" label-width="6em">
             <el-form-item label="指派：">
               <member-select
                 v-model="form.assignee"
@@ -31,24 +51,14 @@
               />
             </el-form-item>
 
-            <el-form-item label="时间：">
+            <el-form-item label="结束时间:">
               <el-date-picker
                 type="date"
                 size="mini"
-                placeholder="开始时间"
-                v-model="form.start"
+                placeholder="结束时间"
+                v-model="form.stop"
                 class="no-border-input"
               ></el-date-picker>
-
-              <el-form-item>
-                <el-date-picker
-                  type="date"
-                  size="mini"
-                  placeholder="结束时间"
-                  v-model="form.stop"
-                  class="no-border-input"
-                ></el-date-picker>
-              </el-form-item>
             </el-form-item>
 
             <el-divider />
@@ -76,29 +86,16 @@
           </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="基础">
-          <el-container class="el-card full" direction="vertical">
-            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+        <el-tab-pane label="需求" v-if="backlog">
+          <h2>{{backlog.title}}</h2>
 
-            <mavon-editor
-              v-model="form.content"
-              :boxShadow="false"
-              :ishljs="false"
-              :subfield="false"
-              :editable="true"
-              :toolbarsFlag="true"
-              defaultOpen="edit"
-              :toolbars="options"
-              toolbarsBackground="#f0f9eb"
-              class="full"
-              style="border:none"
-            />
-          </el-container>
+          <md-editor :value="backlog.content" :editable="false" size="mini" />
         </el-tab-pane>
 
-        <el-tab-pane label="需求" v-if="form.backlog && form.backlog.length > 0"></el-tab-pane>
-
-        <el-tab-pane label="问题" v-if="form.issue && form.issue.length > 0"></el-tab-pane>
+        <el-tab-pane label="问题" v-if="issue">
+          <h2>{{issue.title}}</h2>
+          <md-editor :value="issue.content" :editable="false" size="mini" />
+        </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -109,21 +106,27 @@ import MemberSelect from "./MemberSelect";
 import MilestoneSelect from "./MilestoneSelect";
 import BacklogSelect from "./BacklogSelect";
 import IssueSelect from "./IssueSelect";
+import MdEditor from "./MdEditor";
 
 export default {
-  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect },
+  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
   props: {
     planner: String,
     col: String
   },
-  data() {
+  data()  {
     return {
       editable: false,
-      form: {}
+      form: {
+        backlog: null,
+        issue: null,
+      },
+      backlog: null,
+      issue: null,
     };
   },
   computed: {
-    options() {
+    options()    {
       return {
         imagelink: true, // 图片链接
         table: true, // 表格
@@ -131,12 +134,21 @@ export default {
       };
     }
   },
+  watch: {
+
+    "form.backlog": function(new_val)    {
+      this.fetch_backlog(new_val)
+    },
+    "form.issue": function(new_val)    {
+      this.fetch_issue(new_val)
+    }
+  },
   methods: {
-    cancel() {
+    cancel()    {
       this.$emit("cancel");
     },
-    save() {
-      if (!this.form.title) {
+    save()    {
+      if (!this.form.title)      {
         this.$message.error("请先输入标题");
         return;
       }
@@ -144,12 +156,40 @@ export default {
       this.form.title = this.form.title.trim();
       this.form.content = (this.form.content || "").trim();
 
-      if (this.form.title.length == 0) {
+      if (this.form.title.length == 0)      {
         this.$message.error("请先输入标题");
         return;
       }
 
       this.$emit("save", this.form);
+    },
+    async fetch_backlog()
+    {
+      if (!this.form.backlog)
+      {
+        this.backlog = null
+        return
+      }
+
+      this.backlog = await this.$store.dispatch("backlogs_detail", {
+        planner: this.planner,
+        backlog: this.form.backlog
+      });
+
+    },
+    async fetch_issue()
+    {
+      if (!this.form.issue)
+      {
+        this.issue = null
+        return
+      }
+
+      this.issue = await this.$store.dispatch("issues_detail", {
+        planner: this.planner,
+        issue: this.form.issue
+      });
+
     }
   }
 };

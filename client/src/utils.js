@@ -21,6 +21,21 @@ export function planner_res_url(base, planner, res)
 
 }
 
+export function is_img(ext)
+{
+    switch (ext)
+    {
+        case '.jpg':
+        case '.jpeg':
+        case ".png":
+        case ".gif":
+            return true
+        default:
+            return false
+
+    }
+}
+
 export function do_together(together)
 {
     let waiting = null;

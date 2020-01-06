@@ -9,8 +9,21 @@
 
     <el-main style="padding:0">
       <el-tabs type="border-card">
+        <el-tab-pane label="基础">
+          <el-container class="el-card full" direction="vertical">
+            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+
+            <md-editor
+              v-model="form.content"
+              theme="mini"
+              :editable="this.editing"
+              @click.native="editing = true;"
+            />
+          </el-container>
+        </el-tab-pane>
+
         <el-tab-pane label="指派">
-          <el-form size="mini" label-position="left" label-width="80px">
+          <el-form size="mini" label-position="left" label-width="6em">
             <el-form-item label="指派：">
               <member-select
                 v-model="form.assignee"
@@ -31,24 +44,14 @@
               />
             </el-form-item>
 
-            <el-form-item label="时间：">
+            <el-form-item label="结束时间：">
               <el-date-picker
                 type="date"
                 size="mini"
-                placeholder="开始时间"
-                v-model="form.start"
+                placeholder="结束时间"
+                v-model="form.stop"
                 class="no-border-input"
               ></el-date-picker>
-
-              <el-form-item>
-                <el-date-picker
-                  type="date"
-                  size="mini"
-                  placeholder="结束时间"
-                  v-model="form.stop"
-                  class="no-border-input"
-                ></el-date-picker>
-              </el-form-item>
             </el-form-item>
 
             <el-divider />
@@ -75,22 +78,20 @@
           </el-form>
         </el-tab-pane>
 
-        <el-tab-pane label="基础">
-          <el-container class="el-card full" direction="vertical">
-            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+        <el-tab-pane label="需求" v-if="backlog">
+          <div style="text-align:center;">
+            <h2>{{backlog.title}}</h2>
+          </div>
 
-            <md-editor
-              v-model="form.content"
-              theme="mini"
-              :editable="this.editing"
-              @click.native="editing = true;"
-            />
-          </el-container>
+          <md-editor :value="backlog.content" :editable="false" size="mini" />
         </el-tab-pane>
 
-        <el-tab-pane label="需求" v-if="form.backlog && form.backlog.length > 0"></el-tab-pane>
-
-        <el-tab-pane label="问题" v-if="form.issue && form.issue.length > 0"></el-tab-pane>
+        <el-tab-pane label="问题" v-if="issue">
+          <div style="text-align:center;">
+            <h2>{{issue.title}}</h2>
+          </div>
+          <md-editor :value="issue.content" :editable="false" size="mini" />
+        </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -106,13 +107,17 @@ import MdEditor from "./MdEditor";
 export default {
   components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
   props: {
-    planner: String,
     value: Object
   },
   data()  {
     return {
       editing: false,
-      form: {}
+      form: {
+        backlog: null,
+        issue: null,
+      },
+      backlog: null,
+      issue: null,
     };
   },
 
@@ -122,8 +127,15 @@ export default {
   watch: {
     value()    {
       this.init();
+    },
+    "form.backlog": function(new_val)    {
+      this.fetch_backlog(new_val)
+    },
+    "form.issue": function(new_val)    {
+      this.fetch_issue(new_val)
     }
   },
+
   methods: {
     init()    {
       this.form = Object.assign({}, this.value);
@@ -146,6 +158,34 @@ export default {
       }
 
       this.$emit("save", this.form);
+    },
+    async fetch_backlog()
+    {
+      if (!this.form.backlog)
+      {
+        this.backlog = null
+        return
+      }
+
+      this.backlog = await this.$store.dispatch("backlogs_detail", {
+        planner: this.value.planner,
+        backlog: this.form.backlog
+      });
+
+    },
+    async fetch_issue()
+    {
+      if (!this.form.issue)
+      {
+        this.issue = null
+        return
+      }
+
+      this.issue = await this.$store.dispatch("issues_detail", {
+        planner: this.value.planner,
+        issue: this.form.issue
+      });
+
     }
   }
 };

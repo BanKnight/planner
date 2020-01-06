@@ -86,16 +86,29 @@
               <el-button size="small" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
             </el-upload>
 
-            <el-tag
+            <el-popover
+              placement="bottom-start"
+              width="400"
+              trigger="hover"
               v-for="one in article.attachments"
-              class="el-icon-document"
               :key="one._id"
-              :closable="editing"
-              type="info"
-              effect="plain"
-              @click="preview_file(one)"
-              @close="close_file(one)"
-            >{{one.name}}</el-tag>
+            >
+              <h2>{{one.name}}</h2>
+              <el-image
+                v-if="is_img(one)"
+                :src="`${$http.defaults.baseURL}/public/upload/${planner_id}/${one.res}`"
+              ></el-image>
+              <div v-else>不支持预览</div>
+
+              <el-tag
+                :class="is_img(one)?'el-icon-picture':'el-icon-document'"
+                :closable="editing"
+                type="success"
+                :effect="is_img(one)?'dark':'plain'"
+                slot="reference"
+                @close="close_file(one)"
+              >{{one.name}}</el-tag>
+            </el-popover>
           </el-row>
         </el-footer>
       </el-container>
@@ -104,6 +117,9 @@
 </template>
 
 <script>
+
+import { is_img } from "@/utils"
+
 import MemberSelect from "@/components/MemberSelect";
 import MilestoneSelect from "@/components/MilestoneSelect";
 import MdEditor from "@/components/MdEditor";
@@ -247,6 +263,10 @@ export default {
       this.article.attachments.splice(index, 1)
 
       this.deleting.push(file)
+    },
+    is_img(file)
+    {
+      return is_img(file.ext)
     }
   }
 };
