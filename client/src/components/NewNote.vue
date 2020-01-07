@@ -29,7 +29,7 @@
           </el-container>
         </el-tab-pane>
 
-        <el-tab-pane label="指派">
+        <el-tab-pane label="选项">
           <el-form size="mini" label-position="left" label-width="6em">
             <el-form-item label="指派：">
               <member-select
@@ -87,13 +87,22 @@
         </el-tab-pane>
 
         <el-tab-pane label="需求" v-if="backlog">
-          <h2>{{backlog.title}}</h2>
-
+          <div style="text-align:center;">
+            <h2>
+              {{backlog.title}}
+              <member-preview size="mini" :planner="planner" v-model="backlog.assignee" />
+            </h2>
+          </div>
           <md-editor :value="backlog.content" :editable="false" size="mini" />
         </el-tab-pane>
 
         <el-tab-pane label="问题" v-if="issue">
-          <h2>{{issue.title}}</h2>
+          <div style="text-align:center;">
+            <h2>
+              {{issue.title}}
+              <member-preview size="mini" :planner="planner" v-model="issue.assignee" />
+            </h2>
+          </div>
           <md-editor :value="issue.content" :editable="false" size="mini" />
         </el-tab-pane>
       </el-tabs>
@@ -103,13 +112,15 @@
 
 <script>
 import MemberSelect from "./MemberSelect";
+import MemberPreview from "./MemberPreview";
+
 import MilestoneSelect from "./MilestoneSelect";
 import BacklogSelect from "./BacklogSelect";
 import IssueSelect from "./IssueSelect";
 import MdEditor from "./MdEditor";
 
 export default {
-  components: { MemberSelect, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
+  components: { MemberSelect, MemberPreview, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
   props: {
     planner: String,
     col: String

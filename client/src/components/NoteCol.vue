@@ -11,7 +11,7 @@
         </el-popconfirm>
 
         <span @dblclick="edit_name">
-          {{title}}:
+          {{title}}
           <el-tag type="success" size="mini">{{curr.length}}</el-tag>
         </span>
 
@@ -85,7 +85,7 @@ export default {
     planner: String,
     col: String
   },
-  data() {
+  data()  {
     return {
       title: "",
       curr: [],
@@ -98,18 +98,18 @@ export default {
       }
     };
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
   methods: {
-    refresh() {
+    refresh()    {
       this.adding = false;
       this.editing = false;
       this.editing_note = null;
       this.fetch();
     },
 
-    async fetch() {
+    async fetch()    {
       this.loading = true;
 
       Object.defineProperty(this.curr, "col", {
@@ -125,28 +125,28 @@ export default {
       this.title = col.title;
       this.curr = [];
 
-      for (let one of col.curr) {
+      for (let one of col.curr)      {
         this.curr.push(one);
       }
 
       this.loading = false;
     },
-    async destroy() {
+    async destroy()    {
       this.$emit("destroy");
     },
-    edit_name() {
-      if (this.editing) {
+    edit_name()    {
+      if (this.editing)      {
         return;
       }
       this.editing = true;
       this.editing_form.title = this.title;
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.$refs.editing_name.focus();
       });
     },
-    async change_name() {
+    async change_name()    {
       this.editing = false;
-      if (this.editing_form.title.length == 0) {
+      if (this.editing_form.title.length == 0)      {
         return;
       }
 
@@ -158,12 +158,12 @@ export default {
 
       this.title = this.editing_form.title;
     },
-    start_edit(note) {
+    start_edit(note)    {
       this.adding = false;
 
       this.editing_note = note;
     },
-    async add_note(form) {
+    async add_note(form)    {
       await this.$store.dispatch("note_create", {
         planner: this.planner,
         col: this.col,
@@ -172,7 +172,7 @@ export default {
 
       this.refresh();
     },
-    async save_note(form) {
+    async save_note(form)    {
       let note = await this.$store.dispatch("note_update", {
         planner: this.planner,
         col: this.col,
@@ -184,7 +184,7 @@ export default {
 
       this.editing_note = null;
     },
-    async remove_note(note) {
+    async remove_note(note)    {
       await this.$store.dispatch("note_destroy", {
         planner: this.planner,
         col: this.col,
@@ -194,8 +194,8 @@ export default {
       this.refresh();
     },
 
-    async on_end(evt) {
-      try {
+    async on_end(evt)    {
+      try      {
         await this.$store.dispatch("note_move", {
           planner: this.planner,
           data: {
@@ -206,7 +206,7 @@ export default {
             new: evt.newDraggableIndex
           }
         });
-      } finally {
+      } finally      {
         this.refresh();
       }
     }

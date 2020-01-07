@@ -71,6 +71,7 @@
         <el-footer
           style="background-color:#f0f9eb;"
           class="scroll-if-need el-card"
+          height="40px"
           v-if="article.attachments.length > 0 || editing"
         >
           <el-row type="flex" justify="start" align="middle" class="full-height">
@@ -83,7 +84,7 @@
               with-credentials
               :on-success="on_upload_ok"
             >
-              <el-button size="small" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
+              <el-button size="mini" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
             </el-upload>
 
             <el-popover
@@ -93,17 +94,19 @@
               v-for="one in article.attachments"
               :key="one._id"
             >
-              <h2>{{one.name}}</h2>
-              <el-image
-                v-if="is_img(one)"
-                :src="`${$http.defaults.baseURL}/public/upload/${planner_id}/${one.res}`"
-              ></el-image>
+              <el-row type="flex" justify="space-between">
+                <h2>{{one.name}}</h2>
+                <el-button type="success" @click="copy_link(one)">复制链接</el-button>
+              </el-row>
+
+              <el-image v-if="is_img(one)" :src="cal_link(one)"></el-image>
               <div v-else>不支持预览</div>
 
               <el-tag
                 :class="is_img(one)?'el-icon-picture':'el-icon-document'"
                 :closable="editing"
                 type="success"
+                size="mini"
                 :effect="is_img(one)?'dark':'plain'"
                 slot="reference"
                 @close="close_file(one)"
@@ -117,6 +120,8 @@
 </template>
 
 <script>
+
+import copy from 'clipboard-copy'
 
 import { is_img } from "@/utils"
 
@@ -267,6 +272,18 @@ export default {
     is_img(file)
     {
       return is_img(file.ext)
+    },
+    cal_link(one)
+    {
+      return `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${one.res}`
+    },
+    copy_link(one)
+    {
+      let url = this.cal_link(one)
+
+      copy(url)
+
+      this.$message.success("复制成功")
     }
   }
 };

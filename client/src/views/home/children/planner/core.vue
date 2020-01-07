@@ -39,7 +39,6 @@
 import children from "./children";
 
 export default {
-  name: "planner",
   path: "planner/:planner",
   weight: 0,
   meta: { require_logined: true },
