@@ -171,8 +171,14 @@ module.exports = class Current extends Service
         this.app.db.set("planner.issues", one._id, one)
     }
 
-    search(planner, option)
+    search(planner_id, option)
     {
+        let planner = this.get_planner(planner_id)
+        if (planner == null)
+        {
+            return []
+        }
+
         if (option.keyword != null)
         {
             return this.search_keyword(planner, option.keyword)
@@ -186,7 +192,11 @@ module.exports = class Current extends Service
                 return [existed]
             }
             return []
+        }
 
+        if (option.assignee)
+        {
+            return this.search_assignee(planner, option.assignee)
         }
 
         return planner.items.data
@@ -224,6 +234,21 @@ module.exports = class Current extends Service
         cache.set(keyword, result)
 
         return result.data
+    }
+
+    search_assignee(planner, assignee)
+    {
+        let result = []
+
+        for (let one of planner.items.data)
+        {
+            if (one.assignee == assignee)
+            {
+                result.push(one)
+            }
+        }
+
+        return result
     }
 
     get_cache(planner_id)

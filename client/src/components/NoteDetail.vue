@@ -4,6 +4,7 @@
       <el-button-group>
         <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
         <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
+        <el-button size="mini" type="danger" icon="el-icon-check" @click="close">关闭</el-button>
       </el-button-group>
     </el-header>
 
@@ -50,6 +51,7 @@
                 size="mini"
                 placeholder="结束时间"
                 v-model="form.stop"
+                value-format="timestamp"
                 class="no-border-input"
               ></el-date-picker>
             </el-form-item>
@@ -63,7 +65,7 @@
                 :planner="value.planner"
                 class="no-border-input"
               ></backlog-select>
-              <el-checkbox v-model="form.close_backlog">关联关闭</el-checkbox>
+              <el-checkbox v-model="form.close_backlog">关联完成</el-checkbox>
             </el-form-item>
 
             <el-form-item label="问题：">
@@ -73,7 +75,7 @@
                 :planner="value.planner"
                 class="no-border-input"
               ></issue-select>
-              <el-checkbox v-model="form.close_issue">关联关闭</el-checkbox>
+              <el-checkbox v-model="form.close_issue">关联完成</el-checkbox>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -166,6 +168,20 @@ export default {
       }
 
       this.$emit("save", this.form);
+    },
+
+    close()    {
+      this.$confirm('单子关闭后，将进行归档不可见(一般交给下单者关闭)', '是否确认关闭', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() =>      {
+
+        this.form.closed = true
+
+        this.save()
+
+      }).catch(() => { });
     },
     async fetch_backlog()
     {

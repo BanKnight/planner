@@ -26,6 +26,11 @@ export default {
         return await Vue.axios.post("/api/user/reset", payload)
     },
 
+    async mine_list(context, payload)
+    {
+        return await Vue.axios.get(`/api/planner/${payload.planner}/mine`)
+    },
+
     //-----------------------
     async planner_list(context, payload)
     {

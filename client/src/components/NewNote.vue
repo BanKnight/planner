@@ -57,6 +57,7 @@
                 size="mini"
                 placeholder="结束时间"
                 v-model="form.stop"
+                value-format="timestamp"
                 class="no-border-input"
               ></el-date-picker>
             </el-form-item>
@@ -71,7 +72,7 @@
                 class="no-border-input"
               ></backlog-select>
 
-              <el-checkbox v-model="form.close_backlog">关联关闭</el-checkbox>
+              <el-checkbox v-model="form.close_backlog">关联完成</el-checkbox>
             </el-form-item>
 
             <el-form-item label="问题：">
@@ -81,7 +82,7 @@
                 :planner="planner"
                 class="no-border-input"
               ></issue-select>
-              <el-checkbox v-model="form.close_issue">关联关闭</el-checkbox>
+              <el-checkbox v-model="form.close_issue">关联完成</el-checkbox>
             </el-form-item>
           </el-form>
         </el-tab-pane>

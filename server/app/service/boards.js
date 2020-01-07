@@ -114,6 +114,40 @@ module.exports = class Current extends Service
         this.save_col(one)
     }
 
+    search(planner_id, option)
+    {
+        let planner = this.get_planner(planner_id)
+        if (planner == null)
+        {
+            return []
+        }
+
+        if (option.assignee)
+        {
+            return this.search_assignee(planner, option.assignee)
+        }
+
+    }
+
+    search_assignee(planner, assignee)
+    {
+        let result = []
+
+        for (let col of planner.curr)
+        {
+            for (let note_id of col.curr)
+            {
+                let note = planner.notes[note_id]
+
+                if (note.assignee == assignee)
+                {
+                    result.push(note)
+                }
+            }
+        }
+        return result
+    }
+
     /**
      * 移动两个列
      */
@@ -125,15 +159,15 @@ module.exports = class Current extends Service
             return false
         }
 
-        let from_id = planner.curr[option.from]
+        let from_col = planner.curr[option.from]
 
-        if (from_id == null || planner.curr[option.to] == null)
+        if (from_col == null || planner.curr[option.to] == null)
         {
             return false
         }
 
         planner.curr.splice(option.from, 1)
-        planner.curr.splice(option.to, 0, from_id)
+        planner.curr.splice(option.to, 0, from_col)
 
         this.save_planner(planner)
 

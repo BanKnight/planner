@@ -173,14 +173,14 @@ export default {
       this.refresh();
     },
     async save_note(form)    {
-      let note = await this.$store.dispatch("note_update", {
+      await this.$store.dispatch("note_update", {
         planner: this.planner,
         col: this.col,
         note: this.editing_note._id,
         data: form
       });
 
-      Object.assign(this.editing_note, note);
+      this.refresh();
 
       this.editing_note = null;
     },

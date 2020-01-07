@@ -161,7 +161,7 @@
 import layout from "../layout";
 
 export default {
-  path: "",
+  path: "milestone",
   weight: 10,
   meta: {
     menu_title: "里程碑",
@@ -169,7 +169,7 @@ export default {
     require_logined: true
   },
   components: { layout },
-  data() {
+  data()  {
     return {
       adding: false,
       loading: false,
@@ -188,40 +188,40 @@ export default {
       editing_form: null
     };
   },
-  mounted() {
+  mounted()  {
     this.fetch(1);
   },
   computed: {
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
   methods: {
-    row_class({ row, rowIndex }) {
+    row_class({ row, rowIndex })    {
       let classes = [];
 
-      if (row == this.editing) {
+      if (row == this.editing)      {
         classes.push("primary-row");
       }
 
-      if (row.closed) {
+      if (row.closed)      {
         classes.push("closed-row");
       }
 
-      if (rowIndex % 2 == 0) {
+      if (rowIndex % 2 == 0)      {
         classes.push("normal-row");
       }
       return classes.concat(" ");
     },
-    on_create() {
-      this.$refs.new_one.validate(async valid => {
-        if (!valid) {
+    on_create()    {
+      this.$refs.new_one.validate(async valid =>      {
+        if (!valid)        {
           console.log("error submit!!");
           return false;
         }
         this.loading = true;
 
-        try {
+        try        {
           await this.$store.dispatch("milestone_create", {
             planner: this.planner_id,
             data: this.form
@@ -229,13 +229,13 @@ export default {
           this.loading = false;
 
           this.fetch(1);
-        } catch (e) {
+        } catch (e)        {
           this.loading = false;
         }
       });
     },
 
-    async fetch(page) {
+    async fetch(page)    {
       this.editing = null;
       this.loading = true;
 
@@ -252,25 +252,25 @@ export default {
 
       this.page.data = [];
 
-      for (let one of page_info.data) {
+      for (let one of page_info.data)      {
         one.percent = one.percent || parseInt(Math.random().toFixed(2) * 100);
         this.page.data.push(one);
       }
       this.loading = false;
     },
 
-    edit(milestone) {
+    edit(milestone)    {
       this.adding = false;
 
-      if (this.editing === milestone) {
+      if (this.editing === milestone)      {
         this.editing = null;
         this.editing_form = null;
-      } else {
+      } else      {
         this.editing = milestone;
         this.editing_form = Object.assign({}, milestone);
       }
     },
-    async on_edit() {
+    async on_edit()    {
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: this.editing._id,
@@ -281,7 +281,7 @@ export default {
       this.editing = null;
       this.editing_form = null;
     },
-    async close(milestone, value) {
+    async close(milestone, value)    {
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: milestone._id,
@@ -290,7 +290,7 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    async del(milestone) {
+    async del(milestone)    {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

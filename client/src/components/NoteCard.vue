@@ -29,8 +29,7 @@
     >
       <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
       <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
-      <el-tag size="mini" v-if="value.stop" v-bind="day_option" class="el-icon-date">剩{{diff }}天</el-tag>
-      <el-tag size="mini" v-else effect="plain" type="danger" class="el-icon-date"></el-tag>
+      <date-preview :value="value.stop" />
     </el-footer>
   </el-container>
 </template>
@@ -38,15 +37,16 @@
 <script>
 import MemberPreview from "./MemberPreview";
 import MilestonePreview from "./MilestonePreview";
+import DatePreview from "./DatePreview";
 
 export default {
-  components: { MemberPreview, MilestonePreview },
+  components: { MemberPreview, MilestonePreview, DatePreview },
   props: {
     value: Object
   },
   computed: {
-    diff() {
-      if (this.value.stop == null) {
+    diff()    {
+      if (this.value.stop == null)      {
         return Infinity;
       }
 
@@ -55,15 +55,15 @@ export default {
 
       return first.diff(second, "day");
     },
-    day_option() {
-      if (this.diff <= 0) {
+    day_option()    {
+      if (this.diff <= 0)      {
         return {
           type: "info",
           effect: "dark"
         };
       }
 
-      if (this.diff < 2) {
+      if (this.diff < 2)      {
         return {
           type: "",
           effect: "dark"
@@ -77,25 +77,25 @@ export default {
     }
   },
   methods: {
-    on_command(cmd) {
+    on_command(cmd)    {
       console.log("click on card menu", cmd);
 
-      switch (cmd) {
+      switch (cmd)      {
         case "delete":
           this.do_delete();
           break;
       }
     },
-    do_delete() {
+    do_delete()    {
       this.$confirm("准备删除了, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
+        .then(() =>        {
           this.$emit("remove", this.value);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 };

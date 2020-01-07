@@ -33,6 +33,8 @@ module.exports = function(app)
     router.put("/api/planner/:planner/member", logined, in_project, app.controller.member.create)
     router.delete("/api/planner/:planner/member/:member", logined, in_project, app.controller.member.destroy)
 
+    router.get("/api/planner/:planner/mine", logined, in_project, app.controller.mine.list)
+
     router.get("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.list)
     router.put("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.create)
     router.post("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.detail)

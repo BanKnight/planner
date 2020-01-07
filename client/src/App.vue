@@ -6,20 +6,20 @@
 
 <script>
 export default {
-  provide() {
+  provide()  {
     return {
       reload: this.reload
     };
   },
-  data() {
+  data()  {
     return {
       is_showing: true
     };
   },
   methods: {
-    reload() {
+    reload()    {
       this.is_showing = false;
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.is_showing = true;
       });
     }
@@ -28,7 +28,6 @@ export default {
 </script>
 
 <style >
-@import "~github-markdown-css";
 @import "~nprogress/nprogress.css";
 
 body,
@@ -180,10 +179,6 @@ p {
   border-radius: 4px;
   background-color: transparent;
   padding: 0;
-}
-
-.el-form-item {
-  margin-bottom: 5px;
 }
 
 .clickable {

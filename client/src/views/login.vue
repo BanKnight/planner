@@ -5,9 +5,15 @@
         <h3 class="title">登 录</h3>
       </div>
 
-      <el-tabs type="border-card" style="width:520px;height:fit-content;border-radius:4px">
+      <el-tabs type="border-card" style="width:520px;border-radius:4px">
         <el-tab-pane label="登录">
-          <el-form ref="login" :model="login_form" autocomplete="on" label-position="left">
+          <el-form
+            ref="login"
+            :model="login_form"
+            :rules="rules"
+            autocomplete="on"
+            label-position="left"
+          >
             <el-form-item prop="account">
               <el-input
                 ref="login_name"
@@ -33,22 +39,29 @@
                 autocomplete="on"
                 prefix-icon="el-icon-lock"
                 @keyup.enter.native="login"
-              >
-                <el-button icon="el-icon-view" slot="append" />
-              </el-input>
+                show-password
+              ></el-input>
             </el-form-item>
 
-            <el-button
-              :loading="loading"
-              type="primary"
-              style="width:100%;"
-              @click.native.prevent="login"
-            >登录</el-button>
+            <el-form-item>
+              <el-button
+                :loading="loading"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="login"
+              >登录</el-button>
+            </el-form-item>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="注册">
-          <el-form ref="regist" :model="regist_form" autocomplete="on" label-position="left">
-            <el-form-item prop="name">
+          <el-form
+            ref="regist"
+            :model="regist_form"
+            :rules="rules"
+            autocomplete="on"
+            label-position="left"
+          >
+            <el-form-item prop="account">
               <el-input
                 ref="regist_name"
                 v-model="regist_form.account"
@@ -72,6 +85,7 @@
                 tabindex="2"
                 autocomplete="on"
                 prefix-icon="el-icon-lock"
+                show-password
                 @keyup.enter.native="regist"
               ></el-input>
             </el-form-item>
@@ -88,12 +102,14 @@
               ></el-input>
             </el-form-item>
 
-            <el-button
-              :loading="loading"
-              type="primary"
-              style="width:100%;"
-              @click.native.prevent="regist"
-            >注册</el-button>
+            <el-form-item>
+              <el-button
+                :loading="loading"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="regist"
+              >注册</el-button>
+            </el-form-item>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -102,11 +118,12 @@
 </template>
 
 <script>
+
 export default {
   name: "login",
   path: "/login",
   weight: 0,
-  data() {
+  data()  {
     return {
       login_form: {
         account: "",
@@ -126,9 +143,9 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function(route)      {
         const query = route.query;
-        if (query) {
+        if (query)        {
           this.redirect = query.redirect;
           this.otherQuery = this.getOtherQuery(query);
         }
@@ -136,35 +153,54 @@ export default {
       immediate: true
     }
   },
-  created() {
+  created()  {
     // window.addEventListener('storage', this.afterQRScan)
   },
-  mounted() {
+  mounted()  {
     this.$refs.login_name.focus();
   },
-  destroyed() {
+  destroyed()  {
     // window.removeEventListener('storage', this.afterQRScan)
   },
+  computed: {
+    rules()    {
+      return {
+        account: [
+          { required: true, message: "请输入邮箱", trigger: 'blur' },
+          { type: "email", message: "非法的邮箱格式", trigger: 'blur' },
+          { min: 3, message: '长度过短', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: 'blur' },
+          { min: 3, message: '长度过短', trigger: 'blur' }
+        ],
+        name: [
+          { min: 3, message: '长度过短', trigger: 'blur' },
+          { required: true, message: "请输入你的姓名", trigger: 'blur' },
+        ]
+      }
+    }
+  },
   methods: {
-    showPwd() {
-      if (this.passwordType === "password") {
+    showPwd()    {
+      if (this.passwordType === "password")      {
         this.passwordType = "";
-      } else {
+      } else      {
         this.passwordType = "password";
       }
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.$refs.password.focus();
       });
     },
-    login() {
-      this.$refs.login.validate(async valid => {
-        if (!valid) {
+    login()    {
+      this.$refs.login.validate(async valid =>      {
+        if (!valid)        {
           console.log("error submit!!");
           return false;
         }
         this.loading = true;
 
-        try {
+        try        {
           await this.$store.dispatch("login", this.login_form);
           this.loading = false;
 
@@ -172,20 +208,20 @@ export default {
             path: this.redirect || "/",
             query: this.otherQuery
           });
-        } catch (e) {
+        } catch (e)        {
           this.loading = false;
         }
       });
     },
-    regist() {
-      this.$refs.regist.validate(async valid => {
-        if (!valid) {
+    regist()    {
+      this.$refs.regist.validate(async valid =>      {
+        if (!valid)        {
           console.log("error submit!!");
           return false;
         }
         this.loading = true;
 
-        try {
+        try        {
           await this.$store.dispatch("regist", this.regist_form);
 
           this.$router.push({
@@ -194,15 +230,15 @@ export default {
           });
 
           this.loading = false;
-        } catch (e) {
+        } catch (e)        {
           console.log(e);
           this.loading = false;
         }
       });
     },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
+    getOtherQuery(query)    {
+      return Object.keys(query).reduce((acc, cur) =>      {
+        if (cur !== "redirect")        {
           acc[cur] = query[cur];
         }
         return acc;

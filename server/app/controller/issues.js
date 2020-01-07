@@ -15,16 +15,7 @@ module.exports = class Current extends Controller
 
         const current = service.issues
 
-        const planner = current.get_planner(ctx.params.planner)
-
-        if (planner == null)
-        {
-            ctx.body = cal_page([], config.page.size, ctx.query.page)
-            return
-        }
-
-
-        const data = current.search(planner, ctx.query)
+        const data = current.search(ctx.params.planner, ctx.query)
 
         ctx.body = cal_page(data, config.page.size, +ctx.query.curr)
     }

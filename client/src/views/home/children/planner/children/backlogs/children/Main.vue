@@ -25,13 +25,13 @@
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
       <el-form label-position="left" label-width="60px">
         <el-form-item label="标题:">
-          <el-input placeholder="请输入标题" v-model="add_form.title" clearable />
+          <el-input tabindex="1" autofocus placeholder="请输入标题" v-model="add_form.title" clearable />
         </el-form-item>
         <el-form-item label="指派:">
-          <member-select v-model="add_form.assignee" :planner="planner_id" />
+          <member-select tabindex="2" v-model="add_form.assignee" :planner="planner_id" />
         </el-form-item>
         <el-form-item label="里程碑:">
-          <milestone-select v-model="add_form.milestone" :planner="planner_id" />
+          <milestone-select tabindex="3" v-model="add_form.milestone" :planner="planner_id" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="add_one">确定</el-button>
