@@ -114,8 +114,6 @@ export default {
         planner: this.planner_id,
       });
 
-      console.log(resp)
-
       this.backlogs = resp.backlogs
       this.issues = resp.issues
       this.notes = resp.notes

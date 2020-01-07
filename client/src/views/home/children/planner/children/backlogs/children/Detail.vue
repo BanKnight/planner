@@ -61,14 +61,7 @@
         </div>
         <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
 
-        <md-editor
-          v-model="article.content"
-          theme="small"
-          :editable="editing"
-          :planner="planner_id"
-        />
-
-        <el-footer
+        <el-header
           style="background-color:#f0f9eb;"
           class="scroll-if-need el-card"
           height="40px"
@@ -113,7 +106,14 @@
               >{{one.name}}</el-tag>
             </el-popover>
           </el-row>
-        </el-footer>
+        </el-header>
+
+        <md-editor
+          v-model="article.content"
+          theme="small"
+          :editable="editing"
+          :planner="planner_id"
+        />
       </el-container>
     </el-container>
   </el-container>

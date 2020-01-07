@@ -5,7 +5,6 @@
       height="auto"
     >
       <i class="el-icon-s-home">{{detail.name}}</i>
-      <i class="el-icon-s-tools" style="cursor:pointer"></i>
     </el-header>
 
     <el-row type="flex">

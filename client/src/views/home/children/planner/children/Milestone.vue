@@ -41,17 +41,6 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="进度" width="180">
-              <template slot-scope="scope">
-                <el-progress
-                  :percentage="scope.row.percent"
-                  :title="scope.row.percent + '%'"
-                  :text-inside="true"
-                  :stroke-width="20"
-                ></el-progress>
-              </template>
-            </el-table-column>
-
             <el-table-column label="操作" width="120" align="right" fixed="right">
               <template slot="header">
                 <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
