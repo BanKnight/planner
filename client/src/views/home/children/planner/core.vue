@@ -44,7 +44,9 @@ export default {
   components: {},
   provide()  {
     return {
-      reload_curr: this.reload
+      check_timer: null,
+      reload_curr: this.reload,
+      last_check: null,
     };
   },
   data()  {
@@ -59,6 +61,13 @@ export default {
 
   mounted()  {
     this.fetch();
+
+    this.check_timer = setInterval(() =>    {
+      this.check()
+    }, 10000)
+  },
+  beforeDestroy()  {
+    clearInterval(this.check_timer)
   },
   computed: {
     children()    {
@@ -95,6 +104,111 @@ export default {
       this.is_showing = false;
       this.$nextTick(() =>      {
         this.is_showing = true;
+      });
+    },
+    async check()    {
+      let last_check = this.last_check
+      this.last_check = await this.$store.dispatch("mine_list", {
+        planner: this.planner_id,
+      });
+
+      if (last_check == null)
+      {
+        return
+      }
+
+      let fields = ["backlogs", "issues", "notes"]
+
+      for (let one of fields)
+      {
+        this[`check_${one}`](last_check[one], this.last_check[one])
+      }
+    },
+
+    check_backlogs(old_val, new_val)
+    {
+      let map_old = old_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+      }, {})
+
+      let map_new = new_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+
+      }, {})
+
+      for (let id in map_new)
+      {
+        let one = map_new[id]
+        let existed = map_old[id]
+        if (existed == null)
+        {
+          this.notify("新需求", one.title, `${this.root}/backlogs/detail/${one._id}`)
+          continue
+        }
+      }
+    },
+    check_issues(old_val, new_val)
+    {
+      let map_old = old_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+
+      }, {})
+
+      let map_new = new_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+      }, {})
+
+      for (let id in map_new)
+      {
+        let one = map_new[id]
+        let existed = map_old[id]
+        if (existed == null)
+        {
+          this.notify("新Issue", one.title, `${this.root}/issues/detail/${one._id}`)
+          continue
+        }
+      }
+    },
+    check_notes(old_val, new_val)
+    {
+      let map_old = old_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+
+      }, {})
+
+      let map_new = new_val.reduce((prev, curr) =>      {
+        prev[curr._id] = curr
+        return prev
+      }, {})
+
+      for (let id in map_new)
+      {
+        let one = map_new[id]
+        let existed = map_old[id]
+        if (existed == null)
+        {
+          this.notify("新工单", one.title, `${this.root}/boards`)
+          continue
+        }
+      }
+    },
+    notify(title, message, url)
+    {
+      const h = this.$createElement;
+
+      this.$notify({
+        title,
+        type: "info",
+        message: h('i', { style: 'color: teal' }, message),
+        position: 'bottom-right',
+        onClick: () =>        {
+          this.$router.push({ path: url })
+        }
       });
     }
   }
