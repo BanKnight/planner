@@ -69,7 +69,6 @@
           <el-row type="flex" justify="start" align="middle" class="full-height">
             <el-upload
               v-if="editing"
-              class="upload-demo"
               :show-file-list="false"
               :action="upload_url"
               multiple
