@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  data() {
+  data()  {
     return {
       current: "",
       loading: false,
@@ -34,53 +34,52 @@ export default {
     value: String,
     disabled: Boolean
   },
-  mounted() {
+  mounted()  {
     this.current = this.value;
 
     this.init_options();
   },
   watch: {
-    value() {
+    value()    {
       this.current = this.value;
     },
-    planner() {
+    planner()    {
       this.init_options();
     }
   },
   methods: {
-    async init_options() {
-      if (this.loading == true) {
+    async init_options()    {
+      if (this.loading == true)      {
         return;
       }
 
-      if (this.planner == null) {
+      if (this.planner == null)      {
         return;
       }
 
       this.loading = true;
       this.options = [];
 
-      for (let curr = 1; curr < 100; ++curr) {
+      for (let curr = 1; curr < 100; ++curr)      {
         let page_info = await this.$store.dispatch("milestone_list", {
           planner: this.planner,
           params: {
             curr: curr,
-            closed: false
           }
         });
 
-        for (let one of page_info.data) {
+        for (let one of page_info.data)        {
           this.options.push(one);
         }
 
-        if (page_info.count == curr) {
+        if (page_info.count == curr)        {
           break;
         }
       }
 
       this.loading = false;
     },
-    input(value) {
+    input(value)    {
       this.current = value;
       this.$emit("input", value);
     }

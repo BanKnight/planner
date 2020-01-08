@@ -226,8 +226,6 @@ export default {
       this.loading = false;
       this.curr = resp.file;
       this.children = resp.children;
-
-      console.log(this.children)
     },
 
     async mkdir()    {
