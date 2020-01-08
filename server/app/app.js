@@ -7,7 +7,7 @@ const mongo = require("mongodb")
 
 module.exports = async (app) =>
 {
-    const config = app.config.mongodb
+    const config = app.config.db
 
     app.db = new Mongodb(config)
 
@@ -25,11 +25,9 @@ class Mongodb
 
     async connect()
     {
-        const connect_str = `mongodb://${this.config.host}:${this.config.port}`
+        const client = await mongo.connect(this.config.uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
-        const client = await mongo.connect(connect_str, { useNewUrlParser: true })
-
-        this.db = client.db(this.config.db)
+        this.db = client.db(this.config.name)
     }
 
     async load(name, cond, fields, sort)
