@@ -44,9 +44,7 @@ export default {
   components: {},
   provide()  {
     return {
-      check_timer: null,
       reload_curr: this.reload,
-      last_check: null,
     };
   },
   data()  {
@@ -55,16 +53,14 @@ export default {
       is_showing: true,
       detail: {
         name: ""
-      }
+      },
+      check_timer: null,
+      last_check: null,
     };
   },
 
   mounted()  {
-    this.fetch();
-
-    this.check_timer = setInterval(() =>    {
-      this.check()
-    }, 10000)
+    this.refresh()
   },
   beforeDestroy()  {
     clearInterval(this.check_timer)
@@ -88,11 +84,24 @@ export default {
   watch: {
     planner_id(new_val)    {
       if (new_val != null && new_val.length > 0)      {
-        this.fetch();
+        this.refresh();
       }
     }
   },
   methods: {
+    refresh()
+    {
+      this.fetch();
+      if (this.check_timer)
+      {
+        clearInterval(this.check_timer);
+      }
+
+      this.last_check = null
+      this.check_timer = setInterval(() =>      {
+        this.check()
+      }, 10000)
+    },
     async fetch()    {
       const public_info = await this.$store.dispatch("planner_public", {
         data: [this.planner_id]
@@ -107,10 +116,12 @@ export default {
       });
     },
     async check()    {
-      let last_check = this.last_check
-      this.last_check = await this.$store.dispatch("mine_list", {
+      let curr = await this.$store.dispatch("mine_list", {
         planner: this.planner_id,
       });
+
+      let last_check = this.last_check
+      this.last_check = curr
 
       if (last_check == null)
       {

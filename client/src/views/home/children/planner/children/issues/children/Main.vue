@@ -23,14 +23,14 @@
     </el-row>
 
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
-      <el-form label-position="left" label-width="60px">
-        <el-form-item label="标题:">
+      <el-form label-position="left" label-width="60px" :model="add_form" :rules="rules">
+        <el-form-item label="标题:" prop="title">
           <el-input placeholder="请输入标题" v-model="add_form.title" clearable />
         </el-form-item>
-        <el-form-item label="指派:">
+        <el-form-item label="指派:" prop="assignee">
           <member-select v-model="add_form.assignee" :planner="planner_id" />
         </el-form-item>
-        <el-form-item label="里程碑:">
+        <el-form-item label="里程碑:" prop="milestone">
           <milestone-select v-model="add_form.milestone" :planner="planner_id" />
         </el-form-item>
         <el-form-item>
@@ -162,6 +162,14 @@ export default {
     },
     planner_id()    {
       return this.$route.params.planner;
+    },
+    rules()    {
+      return {
+        title: [
+          { required: true, message: "请输入标题", trigger: 'blur' },
+          { min: 3, message: '长度过短', trigger: 'blur' }
+        ]
+      }
     }
   },
   beforeRouteEnter(to, from, next)  {

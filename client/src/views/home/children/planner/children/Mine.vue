@@ -2,7 +2,10 @@
   <layout>
     <el-card class="box-card" shadow="hover">
       <div slot="header" class="clearfix">
-        <h3>需求</h3>
+        <h3>
+          需求
+          <el-tag type="success" effect="dark">{{ backlogs.length }}</el-tag>
+        </h3>
       </div>
       <el-table
         :data="backlogs"
@@ -29,7 +32,10 @@
     </el-card>
     <el-card class="box-card" shadow="hover">
       <div slot="header" class="clearfix">
-        <h3>工单</h3>
+        <h3>
+          工单
+          <el-tag type="success" effect="dark">{{ notes.length }}</el-tag>
+        </h3>
       </div>
       <el-table :data="notes" style="width: 100%" :show-header="false" size="small" row-key="_id">
         <el-table-column label="标题" prop="title">
@@ -51,7 +57,10 @@
 
     <el-card class="box-card" shadow="hover">
       <div slot="header" class="clearfix">
-        <h3>问题</h3>
+        <h3>
+          问题
+          <el-tag type="success" effect="dark">{{ issues.length }}</el-tag>
+        </h3>
       </div>
 
       <el-table :data="issues" style="width: 100%" :show-header="false" size="small" row-key="_id">

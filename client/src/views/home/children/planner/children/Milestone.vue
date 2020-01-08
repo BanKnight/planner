@@ -1,111 +1,82 @@
 <template>
   <layout>
     <el-container direction="horizontal" class="full">
-      <transition name="el-fade-in">
-        <el-container direction="vertical">
-          <el-table
-            :data="page.data"
-            style="width: 100%"
-            height="100%"
-            border
-            v-loading="loading"
-            :row-class-name="row_class"
-            row-key="_id"
-          >
-            <el-table-column width="38">
-              <template slot="header">
-                <i class="el-icon-check"></i>
-              </template>
+      <el-container direction="vertical">
+        <el-main style="padding:0">
+          <el-timeline>
+            <el-timeline-item
+              size="large"
+              icon="el-icon-plus"
+              color="#469ffc"
+              placement="top"
+              timestamp="新的里程碑"
+            >
+              <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
 
-              <template slot-scope="scope">
-                <el-checkbox :value="!!scope.row.closed" @change="close(scope.row,$event)"></el-checkbox>
-              </template>
-            </el-table-column>
+              <el-dialog title="快速添加" :visible.sync="adding">
+                <el-form label-position="top" :model="form" :rules="rules" ref="new_one">
+                  <el-form-item label="标题" prop="title">
+                    <el-input v-model="form.title"></el-input>
+                  </el-form-item>
+                  <el-form-item label="描述" prop="desc">
+                    <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+                  </el-form-item>
 
-            <el-table-column label="标题" prop="title" width="150">
-              <template slot-scope="scope">
+                  <el-form-item label="截止时间" prop="due">
+                    <el-date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="form.due"
+                      value-format="timestamp"
+                      class="full-width"
+                    ></el-date-picker>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-row type="flex" justify="center">
+                      <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
+                    </el-row>
+                  </el-form-item>
+                </el-form>
+              </el-dialog>
+            </el-timeline-item>
+
+            <el-timeline-item
+              size="large"
+              v-for="(one) in page.data"
+              :key="one._id"
+              placement="top"
+              :timestamp="$format(one.due)"
+            >
+              <el-checkbox slot="dot" :value="!!one.closed" @change="close(one,$event)"></el-checkbox>
+
+              <el-card shadow="hover">
                 <i
                   class="el-icon-s-opportunity"
                   style="cursor:pointer"
-                  @click="edit(scope.row)"
-                >{{scope.row.title}}</i>
-              </template>
-            </el-table-column>
+                  @click="edit(one)"
+                >{{one.title}}</i>
 
-            <el-table-column label="描述" prop="desc"></el-table-column>
-
-            <el-table-column label="截止日期" width="130">
-              <template slot-scope="scope">
-                <i v-if="scope.row.due" class="el-icon-time">{{ $format(scope.row.due) }}</i>
-                <el-tag v-else>无</el-tag>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作" width="120" align="right" fixed="right">
-              <template slot="header">
-                <el-button type="primary" icon="el-icon-plus" @click="adding=!adding"></el-button>
-              </template>
-              <template slot-scope="scope">
-                <el-button-group>
-                  <el-button
-                    size="mini"
-                    icon="el-icon-delete"
-                    type="danger"
-                    @click="del(scope.row)"
-                  ></el-button>
+                <el-button-group style="float: right;">
+                  <el-button size="mini" icon="el-icon-delete" type="text" plain @click="del(one)"></el-button>
                 </el-button-group>
-              </template>
-            </el-table-column>
-          </el-table>
 
-          <el-footer height="auto" style="display: flex;justify-content: center">
-            <el-pagination
-              :page-count="page.count"
-              layout="total,prev, pager, next"
-              :total="page.total"
-              @current-change="fetch"
-              @prev-click="fetch"
-              @next-click="fetch"
-            ></el-pagination>
-          </el-footer>
-        </el-container>
-      </transition>
-
-      <transition name="el-zoom-in-center">
-        <el-main width="300px" v-if="adding" class="el-card">
-          <el-row type="flex" justify="end" align="middle">
-            <el-button
-              size="mini"
-              icon="el-message-box__close el-icon-close"
-              @click="adding = !adding"
-            />
-          </el-row>
-          <el-form label-position="top" :model="form" ref="new_one">
-            <el-form-item label="标题">
-              <el-input v-model="form.title"></el-input>
-            </el-form-item>
-            <el-form-item label="描述">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
-            </el-form-item>
-
-            <el-form-item label="截止时间">
-              <el-date-picker
-                type="date"
-                placeholder="选择日期"
-                v-model="form.due"
-                value-format="timestamp"
-                class="full-width"
-              ></el-date-picker>
-            </el-form-item>
-
-            <el-form-item>
-              <el-row type="flex" justify="center">
-                <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
-              </el-row>
-            </el-form-item>
-          </el-form>
+                <p>{{one.desc}}</p>
+              </el-card>
+            </el-timeline-item>
+          </el-timeline>
         </el-main>
-      </transition>
+        <el-footer height="auto" style="display: flex;justify-content: center">
+          <el-pagination
+            :page-count="page.count"
+            layout="total,prev, pager, next"
+            :total="page.total"
+            @current-change="fetch"
+            @prev-click="fetch"
+            @next-click="fetch"
+          ></el-pagination>
+        </el-footer>
+      </el-container>
 
       <transition name="el-zoom-in-center">
         <el-main width="300px" v-if="editing" class="el-card">
@@ -117,15 +88,15 @@
               @click="edit(editing)"
             />
           </el-row>
-          <el-form label-position="top" :model="editing_form" ref="new_one">
-            <el-form-item label="标题">
+          <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
+            <el-form-item label="标题" prop="title">
               <el-input v-model="editing_form.title"></el-input>
             </el-form-item>
-            <el-form-item label="描述">
+            <el-form-item label="描述" prop="desc">
               <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
             </el-form-item>
 
-            <el-form-item label="截止时间">
+            <el-form-item label="截止时间" prop="due">
               <el-date-picker
                 type="date"
                 placeholder="选择日期"
@@ -183,6 +154,19 @@ export default {
   computed: {
     planner_id()    {
       return this.$route.params.planner;
+    },
+    rules()
+    {
+      return {
+        title: [
+          { type: "string", required: true, message: "请输入标题", trigger: 'blur' },
+          { min: 1, message: '长度过短', trigger: 'blur' }
+        ],
+        due: [
+          { type: "date", required: true, message: "请输入截止时间", trigger: 'blur' },
+
+        ]
+      }
     }
   },
   methods: {
@@ -280,7 +264,7 @@ export default {
       this.fetch(this.page.curr);
     },
     async del(milestone)    {
-      await this.$confirm("是否确认删除?", "提示", {
+      await this.$confirm(milestone.title, "是否确认删除?", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

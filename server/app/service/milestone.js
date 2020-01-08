@@ -31,14 +31,9 @@ module.exports = class Milestone extends Service
      */
     static cmp(first, second)
     {
-        if (first.closed == null && second.closed != null)
+        if (first.due != second.due)
         {
-            return -1
-        }
-
-        if (first.closed != null && second.closed == null)
-        {
-            return 1
+            return second.due - first.due
         }
 
         if (first.updated != second.updated)
