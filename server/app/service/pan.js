@@ -80,7 +80,7 @@ module.exports = class Current extends Service
 
         file = {
             _id: shortid.generate(),
-            name: "private",
+            name: ".private",
             pan: pan._id,
             path: "/.private",
             directory: true,

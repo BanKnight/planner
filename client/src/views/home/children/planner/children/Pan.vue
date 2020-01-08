@@ -40,10 +40,6 @@
             <div class="el-upload__tip" slot="tip">大小不能超过20m</div>
           </el-upload>
         </el-dialog>
-
-        <el-dialog title="图片查看" :visible.sync="preview.visible" class="scroll-if-need full">
-          <el-image v-if="preview.url" :src="preview.url"></el-image>
-        </el-dialog>
       </el-header>
 
       <el-table
@@ -55,16 +51,6 @@
         v-loading="loading"
         row-key="_id"
       >
-        <el-table-column width="38">
-          <template slot="header">
-            <i class="el-icon-check"></i>
-          </template>
-
-          <template slot-scope="scope">
-            <el-checkbox :value="!!scope.row.closed" @change="close(scope.row,$event)"></el-checkbox>
-          </template>
-        </el-table-column>
-
         <el-table-column label="名称">
           <template slot-scope="scope">
             <i class="el-icon-folder" v-if="scope.row.directory">
@@ -73,12 +59,30 @@
                 class="el-link el-link--default"
               >{{scope.row.name}}</router-link>
             </i>
-            <i
-              class="el-icon-picture el-link el-link--default"
-              v-else-if="scope.row.ext== '.png' || scope.row.ext== '.jpg' || scope.row.ext== '.gif'"
-              @click="watch_img(scope.row)"
-            >{{scope.row.name}}</i>
-            <i class="el-icon-document" v-else>{{scope.row.name}}</i>
+
+            <el-popover
+              v-else
+              placement="bottom-start"
+              width="400px"
+              trigger="hover"
+              :key="scope.row._id"
+            >
+              <el-row type="flex" justify="space-between">
+                <h2>{{scope.row.name}}</h2>
+                <el-button type="success" @click="copy_link(scope.row)">复制链接</el-button>
+              </el-row>
+
+              <el-image v-if="is_img(scope.row)" :src="cal_link(scope.row)" fit="contain"></el-image>
+              <div v-else>不支持预览</div>
+
+              <el-tag
+                :class="is_img(scope.row)?'el-icon-picture':'el-icon-document'"
+                type="success"
+                size="mini"
+                :effect="is_img(scope.row)?'dark':'plain'"
+                slot="reference"
+              >{{scope.row.name}}</el-tag>
+            </el-popover>
           </template>
         </el-table-column>
 
@@ -99,16 +103,25 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="120" align="right" fixed="right">
+        <el-table-column label="操作" width="160" align="right" fixed="right">
           <template slot-scope="scope">
             <el-button-group>
-              <el-button size="mini" icon="el-icon-edit" @click="destroy(scope.row)"></el-button>
               <el-button
+                title="删除"
                 size="mini"
                 icon="el-icon-delete"
                 type="danger"
                 @click="destroy(scope.row)"
               ></el-button>
+
+              <el-link
+                target="_blank"
+                :href="cal_link(scope.row)"
+                :download="scope.row.name"
+                :underline="false"
+              >
+                <el-button title="下载" size="mini" icon="el-icon-download" type="success"></el-button>
+              </el-link>
             </el-button-group>
           </template>
         </el-table-column>
@@ -118,10 +131,15 @@
 </template>
 
 <script>
-import MemberPreview from "@/components/MemberPreview";
+
+import copy from 'clipboard-copy'
 import filesize from "file-size";
 import path from "path";
 import layout from "../layout";
+
+import { is_img } from "@/utils"
+import MemberPreview from "@/components/MemberPreview";
+
 
 export default {
   path: "pan",
@@ -159,7 +177,7 @@ export default {
         let name = path.basename(target);
 
         if (parent == target)        {
-          name = "网盘";
+          name = "根目录";
         }
 
         array.unshift({
@@ -208,6 +226,8 @@ export default {
       this.loading = false;
       this.curr = resp.file;
       this.children = resp.children;
+
+      console.log(this.children)
     },
 
     async mkdir()    {
@@ -230,10 +250,7 @@ export default {
 
       this.fetch();
     },
-    watch_img(file)    {
-      this.preview.visible = true;
-      this.preview.url = `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${file.res}`;
-    },
+
     async destroy(file)    {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
@@ -256,8 +273,43 @@ export default {
 
       this.fetch();
     },
+    rename()
+    {
+      this.$prompt('请输入新的名字', '修改名字', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) =>      {
+
+        value = value.trim()
+        if (value.length == 0)
+        {
+          this.$message.error("名字不能为空")
+          return
+        }
+
+
+      }).catch(() =>      {
+
+      });
+    },
     filesize(number)    {
       return filesize(number).human();
+    },
+    is_img(file)
+    {
+      return is_img(file.ext)
+    },
+    cal_link(one)
+    {
+      return `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${one.res}`
+    },
+    copy_link(one)
+    {
+      let url = this.cal_link(one)
+
+      copy(url)
+
+      this.$message.success("复制成功")
     }
   }
 };
