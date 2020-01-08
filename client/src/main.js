@@ -1,5 +1,5 @@
-import "normalize.css/normalize.css"
-import './plugins'
+import "normalize.css/normalize.css";
+import "./plugins";
 
 import Vue from "vue";
 import App from "./App.vue";

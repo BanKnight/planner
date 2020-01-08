@@ -2,8 +2,16 @@
   <el-container class="full" direction="vertical">
     <el-header height="auto" style="padding:0;margin-bottom:10px">
       <el-button-group>
-        <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
-        <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
+        <el-button size="mini" icon="el-icon-close" @click="cancel"
+          >取消</el-button
+        >
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-upload"
+          @click="save"
+          >保存</el-button
+        >
       </el-button-group>
     </el-header>
 
@@ -11,7 +19,11 @@
       <el-tabs type="border-card">
         <el-tab-pane label="基础">
           <el-container class="el-card full" direction="vertical">
-            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+            <el-input
+              placeholder="标题"
+              v-model="form.title"
+              class="no-border-input"
+            />
 
             <mavon-editor
               v-model="form.content"
@@ -90,8 +102,12 @@
         <el-tab-pane label="需求" v-if="backlog">
           <div style="text-align:center;">
             <h2>
-              {{backlog.title}}
-              <member-preview size="mini" :planner="planner" v-model="backlog.assignee" />
+              {{ backlog.title }}
+              <member-preview
+                size="mini"
+                :planner="planner"
+                v-model="backlog.assignee"
+              />
             </h2>
           </div>
           <md-editor :value="backlog.content" :editable="false" size="mini" />
@@ -100,8 +116,12 @@
         <el-tab-pane label="问题" v-if="issue">
           <div style="text-align:center;">
             <h2>
-              {{issue.title}}
-              <member-preview size="mini" :planner="planner" v-model="issue.assignee" />
+              {{ issue.title }}
+              <member-preview
+                size="mini"
+                :planner="planner"
+                v-model="issue.assignee"
+              />
             </h2>
           </div>
           <md-editor :value="issue.content" :editable="false" size="mini" />
@@ -121,24 +141,31 @@ import IssueSelect from "./IssueSelect";
 import MdEditor from "./MdEditor";
 
 export default {
-  components: { MemberSelect, MemberPreview, MilestoneSelect, BacklogSelect, IssueSelect, MdEditor },
+  components: {
+    MemberSelect,
+    MemberPreview,
+    MilestoneSelect,
+    BacklogSelect,
+    IssueSelect,
+    MdEditor
+  },
   props: {
     planner: String,
     col: String
   },
-  data()  {
+  data() {
     return {
       editable: false,
       form: {
         backlog: null,
-        issue: null,
+        issue: null
       },
       backlog: null,
-      issue: null,
+      issue: null
     };
   },
   computed: {
-    options()    {
+    options() {
       return {
         imagelink: true, // 图片链接
         table: true, // 表格
@@ -147,20 +174,19 @@ export default {
     }
   },
   watch: {
-
-    "form.backlog": function(new_val)    {
-      this.fetch_backlog(new_val)
+    "form.backlog": function(new_val) {
+      this.fetch_backlog(new_val);
     },
-    "form.issue": function(new_val)    {
-      this.fetch_issue(new_val)
+    "form.issue": function(new_val) {
+      this.fetch_issue(new_val);
     }
   },
   methods: {
-    cancel()    {
+    cancel() {
       this.$emit("cancel");
     },
-    save()    {
-      if (!this.form.title)      {
+    save() {
+      if (!this.form.title) {
         this.$message.error("请先输入标题");
         return;
       }
@@ -168,42 +194,35 @@ export default {
       this.form.title = this.form.title.trim();
       this.form.content = (this.form.content || "").trim();
 
-      if (this.form.title.length == 0)      {
+      if (this.form.title.length == 0) {
         this.$message.error("请先输入标题");
         return;
       }
 
       this.$emit("save", this.form);
     },
-    async fetch_backlog()
-    {
-      if (!this.form.backlog)
-      {
-        this.backlog = null
-        return
+    async fetch_backlog() {
+      if (!this.form.backlog) {
+        this.backlog = null;
+        return;
       }
 
       this.backlog = await this.$store.dispatch("backlogs_detail", {
         planner: this.planner,
         backlog: this.form.backlog
       });
-
     },
-    async fetch_issue()
-    {
-      if (!this.form.issue)
-      {
-        this.issue = null
-        return
+    async fetch_issue() {
+      if (!this.form.issue) {
+        this.issue = null;
+        return;
       }
 
       this.issue = await this.$store.dispatch("issues_detail", {
         planner: this.planner,
         issue: this.form.issue
       });
-
     }
   }
 };
 </script>
-

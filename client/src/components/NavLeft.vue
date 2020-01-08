@@ -10,9 +10,12 @@
     >
       <span slot-scope="{ node, data }">
         <i
-          :class="{'el-icon-folder':data.children != null,'el-icon-document':data.children == null}"
+          :class="{
+            'el-icon-folder': data.children != null,
+            'el-icon-document': data.children == null
+          }"
         ></i>
-        {{data.label}}
+        {{ data.label }}
       </span>
     </el-tree>
   </el-container>

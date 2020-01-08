@@ -9,12 +9,20 @@
 
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" size="medium" style="width:200px" @click="reset_name">确定</el-button>
+              <el-button
+                type="primary"
+                size="medium"
+                style="width:200px"
+                @click="reset_name"
+                >确定</el-button
+              >
             </el-row>
           </el-form-item>
 
           <el-form-item label="登出：">
-            <el-button type="danger" plain size="medium" @click="quit">登出</el-button>
+            <el-button type="danger" plain size="medium" @click="quit"
+              >登出</el-button
+            >
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -60,7 +68,13 @@
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" style="width:200px" size="medium" @click="reset_password">确定</el-button>
+              <el-button
+                type="primary"
+                style="width:200px"
+                size="medium"
+                @click="reset_password"
+                >确定</el-button
+              >
             </el-row>
           </el-form-item>
         </el-form>
@@ -78,7 +92,7 @@ export default {
   meta: {
     require_logined: true
   },
-  data()  {
+  data() {
     return {
       basic_form: {
         name: ""
@@ -91,10 +105,10 @@ export default {
     };
   },
   methods: {
-    async reset_name()    {
+    async reset_name() {
       this.basic_form.name = this.basic_form.name.trim();
 
-      if (this.basic_form.name.length == 0)      {
+      if (this.basic_form.name.length == 0) {
         this.$message.error("请输入姓名");
         return;
       }
@@ -105,8 +119,8 @@ export default {
 
       this.$message.success("成功修改");
     },
-    async reset_password()    {
-      if (this.password_form.old.length == 0)      {
+    async reset_password() {
+      if (this.password_form.old.length == 0) {
         this.$message.error("请先输入旧密码");
         return;
       }
@@ -114,7 +128,7 @@ export default {
       this.password_form.new = this.password_form.new.trim();
       this.password_form.again = this.password_form.again.trim();
 
-      if (this.password_form.new != this.password_form.again)      {
+      if (this.password_form.new != this.password_form.again) {
         this.$message.error("两次密码要一致");
         return;
       }
@@ -122,7 +136,7 @@ export default {
       if (
         this.password_form.new.length == 0 ||
         this.password_form.again.length == 0
-      )      {
+      ) {
         this.$message.error("请输入新密码");
         return;
       }
@@ -136,7 +150,7 @@ export default {
 
       this.$router.replace({ path: "/login" });
     },
-    quit()    {
+    quit() {
       Cookie.remove("token");
       this.$router.replace({ path: "/login" });
     }

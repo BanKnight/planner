@@ -28,7 +28,8 @@
           <router-link
             :to="`${root}/detail/${scope.row._id}`"
             class="el-link el-link--default"
-          >{{scope.row.title}}</router-link>
+            >{{ scope.row.title }}</router-link
+          >
         </template>
       </el-table-column>
     </el-table>

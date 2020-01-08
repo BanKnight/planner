@@ -6,20 +6,20 @@
 
 <script>
 export default {
-  provide()  {
+  provide() {
     return {
       reload: this.reload
     };
   },
-  data()  {
+  data() {
     return {
       is_showing: true
     };
   },
   methods: {
-    reload()    {
+    reload() {
       this.is_showing = false;
-      this.$nextTick(() =>      {
+      this.$nextTick(() => {
         this.is_showing = true;
       });
     }
@@ -27,7 +27,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 @import "~nprogress/nprogress.css";
 
 body,

@@ -1,7 +1,6 @@
-
 <template>
   <el-tag v-if="current" :size="size" effect="dark" type="success">
-    <i class="el-icon-user">{{current.name}}</i>
+    <i class="el-icon-user">{{ current.name }}</i>
   </el-tag>
   <el-tag v-else :size="size" effect="plain" type="info">
     <i class="el-icon-user"></i>

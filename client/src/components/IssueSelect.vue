@@ -1,4 +1,3 @@
-
 <template>
   <el-select
     :value="current"
@@ -13,7 +12,12 @@
     :loading="loading"
     :remote-method="search"
   >
-    <el-option v-for="item in options" :key="item._id" :label="item.title" :value="item._id"></el-option>
+    <el-option
+      v-for="item in options"
+      :key="item._id"
+      :label="item.title"
+      :value="item._id"
+    ></el-option>
   </el-select>
 </template>
 

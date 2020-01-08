@@ -13,14 +13,14 @@
 
 <script>
 export default {
-  data()  {
+  data() {
     return {
-      content: "",
-    }
+      content: ""
+    };
   },
   props: {
     value: {
-      type: String,
+      type: String
     },
     theme: {
       type: String,
@@ -28,38 +28,37 @@ export default {
     },
     editable: {
       type: Boolean,
-      default: true,
+      default: true
     },
-    planner: String,
+    planner: String
   },
   computed: {
-    options()    {
+    options() {
+      let theme = `${this.theme}_${this.editable ? "edit" : "preview"}`;
 
-      let theme = `${this.theme}_${this.editable ? 'edit' : 'preview'}`
-
-      return this[theme]
+      return this[theme];
     },
-    mini_edit()    {
+    mini_edit() {
       return {
         boxShadow: false,
         ishljs: false,
         subfield: false,
         editable: true,
         toolbarsFlag: false,
-        defaultOpen: "edit",
-      }
+        defaultOpen: "edit"
+      };
     },
-    mini_preview()    {
+    mini_preview() {
       return {
         boxShadow: false,
         ishljs: false,
         subfield: false,
         editable: false,
         toolbarsFlag: false,
-        defaultOpen: "preview",
-      }
+        defaultOpen: "preview"
+      };
     },
-    small_edit()    {
+    small_edit() {
       return {
         boxShadow: false,
         ishljs: false,
@@ -78,48 +77,40 @@ export default {
           subfield: true, // 单双栏模式
           preview: true // 预览
         }
-      }
+      };
     },
-    small_preview()    {
-      return this.mini_preview
+    small_preview() {
+      return this.mini_preview;
     }
   },
-  mounted()  {
-    this.content = this.value
+  mounted() {
+    this.content = this.value;
   },
   watch: {
-    value(new_val)    {
-      this.content = new_val
+    value(new_val) {
+      this.content = new_val;
     }
   },
   methods: {
-    on_input(val)    {
-      this.content = val
-      this.$emit("input", val)
+    on_input(val) {
+      this.content = val;
+      this.$emit("input", val);
     },
-    async add_img(pos, raw_file)
-    {
+    async add_img(pos, raw_file) {
       const formdata = new FormData();
-      formdata.append('file', raw_file);
+      formdata.append("file", raw_file);
 
       let file = await this.$store.dispatch("pan_upload_priavte", {
         planner: this.planner,
         data: formdata
-      })
+      });
 
-      console.log("upload success", file)
+      console.log("upload success", file);
 
       let url = `${this.$http.defaults.baseURL}/public/upload/${this.planner}/${file.res}`;
 
-      this.$refs.md.$img2Url(pos, url)
-
-    },
-
+      this.$refs.md.$img2Url(pos, url);
+    }
   }
-
-
-}
+};
 </script>
-
-
-

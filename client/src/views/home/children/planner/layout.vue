@@ -3,5 +3,3 @@
     <slot />
   </el-main>
 </template>
-
-

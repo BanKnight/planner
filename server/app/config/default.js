@@ -5,7 +5,7 @@ module.exports = {
     middleware: ["cors", "compress", "jwt", "user", "cache", "body", "catch"],
     mongodb: process.env.DB,
     db: {
-        uri: process.env.DB_URL,
+        url: process.env.DB_URL,
         name: process.env.DB_NAME,
     },
     compress: {

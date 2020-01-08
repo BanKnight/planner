@@ -25,7 +25,8 @@
           plain
           icon="el-icon-plus"
           @click="add_col"
-        >添加</el-button>
+          >添加</el-button
+        >
       </el-container>
     </el-container>
   </el-main>

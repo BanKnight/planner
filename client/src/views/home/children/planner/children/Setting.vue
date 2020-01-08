@@ -1,4 +1,3 @@
-
 <template>
   <el-main style="padding:10px">
     <el-tabs tab-position="left" type="border-card" class="full">
@@ -16,7 +15,13 @@
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" :loading="loading" size="medium" @click="summit_basic">确定</el-button>
+              <el-button
+                type="primary"
+                :loading="loading"
+                size="medium"
+                @click="summit_basic"
+                >确定</el-button
+              >
             </el-row>
           </el-form-item>
         </el-form>
@@ -28,11 +33,11 @@
               v-for="one in members"
               :key="one._id"
               effect="dark"
-              :type="one._id == basic.owner?'danger':'info'"
+              :type="one._id == basic.owner ? 'danger' : 'info'"
               :closable="one._id != basic.owner"
               @close="remove_member(one)"
             >
-              <i class="el-icon-user">{{one.name}}</i>
+              <i class="el-icon-user">{{ one.name }}</i>
             </el-tag>
           </el-form-item>
 

@@ -1,6 +1,10 @@
 <template>
   <el-container class="full">
-    <el-container class="full" direction="vertical" :style="{width:collapse?'68px':'200px'}">
+    <el-container
+      class="full"
+      direction="vertical"
+      :style="{ width: collapse ? '68px' : '200px' }"
+    >
       <el-main style="padding:0;background-color:#334444">
         <el-menu
           :router="true"
@@ -16,10 +20,10 @@
             :index="child.meta.menu_title"
             v-for="child in children"
             :key="child.path"
-            :route="{path:child.path}"
+            :route="{ path: child.path }"
           >
             <i :class="child.meta.menu_icon"></i>
-            <span slot="title">{{child.meta.menu_title}}</span>
+            <span slot="title">{{ child.meta.menu_title }}</span>
           </el-menu-item>
         </el-menu>
 
@@ -36,11 +40,11 @@
             v-for="star in stars"
             :key="star._id"
             :index="star._id"
-            :route="{path:'/planner/' + star._id}"
+            :route="{ path: '/planner/' + star._id }"
           >
             <i class="el-icon-star-on"></i>
 
-            <span slot="title">{{star.name}}</span>
+            <span slot="title">{{ star.name }}</span>
           </el-menu-item>
         </el-menu>
       </el-main>
@@ -50,7 +54,10 @@
         style="background-color:#334444;color:white;padding:0 5px;border-top:1px solid #6b6f6f"
       >
         <el-row class="full" type="flex" justify="space-around" align="middle">
-          <i class="el-icon-setting clickable" @click="$router.replace('/setting')" />
+          <i
+            class="el-icon-setting clickable"
+            @click="$router.replace('/setting')"
+          />
           <i class="el-icon-s-fold clickable" @click="collapse = !collapse" />
         </el-row>
       </el-footer>
@@ -116,6 +123,5 @@ export default {
 <style>
 .el-collapse-item__header {
   background-color: transparent;
-}
-</style>>
-
+}</style
+>>

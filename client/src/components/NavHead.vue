@@ -4,12 +4,10 @@
   </el-row>
 </template>
 
-<style >
+<style>
 .header {
   height: 30px;
   background-color: #3c4146;
   color: white;
 }
 </style>
-
-

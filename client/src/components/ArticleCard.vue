@@ -1,8 +1,11 @@
 <template>
   <el-container class="full-width article-card" direction="vertical">
     <span>
-      <router-link :to="'/article/' + value.number" class="el-link el-link--default">
-        <h2>{{value.title}}</h2>
+      <router-link
+        :to="'/article/' + value.number"
+        class="el-link el-link--default"
+      >
+        <h2>{{ value.title }}</h2>
       </router-link>
     </span>
 
@@ -13,11 +16,12 @@
         size="mini"
         type="info"
         effect="dark"
-      >{{ label.name }}</el-tag>
+        >{{ label.name }}</el-tag
+      >
     </span>
 
     <p>
-      <i class="el-icon-time">{{time}}</i>
+      <i class="el-icon-time">{{ time }}</i>
     </p>
   </el-container>
 </template>
@@ -39,6 +43,3 @@ export default {
   }
 };
 </script>
-
-
-

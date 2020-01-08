@@ -19,13 +19,18 @@
             <router-link
               :to="`${root}/backlogs/detail/${scope.row._id}`"
               class="el-link el-icon-s-opportunity el-link--default"
-            >{{scope.row.title}}</router-link>
+              >{{ scope.row.title }}</router-link
+            >
           </template>
         </el-table-column>
 
         <el-table-column label="里程碑" width="120">
           <template slot-scope="scope">
-            <milestone-preview :value="scope.row.milestone" size="mini" :planner="planner_id" />
+            <milestone-preview
+              :value="scope.row.milestone"
+              size="mini"
+              :planner="planner_id"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -37,13 +42,20 @@
           <el-tag type="success" effect="dark">{{ notes.length }}</el-tag>
         </h3>
       </div>
-      <el-table :data="notes" style="width: 100%" :show-header="false" size="small" row-key="_id">
+      <el-table
+        :data="notes"
+        style="width: 100%"
+        :show-header="false"
+        size="small"
+        row-key="_id"
+      >
         <el-table-column label="标题" prop="title">
           <template slot-scope="scope">
             <router-link
               :to="`${root}/boards`"
               class="el-link el-icon-document el-link--default"
-            >{{scope.row.title}}</router-link>
+              >{{ scope.row.title }}</router-link
+            >
           </template>
         </el-table-column>
 
@@ -63,19 +75,30 @@
         </h3>
       </div>
 
-      <el-table :data="issues" style="width: 100%" :show-header="false" size="small" row-key="_id">
+      <el-table
+        :data="issues"
+        style="width: 100%"
+        :show-header="false"
+        size="small"
+        row-key="_id"
+      >
         <el-table-column label="标题" prop="title">
           <template slot-scope="scope">
             <router-link
               :to="`${root}/issues/detail/${scope.row._id}`"
               class="el-link el-icon-question el-link--default"
-            >{{scope.row.title}}</router-link>
+              >{{ scope.row.title }}</router-link
+            >
           </template>
         </el-table-column>
 
         <el-table-column label="里程碑" width="120">
           <template slot-scope="scope">
-            <milestone-preview :value="scope.row.milestone" size="mini" :planner="planner_id" />
+            <milestone-preview
+              :value="scope.row.milestone"
+              size="mini"
+              :planner="planner_id"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +107,6 @@
 </template>
 
 <script>
-
 import layout from "../layout";
 import MilestonePreview from "@/components/MilestonePreview";
 import DatePreview from "@/components/DatePreview";
@@ -98,37 +120,36 @@ export default {
     require_logined: true
   },
   components: { layout, MilestonePreview, DatePreview },
-  data()  {
+  data() {
     return {
       backlogs: [],
       issues: [],
-      notes: [],
-    }
+      notes: []
+    };
   },
-  mounted()  {
-    this.fetch()
+  mounted() {
+    this.fetch();
   },
   computed: {
-    root()    {
+    root() {
       return `/planner/${this.planner_id}`;
     },
-    planner_id()    {
+    planner_id() {
       return this.$route.params.planner;
-    },
+    }
   },
   methods: {
-    async fetch()
-    {
+    async fetch() {
       let resp = await this.$store.dispatch("mine_list", {
-        planner: this.planner_id,
+        planner: this.planner_id
       });
 
-      this.backlogs = resp.backlogs
-      this.issues = resp.issues
-      this.notes = resp.notes
+      this.backlogs = resp.backlogs;
+      this.issues = resp.issues;
+      this.notes = resp.notes;
     }
   }
-}
+};
 </script>
 
 <style scoped>

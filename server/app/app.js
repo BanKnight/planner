@@ -25,7 +25,7 @@ class Mongodb
 
     async connect()
     {
-        const client = await mongo.connect(this.config.uri, { useNewUrlParser: true, useUnifiedTopology: true })
+        const client = await mongo.connect(this.config.url, { useNewUrlParser: true, useUnifiedTopology: true })
 
         this.db = client.db(this.config.name)
     }

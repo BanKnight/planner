@@ -9,4 +9,3 @@ export default {
   weight: -1
 };
 </script>
-

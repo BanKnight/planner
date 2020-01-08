@@ -1,11 +1,19 @@
 <template>
   <el-container class="full" style="padding:10px">
     <el-main class="full" style="padding:0;">
-      <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
+      <el-table
+        :data="planners"
+        style="width: 100%"
+        height="100%"
+        :stripe="true"
+      >
         <el-table-column label="标题" prop="name" width="150">
           <template slot-scope="scope">
-            <router-link :to="'/planner/' + scope.row._id" class="el-link el-link--default">
-              <h4>{{scope.row.name}}</h4>
+            <router-link
+              :to="'/planner/' + scope.row._id"
+              class="el-link el-link--default"
+            >
+              <h4>{{ scope.row.name }}</h4>
             </router-link>
           </template>
         </el-table-column>
@@ -15,13 +23,19 @@
         <el-table-column label="创建日期" width="130">
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
+            <span style="margin-left: 10px">{{
+              $format(scope.row.created)
+            }}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="操作" width="180" align="right">
           <template slot="header">
-            <el-button type="primary" icon="el-icon-plus" @click="adding =!adding"></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              @click="adding = !adding"
+            ></el-button>
           </template>
           <template slot-scope="scope">
             <el-button-group>
@@ -44,11 +58,18 @@
             <el-input v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item label="描述">
-            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+            <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="请输入内容"
+              v-model="form.desc"
+            ></el-input>
           </el-form-item>
           <el-form-item>
             <el-row type="flex" justify="center">
-              <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
+              <el-button type="primary" :loading="loading" @click="on_create"
+                >立即创建</el-button
+              >
             </el-row>
           </el-form-item>
         </el-form>
@@ -142,4 +163,3 @@ export default {
   }
 };
 </script>
-

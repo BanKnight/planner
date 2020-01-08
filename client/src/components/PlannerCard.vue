@@ -1,8 +1,11 @@
 <template>
   <el-card shadow="never" class="card">
     <el-row slot="header" type="flex" justify="space-between">
-      <router-link :to="'/planner/' + value._id" class="el-link el-link--default">
-        <h4>{{value.name}}</h4>
+      <router-link
+        :to="'/planner/' + value._id"
+        class="el-link el-link--default"
+      >
+        <h4>{{ value.name }}</h4>
       </router-link>
 
       <el-button-group>
@@ -10,7 +13,7 @@
         <el-button size="mini" icon="el-icon-more"></el-button>
       </el-button-group>
     </el-row>
-    <span>{{value.desc}}</span>
+    <span>{{ value.desc }}</span>
   </el-card>
 </template>
 
@@ -22,7 +25,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .card {
   min-width: 250px;
   min-height: 100px;

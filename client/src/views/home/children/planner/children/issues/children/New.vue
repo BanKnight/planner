@@ -5,15 +5,19 @@
       style="display: flex;padding:0;justify-content: space-between;align-content:center;margin-bottom:10px"
     >
       <el-button-group>
-        <el-button icon="el-icon-s-fold" @click="folding=!folding">选项</el-button>
-        <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
+        <el-button icon="el-icon-s-fold" @click="folding = !folding"
+          >选项</el-button
+        >
+        <el-button type="primary" icon="el-icon-upload" @click="summit"
+          >保存</el-button
+        >
       </el-button-group>
     </el-header>
 
     <el-container class="full scroll-if-need">
       <el-aside
         width="180px"
-        v-if="folding==false"
+        v-if="folding == false"
         style="margin-right:10px;padding:10px"
         class="el-card"
       >
@@ -22,7 +26,10 @@
             <member-select v-model="article.assignee" :planner="planner_id" />
           </el-form-item>
           <el-form-item label="里程碑:">
-            <milestone-select v-model="article.milestone" :planner="planner_id" />
+            <milestone-select
+              v-model="article.milestone"
+              :planner="planner_id"
+            />
           </el-form-item>
 
           <!-- <el-form-item label="标签:">
@@ -48,7 +55,12 @@
       <el-container class="el-card" direction="vertical">
         <el-input placeholder="请输入标题" v-model="article.title" clearable />
 
-        <md-editor v-model="article.content" theme="small" :editable="true" @save="summit" />
+        <md-editor
+          v-model="article.content"
+          theme="small"
+          :editable="true"
+          @save="summit"
+        />
       </el-container>
     </el-container>
   </el-container>
@@ -64,7 +76,7 @@ export default {
   weight: 10,
   meta: { require_logined: true },
   components: { MilestoneSelect, MemberSelect, MdEditor },
-  data()  {
+  data() {
     return {
       article: {
         title: "",
@@ -76,7 +88,7 @@ export default {
     };
   },
   computed: {
-    options()    {
+    options() {
       return {
         imagelink: true, // 图片链接
         fullscreen: true, // 全屏编辑
@@ -90,26 +102,26 @@ export default {
         preview: true // 预览
       };
     },
-    root()    {
+    root() {
       return `/planner/${this.planner_id}/issues`;
     },
-    planner_id()    {
+    planner_id() {
       return this.$route.params.planner;
     }
   },
-  beforeRouteEnter(to, from, next)  {
-    next(vm =>    {
-      if (from.fullPath != "/")      {
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.fullPath != "/") {
         vm.from = from.fullPath;
       }
     });
   },
   methods: {
-    async summit()    {
+    async summit() {
       this.article.title = this.article.title.trim();
       this.articlecontent = this.article.content;
 
-      if (this.article.title.length == 0)      {
+      if (this.article.title.length == 0) {
         this.$message.error("提交前标题不能为空");
         return;
       }
@@ -122,14 +134,13 @@ export default {
 
       this.goback();
     },
-    goback()    {
-      if (this.from)      {
+    goback() {
+      if (this.from) {
         this.$router.push(this.from);
-      } else      {
+      } else {
         this.$router.push(this.root);
       }
     }
   }
 };
 </script>
-

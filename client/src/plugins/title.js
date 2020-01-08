@@ -1,6 +1,5 @@
-import Vue from "vue"
+import Vue from "vue";
 
-Vue.prototype.$title = function (text)
-{
-    document.title = text;
-}
+Vue.prototype.$title = function(text) {
+  document.title = text;
+};

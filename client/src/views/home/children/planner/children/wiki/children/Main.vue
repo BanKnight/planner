@@ -5,7 +5,13 @@
     </el-aside>
 
     <el-row type="flex" justify="center" align="middle" class="full">
-      <el-button plain type="primary" icon="el-icon-plus" @click="$router.push(`${root}/new`)">新建文章</el-button>
+      <el-button
+        plain
+        type="primary"
+        icon="el-icon-plus"
+        @click="$router.push(`${root}/new`)"
+        >新建文章</el-button
+      >
     </el-row>
   </el-container>
 </template>

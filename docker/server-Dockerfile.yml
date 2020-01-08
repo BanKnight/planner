@@ -1,0 +1,17 @@
+FROM node:12
+
+WORKDIR /planner-server
+
+COPY server/package*.json ./
+
+RUN npm install --registry=https://registry.npm.taobao.org
+
+COPY server/ .
+
+EXPOSE 80
+
+CMD [ "npm", "run","start" ] 
+
+
+
+

@@ -1,4 +1,3 @@
-
 <template>
   <el-select
     :value="current"
@@ -12,7 +11,12 @@
     value-key="_id"
     :loading="loading"
   >
-    <el-option v-for="item in options" :key="item._id" :label="item.name" :value="item._id"></el-option>
+    <el-option
+      v-for="item in options"
+      :key="item._id"
+      :label="item.name"
+      :value="item._id"
+    ></el-option>
   </el-select>
 </template>
 

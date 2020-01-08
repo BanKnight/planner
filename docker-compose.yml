@@ -1,0 +1,29 @@
+version: '3'
+services:
+  server:                                 
+    container_name: planner-server     
+    restart: always                     # 重启策略: 容器退出时总是重启容器
+    build:
+      context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
+      dockerfile: ./docker/server-Dockerfile.yml
+    working_dir: /app                   # 设置工作目录为容器内的app文件夹
+    environment:
+      TZ: Asia/Shanghai
+    volumes:                            # 挂载文件
+      - ./code-api:/app                 # 将主机的code-api文件夹(java代码)映射到容器内的app文件夹
+      - ./logs/:/app/log                # 映射容器产生的日志到主机的logs文件夹
+    ports:                              # 映射端口
+      - 9101:80
+
+  client:                                  # 前端node容器(运行nginx中的Vue项目)
+    container_name: planner-client     
+    restart: always                     # 重启策略: 容器退出时总是重启容器
+    build:
+      context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
+      dockerfile: ./docker/client-Dockerfile.yml
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - 8080:80                        # 映射端口
+    depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
+      - server

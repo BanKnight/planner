@@ -5,8 +5,15 @@
     v-bind="day_option"
     :title="title"
     class="el-icon-date"
-  >{{content }}</el-tag>
-  <el-tag size="mini" v-else effect="plain" type="danger" class="el-icon-date"></el-tag>
+    >{{ content }}</el-tag
+  >
+  <el-tag
+    size="mini"
+    v-else
+    effect="plain"
+    type="danger"
+    class="el-icon-date"
+  ></el-tag>
 </template>
 
 <script>
@@ -19,8 +26,8 @@ export default {
     }
   },
   computed: {
-    diff()    {
-      if (this.value == null)      {
+    diff() {
+      if (this.value == null) {
         return Infinity;
       }
 
@@ -29,31 +36,29 @@ export default {
 
       return first.diff(second, "day");
     },
-    title()    {
-      if (this.value == null)
-      {
-        return ""
+    title() {
+      if (this.value == null) {
+        return "";
       }
 
       return `${this.$format(this.value)},剩${this.diff}天`;
     },
-    content()    {
-      if (this.theme == "simple")
-      {
-        return `剩${this.diff}天`
+    content() {
+      if (this.theme == "simple") {
+        return `剩${this.diff}天`;
       }
 
-      return `${this.$format(this.value)}`
+      return `${this.$format(this.value)}`;
     },
-    day_option()    {
-      if (this.diff <= 0)      {
+    day_option() {
+      if (this.diff <= 0) {
         return {
           type: "info",
           effect: "dark"
         };
       }
 
-      if (this.diff < 2)      {
+      if (this.diff < 2) {
         return {
           type: "",
           effect: "dark"
@@ -66,5 +71,5 @@ export default {
       };
     }
   }
-}
+};
 </script>

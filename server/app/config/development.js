@@ -3,7 +3,7 @@ const path = require("path")
 module.exports = {
     port: 7000,
     db: {
-        uri: "mongodb://192.168.1.4:27019",
+        url: "mongodb://192.168.1.4:27019",
         name: "planner",
     },
     jwt: {
