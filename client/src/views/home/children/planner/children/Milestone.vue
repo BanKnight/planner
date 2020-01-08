@@ -199,6 +199,8 @@ export default {
             planner: this.planner_id,
             data: this.form
           });
+
+          this.adding = false
           this.loading = false;
 
           this.fetch(1);

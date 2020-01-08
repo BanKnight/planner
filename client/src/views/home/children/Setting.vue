@@ -28,6 +28,7 @@
               placeholder="Password"
               tabindex="1"
               autocomplete="on"
+              show-password
               prefix-icon="el-icon-lock"
             ></el-input>
           </el-form-item>
@@ -40,6 +41,7 @@
               placeholder="Password"
               tabindex="2"
               autocomplete="on"
+              show-password
               prefix-icon="el-icon-lock"
             ></el-input>
           </el-form-item>
@@ -52,6 +54,7 @@
               placeholder="Password"
               tabindex="3"
               autocomplete="on"
+              show-password
               prefix-icon="el-icon-lock"
             ></el-input>
           </el-form-item>
@@ -75,7 +78,7 @@ export default {
   meta: {
     require_logined: true
   },
-  data() {
+  data()  {
     return {
       basic_form: {
         name: ""
@@ -88,10 +91,10 @@ export default {
     };
   },
   methods: {
-    async reset_name() {
+    async reset_name()    {
       this.basic_form.name = this.basic_form.name.trim();
 
-      if (this.basic_form.name.length == 0) {
+      if (this.basic_form.name.length == 0)      {
         this.$message.error("请输入姓名");
         return;
       }
@@ -102,8 +105,8 @@ export default {
 
       this.$message.success("成功修改");
     },
-    async reset_password() {
-      if (this.password_form.old.length == 0) {
+    async reset_password()    {
+      if (this.password_form.old.length == 0)      {
         this.$message.error("请先输入旧密码");
         return;
       }
@@ -111,7 +114,7 @@ export default {
       this.password_form.new = this.password_form.new.trim();
       this.password_form.again = this.password_form.again.trim();
 
-      if (this.password_form.new != this.password_form.again) {
+      if (this.password_form.new != this.password_form.again)      {
         this.$message.error("两次密码要一致");
         return;
       }
@@ -119,7 +122,7 @@ export default {
       if (
         this.password_form.new.length == 0 ||
         this.password_form.again.length == 0
-      ) {
+      )      {
         this.$message.error("请输入新密码");
         return;
       }
@@ -133,7 +136,7 @@ export default {
 
       this.$router.replace({ path: "/login" });
     },
-    quit() {
+    quit()    {
       Cookie.remove("token");
       this.$router.replace({ path: "/login" });
     }
