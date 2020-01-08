@@ -25,13 +25,13 @@
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
       <el-form label-position="left" label-width="60px" :model="add_form" :rules="rules">
         <el-form-item label="标题:" prop="title">
-          <el-input placeholder="请输入标题" v-model="add_form.title" clearable />
+          <el-input placeholder="请输入标题" v-model="add_form.title" clearable tabindex="1" />
         </el-form-item>
         <el-form-item label="指派:" prop="assignee">
-          <member-select v-model="add_form.assignee" :planner="planner_id" />
+          <member-select v-model="add_form.assignee" :planner="planner_id" tabindex="2" />
         </el-form-item>
         <el-form-item label="里程碑:" prop="milestone">
-          <milestone-select v-model="add_form.milestone" :planner="planner_id" />
+          <milestone-select v-model="add_form.milestone" :planner="planner_id" tabindex="3" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="add_one">确定</el-button>
@@ -251,28 +251,32 @@ export default {
     on_search()    {
       this.fetch(1);
     },
-    async add_one()
+
+    add_one()
     {
-      this.add_form.title = this.add_form.title.trim();
+      this.$refs.add_form.validate(async valid =>      {
+        if (!valid)        {
+          return false;
+        }
 
-      if (this.add_form.title.length == 0)      {
-        this.$message.error("提交前标题不能为空");
-        return;
-      }
-      await this.$store.dispatch("issues_create", {
-        planner: this.planner_id,
-        data: this.add_form
-      });
+        this.add_form.title = this.add_form.title.trim();
 
-      this.$message.success("创建成功");
+        await this.$store.dispatch("issues_create", {
+          planner: this.planner_id,
+          data: this.add_form
+        });
 
-      this.add_form_visible = false
-      this.add_form.title = ""
-      this.add_form.assignee = null
-      this.add_form.milestone = null
+        this.$message.success("创建成功");
 
-      this.fetch(1);
+        this.add_form_visible = false
+        this.add_form.title = ""
+        this.add_form.assignee = null
+        this.add_form.milestone = null
+
+        this.fetch(1);
+      })
     }
+
   }
 };
 </script>
