@@ -89,8 +89,6 @@ export default {
   },
   methods: {
     on_command(cmd) {
-      console.log("click on card menu", cmd);
-
       switch (cmd) {
         case "delete":
           this.do_delete();

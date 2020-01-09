@@ -100,7 +100,7 @@ export default {
           this.page.data.push(one);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       this.loading = false;
