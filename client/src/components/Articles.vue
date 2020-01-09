@@ -81,28 +81,23 @@ export default {
     async fetch(page) {
       this.loading = true;
 
-      try {
-        const page_info = await this.$store.dispatch("wiki_list", {
-          planner: this.planner,
-          params: {
-            curr: page, //页码
-            keyword: this.keyword
-          }
-        });
-
-        this.page.curr = page_info.curr;
-        this.page.count = page_info.count;
-        this.page.total = page_info.total;
-
-        this.page.data = [];
-
-        for (let one of page_info.data) {
-          this.page.data.push(one);
+      const page_info = await this.$store.dispatch("wiki_list", {
+        planner: this.planner,
+        params: {
+          curr: page, //页码
+          keyword: this.keyword
         }
-      } catch (error) {
-        console.error(error);
-      }
+      });
 
+      this.page.curr = page_info.curr;
+      this.page.count = page_info.count;
+      this.page.total = page_info.total;
+
+      this.page.data = [];
+
+      for (let one of page_info.data) {
+        this.page.data.push(one);
+      }
       this.loading = false;
     },
     on_search() {

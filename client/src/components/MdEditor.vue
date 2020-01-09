@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  data()  {
+  data() {
     return {
       content: ""
     };
@@ -33,12 +33,12 @@ export default {
     planner: String
   },
   computed: {
-    options()    {
+    options() {
       let theme = `${this.theme}_${this.editable ? "edit" : "preview"}`;
 
       return this[theme];
     },
-    mini_edit()    {
+    mini_edit() {
       return {
         boxShadow: false,
         ishljs: false,
@@ -48,7 +48,7 @@ export default {
         defaultOpen: "edit"
       };
     },
-    mini_preview()    {
+    mini_preview() {
       return {
         boxShadow: false,
         ishljs: false,
@@ -58,7 +58,7 @@ export default {
         defaultOpen: "preview"
       };
     },
-    small_edit()    {
+    small_edit() {
       return {
         boxShadow: false,
         ishljs: false,
@@ -79,24 +79,24 @@ export default {
         }
       };
     },
-    small_preview()    {
+    small_preview() {
       return this.mini_preview;
     }
   },
-  mounted()  {
+  mounted() {
     this.content = this.value;
   },
   watch: {
-    value(new_val)    {
+    value(new_val) {
       this.content = new_val;
     }
   },
   methods: {
-    on_input(val)    {
+    on_input(val) {
       this.content = val;
       this.$emit("input", val);
     },
-    async add_img(pos, raw_file)    {
+    async add_img(pos, raw_file) {
       const formdata = new FormData();
       formdata.append("file", raw_file);
 
