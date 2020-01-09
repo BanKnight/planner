@@ -22,6 +22,7 @@ services:
       - TZ=Asia/Shanghai
       - DB_URL=mongodb://db:27017
       - DB_NAME=planner
+      - JWT_SECRET=fasdf234
     volumes:                           
       - ./public:/usr/share/nginx/html/public                 
     ports:                              # 映射端口
@@ -37,6 +38,7 @@ services:
       dockerfile: ./docker/client.Dockerfile
     environment:
       - TZ=Asia/Shanghai
+      - API_URL=http://server/
     volumes:                            # 在线文件
       - ./public:/usr/share/nginx/html/public                 
     ports:
