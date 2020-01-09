@@ -1,6 +1,6 @@
-FROM node:12
+FROM node:12-slim
 
-WORKDIR /planner-server
+WORKDIR /app
 
 COPY server/package*.json ./
 
@@ -10,7 +10,7 @@ COPY server/ .
 
 EXPOSE 80
 
-CMD [ "npm", "run","start" ] 
+CMD [ "node", "index.js" ] 
 
 
 

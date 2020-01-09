@@ -76,5 +76,9 @@ module.exports = function(app)
     router.post("/api/planner/:planner/pan", logined, in_project, upload, app.controller.pan.upload)        //通过query 获得路径
     router.post("/api/planner/:planner/pan/delete", logined, in_project, app.controller.pan.destroy)        //post body
 
-    router.get("/public/upload/*", static)             // post body
+    if (process.env.NODE_ENV != "development")
+    {
+        router.get("/public/upload/*", static)             // post body
+
+    }
 }
