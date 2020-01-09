@@ -1,4 +1,4 @@
-FROM node:12-slim as build
+FROM node:latest as build-stage
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN rm /etc/nginx/conf.d/default.conf && rm /etc/nginx/nginx.conf
 # 把主机的nginx.conf文件复制到nginx容器的/etc/nginx文件夹下
 COPY docker/nginx.conf.template /etc/nginx/
 
-COPY --from=build /app/dist/ /usr/share/nginx/html
+COPY --from=build-stage /app/dist/ /usr/share/nginx/html
 
 EXPOSE 80
 
