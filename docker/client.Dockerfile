@@ -24,9 +24,9 @@ COPY --from=build /app/dist/ /usr/share/nginx/html
 
 EXPOSE 80
 
-COPY docker/docker-entrypoint.sh /
+COPY docker/entrypoint.sh /
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/entrypoint.sh"]
 
 # 使用daemon off的方式将nginx运行在前台保证镜像不至于退出
 CMD ["nginx", "-g", "daemon off;"]
