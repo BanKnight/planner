@@ -3,7 +3,6 @@ services:
   db:
       image: mongo
       container_name: planner-mongo
-      command: mongod --smallfiles --oplogSize 128
       restart: always
       ports:
         - 5522:27017
