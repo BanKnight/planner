@@ -19,7 +19,7 @@ services:
       context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
       dockerfile: ./docker/server.Dockerfile
     environment:
-      - TZ: Asia/Shanghai
+      - TZ=Asia/Shanghai
     volumes:                           
       - ./public:/usr/share/nginx/html/public                 
     ports:                              # 映射端口
@@ -34,7 +34,7 @@ services:
       context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
       dockerfile: ./docker/client.Dockerfile
     environment:
-      - TZ: Asia/Shanghai
+      - TZ=Asia/Shanghai
     volumes:                            # 在线文件
       - ./public:/usr/share/nginx/html/public                 
     ports:
