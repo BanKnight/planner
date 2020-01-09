@@ -196,7 +196,6 @@ export default {
     login() {
       this.$refs.login.validate(async valid => {
         if (!valid) {
-          console.log("error submit!!");
           return false;
         }
         this.loading = true;
@@ -217,7 +216,6 @@ export default {
     regist() {
       this.$refs.regist.validate(async valid => {
         if (!valid) {
-          console.log("error submit!!");
           return false;
         }
         this.loading = true;
@@ -232,7 +230,6 @@ export default {
 
           this.loading = false;
         } catch (e) {
-          console.log(e);
           this.loading = false;
         }
       });

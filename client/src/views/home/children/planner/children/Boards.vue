@@ -16,7 +16,6 @@
             :planner="planner_id"
             :col="col"
             @destroy="destroy(col)"
-            @drag-card="on_drag_card"
           />
         </draggable>
 
@@ -108,8 +107,6 @@ export default {
      * 参考：https://github.com/SortableJS/Sortable#options
      */
     async on_drag_end(evt) {
-      console.log("on_drag_end", evt.oldIndex, evt.newIndex);
-
       if (evt.oldIndex == evt.newIndex) {
         return;
       }
@@ -135,15 +132,6 @@ export default {
       // 		evt.newDraggableIndex; // element's new index within new parent, only counting draggable elements
       // 		evt.clone // the clone element
       // 		evt.pullMode;  // when item is in another sortable: `"clone"` if cloning, `true` if moving
-    },
-    on_drag_card(evt) {
-      console.log(
-        "on_drag_card",
-        evt.from._id,
-        evt.to._id,
-        evt.oldIndex,
-        evt.newIndex
-      );
     }
   }
 };

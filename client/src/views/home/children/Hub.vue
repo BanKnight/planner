@@ -23,9 +23,9 @@
         <el-table-column label="创建日期" width="130">
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{
-              $format(scope.row.created)
-            }}</span>
+            <span style="margin-left: 10px">
+              {{ $format(scope.row.created) }}
+            </span>
           </template>
         </el-table-column>
 
@@ -133,7 +133,6 @@ export default {
     on_create() {
       this.$refs.new_plan.validate(async valid => {
         if (!valid) {
-          console.log("error submit!!");
           return false;
         }
         this.loading = true;

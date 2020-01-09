@@ -26,7 +26,7 @@ services:
     volumes:                           
       - ./public:/usr/share/nginx/html/public                 
     ports:                              # 映射端口
-      - 8070:80
+      - 8000:80
     depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - db
 
@@ -42,6 +42,6 @@ services:
     volumes:                            # 在线文件
       - ./public:/usr/share/nginx/html/public                 
     ports:
-      - 8080:80                        # 映射端口
+      - 7000:80                        # 映射端口
     depends_on:                         # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - server

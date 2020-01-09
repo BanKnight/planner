@@ -113,16 +113,16 @@
         </el-table-column>
 
         <el-table-column label="大小" width="130">
-          <template slot-scope="scope" v-if="!scope.row.directory">{{
-            filesize(scope.row.size)
-          }}</template>
+          <template slot-scope="scope" v-if="!scope.row.directory">
+            {{ filesize(scope.row.size) }}
+          </template>
         </el-table-column>
 
         <el-table-column label="更新时间" width="130">
           <template slot-scope="scope">
-            <i v-if="scope.row.updated" class="el-icon-time">{{
-              $format(scope.row.updated)
-            }}</i>
+            <i v-if="scope.row.updated" class="el-icon-time">
+              {{ $format(scope.row.updated) }}
+            </i>
             <el-tag v-else>无</el-tag>
           </template>
         </el-table-column>
@@ -240,7 +240,6 @@ export default {
   },
   watch: {
     curr_path() {
-      // console.log("query changed");
       this.fetch();
     },
     "upload.visible": function() {

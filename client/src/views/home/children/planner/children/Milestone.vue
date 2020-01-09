@@ -239,7 +239,6 @@ export default {
     on_create() {
       this.$refs.new_one.validate(async valid => {
         if (!valid) {
-          console.log("error submit!!");
           return false;
         }
         this.loading = true;

@@ -28,9 +28,9 @@
       type="flex"
       style="flex-wrap: wrap;margin-bottom:10px;background-color:white;border-radius:4px;border: 1px solid #EBEEF5;padding:10px"
     >
-      <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{
-        one.title
-      }}</el-checkbox>
+      <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">
+        {{ one.title }}
+      </el-checkbox>
     </el-row>
 
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
@@ -243,26 +243,22 @@ export default {
     async fetch(page) {
       this.loading = true;
 
-      try {
-        const page_info = await this.$store.dispatch("backlogs_list", {
-          planner: this.planner_id,
-          params: {
-            curr: page, //页码
-            keyword: this.keyword
-          }
-        });
-
-        this.page.curr = page_info.curr;
-        this.page.count = page_info.count;
-        this.page.total = page_info.total;
-
-        this.page.data = [];
-
-        for (let one of page_info.data) {
-          this.page.data.push(one);
+      const page_info = await this.$store.dispatch("backlogs_list", {
+        planner: this.planner_id,
+        params: {
+          curr: page, //页码
+          keyword: this.keyword
         }
-      } catch (error) {
-        console.log(error);
+      });
+
+      this.page.curr = page_info.curr;
+      this.page.count = page_info.count;
+      this.page.total = page_info.total;
+
+      this.page.data = [];
+
+      for (let one of page_info.data) {
+        this.page.data.push(one);
       }
 
       this.loading = false;

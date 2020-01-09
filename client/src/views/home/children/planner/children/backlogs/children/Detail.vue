@@ -265,19 +265,10 @@ export default {
       this.article.attachments.push(response);
 
       this.adding.push(response);
-
-      console.log("upload ok", response);
-    },
-    preview_file(file) {
-      console.log("preview file", file.name);
     },
     close_file(file) {
-      console.log("close_file", file);
-      console.log(this.article.attachments);
-
       let index = this.article.attachments.indexOf(file);
       if (index < 0) {
-        console.log("no such file", file);
         return;
       }
 
