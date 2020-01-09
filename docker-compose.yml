@@ -6,7 +6,7 @@ services:
       command: mongod --smallfiles --oplogSize 128
       restart: always
       ports:
-        - 27017:27017
+        - 5522:27017
       volumes:
         - ./db:/data/db
         - ./dump:/dump
@@ -20,10 +20,12 @@ services:
       dockerfile: ./docker/server.Dockerfile
     environment:
       - TZ=Asia/Shanghai
+      - DB_URL=mongodb://db:27017
+      - DB_NAME=planner
     volumes:                           
       - ./public:/usr/share/nginx/html/public                 
     ports:                              # 映射端口
-      - 7000:80
+      - 8070:80
     depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - db
 
@@ -39,5 +41,5 @@ services:
       - ./public:/usr/share/nginx/html/public                 
     ports:
       - 8080:80                        # 映射端口
-    depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
+    depends_on:                         # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - server
