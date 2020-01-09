@@ -1,4 +1,4 @@
-FROM node:latest as build-stage
+FROM node:12-slim as build-stage
 
 WORKDIR /app
 
