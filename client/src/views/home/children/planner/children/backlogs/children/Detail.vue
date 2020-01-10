@@ -4,20 +4,14 @@
       <template v-if="editing">
         <el-button-group>
           <el-button icon="el-icon-close" @click="reload_curr">取消</el-button>
-          <el-button type="primary" icon="el-icon-upload" @click="summit"
-            >保存</el-button
-          >
+          <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
         </el-button-group>
       </template>
 
       <template v-else>
         <el-button-group>
-          <el-button icon="el-icon-s-fold" @click="folding = !folding"
-            >选项</el-button
-          >
-          <el-button icon="el-icon-edit" @click="editing = !editing"
-            >编辑</el-button
-          >
+          <el-button icon="el-icon-s-fold" @click="folding = !folding">选项</el-button>
+          <el-button icon="el-icon-edit" @click="editing = !editing">编辑</el-button>
         </el-button-group>
       </template>
     </el-header>
@@ -31,11 +25,7 @@
       >
         <el-form :model="article">
           <el-form-item label="指派:">
-            <member-select
-              v-model="article.assignee"
-              :planner="planner_id"
-              :disabled="!editing"
-            />
+            <member-select v-model="article.assignee" :planner="planner_id" :disabled="!editing" />
           </el-form-item>
           <el-form-item label="里程碑:">
             <milestone-select
@@ -69,12 +59,7 @@
         <div v-if="!editing" style="text-align:center;">
           <h2>{{ article.title }}</h2>
         </div>
-        <el-input
-          v-else
-          placeholder="请输入标题"
-          v-model="article.title"
-          clearable
-        ></el-input>
+        <el-input v-else placeholder="请输入标题" v-model="article.title" clearable></el-input>
 
         <el-header
           style="background-color:#f0f9eb;"
@@ -82,12 +67,7 @@
           height="40px"
           v-if="article.attachments.length > 0 || editing"
         >
-          <el-row
-            type="flex"
-            justify="start"
-            align="middle"
-            class="full-height"
-          >
+          <el-row type="flex" justify="start" align="middle" class="full-height">
             <el-upload
               v-if="editing"
               :show-file-list="false"
@@ -96,12 +76,7 @@
               with-credentials
               :on-success="on_upload_ok"
             >
-              <el-button
-                size="mini"
-                icon="el-icon-plus"
-                style="margin-right:5px"
-                >上传附件</el-button
-              >
+              <el-button size="mini" icon="el-icon-plus" style="margin-right:5px">上传附件</el-button>
             </el-upload>
 
             <el-popover
@@ -113,12 +88,10 @@
             >
               <el-row type="flex" justify="space-between">
                 <h2>{{ one.name }}</h2>
-                <el-button type="success" @click="copy_link(one)"
-                  >复制链接</el-button
-                >
+                <el-button type="success" @click="copy_link(one)">复制链接</el-button>
               </el-row>
 
-              <el-image v-if="is_img(one)" :src="cal_link(one)"></el-image>
+              <el-image v-if="is_img(one)" :src="(one)"></el-image>
               <div v-else>不支持预览</div>
 
               <el-tag
@@ -129,8 +102,7 @@
                 :effect="is_img(one) ? 'dark' : 'plain'"
                 slot="reference"
                 @close="close_file(one)"
-                >{{ one.name }}</el-tag
-              >
+              >{{ one.name }}</el-tag>
             </el-popover>
           </el-row>
         </el-header>
@@ -160,7 +132,7 @@ export default {
   meta: { require_logined: true },
   components: { MilestoneSelect, MemberSelect, MdEditor },
   inject: ["reload_curr"],
-  data() {
+  data()  {
     return {
       article: {
         title: "",
@@ -176,37 +148,37 @@ export default {
     };
   },
   computed: {
-    fold_icon() {
-      if (this.folding == false) {
+    fold_icon()    {
+      if (this.folding == false)      {
         return "el-icon-s-fold";
       }
       return "el-icon-s-unfold";
     },
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/backlogs`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     },
-    id() {
+    id()    {
       return this.$route.params.backlog;
     },
-    upload_url() {
+    upload_url()    {
       return `${this.$http.defaults.baseURL}/api/planner/${this.planner_id}/pan?path=/.private`;
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (from.fullPath != "/") {
+  beforeRouteEnter(to, from, next)  {
+    next(vm =>    {
+      if (from.fullPath != "/")      {
         vm.from = from.fullPath;
       }
     });
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
-  beforeDestroy() {
-    for (let file of this.adding) {
+  beforeDestroy()  {
+    for (let file of this.adding)    {
       this.$store.dispatch("pan_destroy_priavte", {
         planner: this.planner_id,
         name: file.name
@@ -215,7 +187,7 @@ export default {
     this.adding = [];
   },
   methods: {
-    async fetch() {
+    async fetch()    {
       let article = await this.$store.dispatch("backlogs_detail", {
         planner: this.planner_id,
         backlog: this.id
@@ -223,16 +195,16 @@ export default {
 
       this.article = article;
     },
-    async summit() {
+    async summit()    {
       let title = this.article.title.trim();
 
-      if (title.length == 0) {
+      if (title.length == 0)      {
         this.$message.error("请输入完整的标题后再提交");
 
         return;
       }
 
-      for (let file of this.deleting) {
+      for (let file of this.deleting)      {
         this.$store.dispatch("pan_destroy_priavte", {
           planner: this.planner_id,
           name: file.name
@@ -252,23 +224,23 @@ export default {
       this.editing = false;
       this.adding = [];
     },
-    goback() {
-      if (this.from) {
+    goback()    {
+      if (this.from)      {
         this.$router.push(this.from);
-      } else {
+      } else      {
         this.$router.push(this.root);
       }
     },
-    on_upload_ok(response) {
+    on_upload_ok(response)    {
       this.article.attachments = this.article.attachments || [];
 
       this.article.attachments.push(response);
 
       this.adding.push(response);
     },
-    close_file(file) {
+    close_file(file)    {
       let index = this.article.attachments.indexOf(file);
-      if (index < 0) {
+      if (index < 0)      {
         return;
       }
 
@@ -276,13 +248,13 @@ export default {
 
       this.deleting.push(file);
     },
-    is_img(file) {
+    is_img(file)    {
       return is_img(file.ext);
     },
-    cal_link(one) {
-      return `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${one.res}`;
+    cal_link(one)    {
+      return `${window.location.host}/public/upload/${this.planner_id}/${one.res}`;
     },
-    copy_link(one) {
+    copy_link(one)    {
       let url = this.cal_link(one);
 
       copy(url);
