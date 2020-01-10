@@ -245,7 +245,7 @@ export default {
       return is_img(file.ext);
     },
     cal_link(one)    {
-      return `${window.location.host}/public/upload/${this.planner_id}/${one.res}`;
+      return `${window.location.origin}/public/upload/${this.planner_id}/${one.res}`;
     },
     copy_link(one)    {
       let url = this.cal_link(one);

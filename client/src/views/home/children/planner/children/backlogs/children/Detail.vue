@@ -91,7 +91,7 @@
                 <el-button type="success" @click="copy_link(one)">复制链接</el-button>
               </el-row>
 
-              <el-image v-if="is_img(one)" :src="(one)"></el-image>
+              <el-image v-if="is_img(one)" :src="cal_link(one)"></el-image>
               <div v-else>不支持预览</div>
 
               <el-tag
@@ -252,7 +252,7 @@ export default {
       return is_img(file.ext);
     },
     cal_link(one)    {
-      return `${window.location.host}/public/upload/${this.planner_id}/${one.res}`;
+      return `${window.location.origin}/public/upload/${this.planner_id}/${one.res}`;
     },
     copy_link(one)    {
       let url = this.cal_link(one);
