@@ -37,7 +37,7 @@ services:
       dockerfile: ./docker/client.Dockerfile
     environment:
       - TZ=Asia/Shanghai
-      - API_URL=http://6.6.6.6/
+      - API_URL=http://server
     volumes:                            # 在线文件
       - ./public:/usr/share/nginx/html/public  
       - ./nginx-log:/var/log/nginx               
