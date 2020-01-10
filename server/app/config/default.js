@@ -2,7 +2,7 @@ const path = require("path")
 
 module.exports = {
     port: 80,
-    middleware: ["cors", "compress", "jwt", "user", "cache", "body", "catch"],
+    middleware: ["logger", "cors", "compress", "jwt", "user", "cache", "body", "catch"],
     db: {
         url: process.env.DB_URL,
         name: process.env.DB_NAME,
