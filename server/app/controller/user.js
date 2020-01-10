@@ -45,7 +45,10 @@ module.exports = class Current extends Controller
     {
         if (this.ctx.user)
         {
-            this.ctx.body = {}
+            this.ctx.status = error.BAD_REQUEST
+            this.ctx.body = {
+                error: "you are already login"
+            }
             return
         }
 

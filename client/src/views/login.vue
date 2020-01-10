@@ -49,8 +49,7 @@
                 type="primary"
                 style="width:100%;"
                 @click.native.prevent="login"
-                >登录</el-button
-              >
+              >登录</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -109,8 +108,7 @@
                 type="primary"
                 style="width:100%;"
                 @click.native.prevent="regist"
-                >注册</el-button
-              >
+              >注册</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -120,11 +118,14 @@
 </template>
 
 <script>
+
+import Cookie from "js-cookie";
+
 export default {
   name: "login",
   path: "/login",
   weight: 0,
-  data() {
+  data()  {
     return {
       login_form: {
         account: "",
@@ -144,9 +145,9 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function(route)      {
         const query = route.query;
-        if (query) {
+        if (query)        {
           this.redirect = query.redirect;
           this.otherQuery = this.getOtherQuery(query);
         }
@@ -154,17 +155,20 @@ export default {
       immediate: true
     }
   },
-  created() {
+  created()  {
     // window.addEventListener('storage', this.afterQRScan)
   },
-  mounted() {
+  mounted()  {
+
+    Cookie.remove("token");
+
     this.$refs.login_name.focus();
   },
-  destroyed() {
+  destroyed()  {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   computed: {
-    rules() {
+    rules()    {
       return {
         account: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
@@ -183,24 +187,24 @@ export default {
     }
   },
   methods: {
-    showPwd() {
-      if (this.passwordType === "password") {
+    showPwd()    {
+      if (this.passwordType === "password")      {
         this.passwordType = "";
-      } else {
+      } else      {
         this.passwordType = "password";
       }
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.$refs.password.focus();
       });
     },
-    login() {
-      this.$refs.login.validate(async valid => {
-        if (!valid) {
+    login()    {
+      this.$refs.login.validate(async valid =>      {
+        if (!valid)        {
           return false;
         }
         this.loading = true;
 
-        try {
+        try        {
           await this.$store.dispatch("login", this.login_form);
           this.loading = false;
 
@@ -208,19 +212,19 @@ export default {
             path: this.redirect || "/",
             query: this.otherQuery
           });
-        } catch (e) {
+        } catch (e)        {
           this.loading = false;
         }
       });
     },
-    regist() {
-      this.$refs.regist.validate(async valid => {
-        if (!valid) {
+    regist()    {
+      this.$refs.regist.validate(async valid =>      {
+        if (!valid)        {
           return false;
         }
         this.loading = true;
 
-        try {
+        try        {
           await this.$store.dispatch("regist", this.regist_form);
 
           this.$router.push({
@@ -229,14 +233,14 @@ export default {
           });
 
           this.loading = false;
-        } catch (e) {
+        } catch (e)        {
           this.loading = false;
         }
       });
     },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
+    getOtherQuery(query)    {
+      return Object.keys(query).reduce((acc, cur) =>      {
+        if (cur !== "redirect")        {
           acc[cur] = query[cur];
         }
         return acc;
