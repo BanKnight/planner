@@ -3,7 +3,6 @@ const path = require("path")
 module.exports = {
     port: 80,
     middleware: ["cors", "compress", "jwt", "user", "cache", "body", "catch"],
-    mongodb: process.env.DB,
     db: {
         url: process.env.DB_URL,
         name: process.env.DB_NAME,
@@ -28,14 +27,12 @@ module.exports = {
     },
     upload: {
         multipart: true, // 支持文件上传
-        dir: process.env.UPLOAD, // 支持文件上传
+        dir: path.resolve("./public/upload"), // 支持文件上传
         formidable: {
             keepExtensions: true,    // 保持文件的后缀
             maxFieldsSize: 20 * 1024 * 1024, // 最大文件大小
             multipart: true // 是否支持 multipart-formdate 的表单
         }
     },
-    static: {
-        dir: path.resolve("./")
-    }
+
 }

@@ -291,9 +291,6 @@ export default {
       return is_img(file.ext);
     },
     cal_link(one)    {
-
-      console.log("baseURL IS", this.$http.defaults.baseURL)
-
       return `${this.$http.defaults.baseURL}/public/upload/${this.planner_id}/${one.res}`;
     },
     copy_link(one)    {
