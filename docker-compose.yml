@@ -8,7 +8,6 @@ services:
         - 5522:27017
       volumes:
         - ./db:/data/db
-        - ./dump:/dump
         - /etc/localtime:/etc/localtime:ro
 
   server:                                 
@@ -19,6 +18,7 @@ services:
       dockerfile: ./docker/server.Dockerfile
     environment:
       - TZ=Asia/Shanghai
+      - NODE_ENV=production
       - DB_URL=mongodb://db:27017
       - DB_NAME=planner
       - JWT_SECRET=fasdf234
