@@ -8,36 +8,44 @@ import { Message } from "element-ui";
 
 Vue.use(VueAxios, axios);
 
-axios.defaults.baseURL = "http://localhost:7000";
+axios.defaults.baseURL = "";
 axios.defaults.withCredentials = true;
 
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV == "development")
+{
   axios.defaults.timeout = 50000;
-} else {
+} else
+{
   axios.defaults.timeout = 5000;
 }
 //定义一个请求拦截器
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(function(config)
+{
   NProgress.start();
   return config;
 });
 
 //添加响应拦截器
 axios.interceptors.response.use(
-  function(response) {
+  function(response)
+  {
     NProgress.done();
 
-    if (response.status === 200) {
+    if (response.status === 200)
+    {
       return Promise.resolve(response.data);
     }
 
     return Promise.reject(response.data);
   },
-  function(error) {
+  function(error)
+  {
     NProgress.done();
 
-    if (error.response) {
-      switch (error.response.status) {
+    if (error.response)
+    {
+      switch (error.response.status)
+      {
         case 401:
           {
             to_login();
@@ -59,7 +67,8 @@ axios.interceptors.response.use(
  * 跳转登录页
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
-const to_login = () => {
+const to_login = () =>
+{
   Cookie.remove("token");
 
   router.replace({
