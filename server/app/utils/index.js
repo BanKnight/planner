@@ -1,7 +1,7 @@
 const fs = require("fs")
 const path = require("path")
 
-exports.load_folder = function (root)
+exports.load_folder = function(root)
 {
     let ret = {}
     let files = fs.readdirSync(root)
@@ -28,16 +28,16 @@ function default_filter(data)
  * curr：当前页码
  * filter:过滤器
  */
-exports.cal_page = function (array, size, curr, filter = default_filter)
+exports.cal_page = function(array, size, curr, filter = default_filter)
 {
-    let count = parseInt(array.length / size)
+    let count = Math.floor(array.length / size)
     if (array.length % size > 0)
     {
         count += 1
     }
     let page = {
         curr: curr, //当前页码
-        count: count, //总页数
+        count: Math.max(count, 1), //总页数
         total: array.length,//条目总数
         data: [],//当前页的数据
     }

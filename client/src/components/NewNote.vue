@@ -2,16 +2,8 @@
   <el-container class="full" direction="vertical">
     <el-header height="auto" style="padding:0;margin-bottom:10px">
       <el-button-group>
-        <el-button size="mini" icon="el-icon-close" @click="cancel"
-          >取消</el-button
-        >
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-upload"
-          @click="save"
-          >保存</el-button
-        >
+        <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
       </el-button-group>
     </el-header>
 
@@ -19,25 +11,9 @@
       <el-tabs type="border-card">
         <el-tab-pane label="基础">
           <el-container class="el-card full" direction="vertical">
-            <el-input
-              placeholder="标题"
-              v-model="form.title"
-              class="no-border-input"
-            />
+            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
 
-            <mavon-editor
-              v-model="form.content"
-              :boxShadow="false"
-              :ishljs="false"
-              :subfield="false"
-              :editable="true"
-              :toolbarsFlag="true"
-              defaultOpen="edit"
-              :toolbars="options"
-              toolbarsBackground="#f0f9eb"
-              class="full"
-              style="border:none"
-            />
+            <md-editor v-model="form.content" theme="mini" :editable="true" />
           </el-container>
         </el-tab-pane>
 
@@ -103,11 +79,7 @@
           <div style="text-align:center;">
             <h2>
               {{ backlog.title }}
-              <member-preview
-                size="mini"
-                :planner="planner"
-                v-model="backlog.assignee"
-              />
+              <member-preview size="mini" :planner="planner" v-model="backlog.assignee" />
             </h2>
           </div>
           <md-editor :value="backlog.content" :editable="false" size="mini" />
@@ -117,11 +89,7 @@
           <div style="text-align:center;">
             <h2>
               {{ issue.title }}
-              <member-preview
-                size="mini"
-                :planner="planner"
-                v-model="issue.assignee"
-              />
+              <member-preview size="mini" :planner="planner" v-model="issue.assignee" />
             </h2>
           </div>
           <md-editor :value="issue.content" :editable="false" size="mini" />
@@ -153,7 +121,7 @@ export default {
     planner: String,
     col: String
   },
-  data() {
+  data()  {
     return {
       editable: false,
       form: {
@@ -165,7 +133,7 @@ export default {
     };
   },
   computed: {
-    options() {
+    options()    {
       return {
         imagelink: true, // 图片链接
         table: true, // 表格
@@ -174,19 +142,19 @@ export default {
     }
   },
   watch: {
-    "form.backlog": function(new_val) {
+    "form.backlog": function(new_val)    {
       this.fetch_backlog(new_val);
     },
-    "form.issue": function(new_val) {
+    "form.issue": function(new_val)    {
       this.fetch_issue(new_val);
     }
   },
   methods: {
-    cancel() {
+    cancel()    {
       this.$emit("cancel");
     },
-    save() {
-      if (!this.form.title) {
+    save()    {
+      if (!this.form.title)      {
         this.$message.error("请先输入标题");
         return;
       }
@@ -194,15 +162,15 @@ export default {
       this.form.title = this.form.title.trim();
       this.form.content = (this.form.content || "").trim();
 
-      if (this.form.title.length == 0) {
+      if (this.form.title.length == 0)      {
         this.$message.error("请先输入标题");
         return;
       }
 
       this.$emit("save", this.form);
     },
-    async fetch_backlog() {
-      if (!this.form.backlog) {
+    async fetch_backlog()    {
+      if (!this.form.backlog)      {
         this.backlog = null;
         return;
       }
@@ -212,8 +180,8 @@ export default {
         backlog: this.form.backlog
       });
     },
-    async fetch_issue() {
-      if (!this.form.issue) {
+    async fetch_issue()    {
+      if (!this.form.issue)      {
         this.issue = null;
         return;
       }

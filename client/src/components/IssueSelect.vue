@@ -12,18 +12,13 @@
     :loading="loading"
     :remote-method="search"
   >
-    <el-option
-      v-for="item in options"
-      :key="item._id"
-      :label="item.title"
-      :value="item._id"
-    ></el-option>
+    <el-option v-for="item in options" :key="item._id" :label="item.title" :value="item._id"></el-option>
   </el-select>
 </template>
 
 <script>
 export default {
-  data() {
+  data()  {
     return {
       current: "",
       loading: false,
@@ -40,18 +35,18 @@ export default {
     value: String,
     disabled: Boolean
   },
-  mounted() {
+  mounted()  {
     this.current = this.value || "";
     this.search_id();
   },
   watch: {
-    value() {
+    value()    {
       this.current = this.value || "";
       this.search_id();
     }
   },
   methods: {
-    async search_id() {
+    async search_id()    {
       this.loading = true;
 
       let page_info = await this.$store.dispatch("issues_list", {
@@ -63,22 +58,17 @@ export default {
       });
       this.options = [];
 
-      for (let one of page_info.data) {
+      for (let one of page_info.data)      {
         this.options.push(one);
       }
 
       this.loading = false;
     },
-    async search(keyword) {
-      if (keyword == "") {
-        this.options = [];
-        return;
-      }
-
+    async search(keyword)    {
       this.loading = true;
       let temp = [];
 
-      for (let curr = 1; curr < 3; ++curr) {
+      for (let curr = 1; curr < 3; ++curr)      {
         let page_info = await this.$store.dispatch("issues_list", {
           planner: this.planner,
           params: {
@@ -87,11 +77,11 @@ export default {
           }
         });
 
-        for (let one of page_info.data) {
+        for (let one of page_info.data)        {
           temp.push(one);
         }
 
-        if (page_info.count == curr) {
+        if (page_info.count == curr)        {
           break;
         }
       }
@@ -99,7 +89,7 @@ export default {
       this.options = temp;
       this.loading = false;
     },
-    input(value) {
+    input(value)    {
       this.current = value;
       this.$emit("input", value);
     }
