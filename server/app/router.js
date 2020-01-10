@@ -5,7 +5,6 @@ module.exports = function(app)
     const logined = app.middleware.logined
     const in_project = app.middleware.in_project
     const upload = app.middleware.upload
-    const static = app.middleware.static
 
     if (process.env.NODE_ENV === "development")
     {
@@ -78,6 +77,8 @@ module.exports = function(app)
 
     if (process.env.NODE_ENV == "development")
     {
+        const static = app.middleware.static
+
         router.get("/public/upload/*", static)             // post body
 
     }

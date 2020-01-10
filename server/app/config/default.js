@@ -34,5 +34,7 @@ module.exports = {
             multipart: true // 是否支持 multipart-formdate 的表单
         }
     },
-
+    static: {
+        dir: path.resolve("./")
+    }
 }

@@ -12,7 +12,4 @@ module.exports = {
             expiresIn: "30d",
         }
     },
-    static: {
-        dir: path.resolve("./")
-    }
 }
