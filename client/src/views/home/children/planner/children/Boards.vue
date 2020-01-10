@@ -24,8 +24,7 @@
           plain
           icon="el-icon-plus"
           @click="add_col"
-          >添加</el-button
-        >
+        >添加</el-button>
       </el-container>
     </el-container>
   </el-main>
@@ -39,44 +38,44 @@ export default {
   path: "boards",
   weight: 8,
   meta: {
-    menu_title: "开发",
+    menu_title: "工单",
     menu_icon: "el-icon-s-cooperation",
     require_logined: true
   },
 
   components: { NoteCol, draggable },
-  data() {
+  data()  {
     return {
       cols: []
     };
   },
   computed: {
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
-  mounted() {
+  mounted()  {
     this.refresh();
   },
   methods: {
-    async refresh() {
+    async refresh()    {
       let data = await this.$store.dispatch("boards_list", {
         planner: this.planner_id
       });
 
       this.cols = [];
-      for (let one of data) {
+      for (let one of data)      {
         this.cols.push(one); //全部都是id
       }
     },
-    async add_col() {
+    async add_col()    {
       let title;
-      try {
+      try      {
         title = await this.$prompt("输入标题", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消"
         });
-      } catch (e) {
+      } catch (e)      {
         return;
       }
 
@@ -94,7 +93,7 @@ export default {
         message: "创建成功"
       });
     },
-    async destroy(col) {
+    async destroy(col)    {
       await this.$store.dispatch("boards_destroy", {
         planner: this.planner_id,
         col: col
@@ -106,12 +105,12 @@ export default {
     /**
      * 参考：https://github.com/SortableJS/Sortable#options
      */
-    async on_drag_end(evt) {
-      if (evt.oldIndex == evt.newIndex) {
+    async on_drag_end(evt)    {
+      if (evt.oldIndex == evt.newIndex)      {
         return;
       }
 
-      try {
+      try      {
         this.cols = await this.$store.dispatch("boards_move", {
           planner: this.planner_id,
           data: {
@@ -119,7 +118,7 @@ export default {
             to: evt.newIndex
           }
         });
-      } catch (e) {
+      } catch (e)      {
         this.refresh();
       }
 
