@@ -1,6 +1,8 @@
 const { Controller } = require("../core")
 const { error } = require("../define")
 
+const { cal_page } = require("../utils")
+
 module.exports = class Current extends Controller
 {
     constructor(ctx, app)
@@ -10,9 +12,14 @@ module.exports = class Current extends Controller
 
     list()
     {
-        const ctx = this.ctx
+        const { ctx, service, config } = this
 
-        ctx.body = this.app.service.planner.sorted.data
+        let data = service.planner.sorted.data
+
+        ctx.body = cal_page(data, config.page.size, +ctx.query.curr, (one) =>
+        {
+            return one
+        })
     }
 
     create()
