@@ -316,6 +316,29 @@ module.exports = class Current extends Controller
 
         current.update_note(col, note, body)
 
+        if (!body.closed)
+        {
+            ctx.body = note
+
+            return
+        }
+
+        if (note.close_backlog && note.backlog)
+        {
+            let target = service.backlogs.get(note.backlog)
+            service.backlogs.update(target, {
+                closed: true
+            })
+        }
+
+        if (note.close_issue && note.issue)
+        {
+            let target = service.issues.get(note.issue)
+            service.issues.update(target, {
+                closed: true
+            })
+        }
+
         ctx.body = note
     }
 
