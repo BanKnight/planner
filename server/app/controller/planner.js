@@ -2,6 +2,7 @@ const { Controller } = require("../core")
 const { error } = require("../define")
 
 const { cal_page } = require("../utils")
+const extend = require("extend2")
 
 module.exports = class Current extends Controller
 {
@@ -14,11 +15,17 @@ module.exports = class Current extends Controller
     {
         const { ctx, service, config } = this
 
+        const { user } = ctx
+
         let data = service.planner.sorted.data
 
         ctx.body = cal_page(data, config.page.size, +ctx.query.curr, (one) =>
         {
-            return one
+            let temp = extend(true, {}, one)
+
+            temp.is_member = service.member.get(one._id, user._id) != null
+
+            return temp
         })
     }
 

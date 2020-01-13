@@ -180,7 +180,7 @@ export default {
           { min: 3, message: "长度过短", trigger: "blur" }
         ],
         name: [
-          { min: 3, message: "长度过短", trigger: "blur" },
+          { min: 2, message: "长度过短", trigger: "blur" },
           { required: true, message: "请输入你的姓名", trigger: "blur" }
         ]
       };

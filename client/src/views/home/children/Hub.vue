@@ -5,9 +5,14 @@
         <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
           <el-table-column label="标题" prop="name" width="150">
             <template slot-scope="scope">
-              <router-link :to="'/planner/' + scope.row._id" class="el-link el-link--default">
-                <h4>{{ scope.row.name }}</h4>
+              <router-link
+                v-if="scope.row.is_member"
+                :to="'/planner/' + scope.row._id"
+                class="el-link el-link--default"
+              >
+                <el-tag effect="dark" type="success">{{ scope.row.name }}</el-tag>
               </router-link>
+              <el-tag effect="dark" type="info" v-else title="你不在这个项目中">{{ scope.row.name }}</el-tag>
             </template>
           </el-table-column>
 
