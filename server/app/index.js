@@ -14,7 +14,9 @@ module.exports = async function()
     }
     catch (err)
     {
-        console.error(err)
+        console.error(err.stack)
+
+        process.exit(1)
     }
 
 }
