@@ -17,7 +17,7 @@ COPY server/ .
 
 EXPOSE 80
 
-CMD [ "node", "index.js" ] 
+CMD [ "/bin/node", "index.js" ] 
 
 
 
