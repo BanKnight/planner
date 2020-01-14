@@ -7,13 +7,13 @@ COPY server/package*.json ./
 
 RUN npm install --registry=https://registry.npm.taobao.org
 
-COPY server/ .
-
 FROM astefanutti/scratch-node
 
 WORKDIR /app
 
-COPY --from=builder /app ./
+COPY --from=builder /app .
+
+COPY server/ .
 
 EXPOSE 80
 
