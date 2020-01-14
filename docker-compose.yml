@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
       image: mongo
-      container_name: planner-mongo
+      container_name: planner.mongo
       restart: always
       ports:
         - 5522:27017
@@ -11,7 +11,7 @@ services:
         - /etc/localtime:/etc/localtime:ro
 
   server:                                 
-    container_name: planner-server     
+    container_name: planner.server     
     restart: always                     # 重启策略: 容器退出时总是重启容器
     build:
       context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
@@ -30,7 +30,7 @@ services:
       - db
 
   client:                                 
-    container_name: planner-client     
+    container_name: planner.client     
     restart: always                     # 重启策略: 容器退出时总是重启容器
     build:
       context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
