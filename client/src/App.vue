@@ -6,20 +6,20 @@
 
 <script>
 export default {
-  provide() {
+  provide()  {
     return {
       reload: this.reload
     };
   },
-  data() {
+  data()  {
     return {
       is_showing: true
     };
   },
   methods: {
-    reload() {
+    reload()    {
       this.is_showing = false;
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.is_showing = true;
       });
     }
@@ -183,5 +183,19 @@ p {
 
 .clickable {
   cursor: pointer;
+}
+
+.small > .el-menu-item {
+  height: 38px;
+  line-height: 38px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.mini > .el-menu-item {
+  height: 36px;
+  line-height: 36px;
+  padding: 0 5px;
+  font-size: 12px;
 }
 </style>

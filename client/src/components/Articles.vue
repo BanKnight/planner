@@ -19,17 +19,21 @@
       size="mini"
       class="el-card"
       :show-header="false"
-      :border="true"
+      :border="false"
       :row-class-name="row_class"
       row-key="_id"
     >
-      <el-table-column>
+      <el-table-column :fixed="true">
         <template slot-scope="scope">
           <router-link
             :to="`${root}/detail/${scope.row._id}`"
             class="el-link el-link--default"
-            >{{ scope.row.title }}</router-link
-          >
+          >{{ scope.row.title }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column width="80">
+        <template slot-scope="scope">
+          <member-preview size="mini" :planner="planner" v-model="scope.row.author" />
         </template>
       </el-table-column>
     </el-table>
@@ -47,14 +51,18 @@
 </template>
 
 <script>
+
+import MemberPreview from "@/components/MemberPreview";
+
 export default {
+  components: { MemberPreview },
   props: {
     planner: {
       type: String,
       required: true
     }
   },
-  data() {
+  data()  {
     return {
       loading: false,
       page: {
@@ -67,18 +75,18 @@ export default {
     };
   },
   computed: {
-    root() {
+    root()    {
       return `/planner/${this.planner}/wiki`;
     }
   },
-  mounted() {
+  mounted()  {
     this.fetch(1);
   },
   methods: {
-    refresh() {
+    refresh()    {
       this.fetch(this.page.curr);
     },
-    async fetch(page) {
+    async fetch(page)    {
       this.loading = true;
 
       const page_info = await this.$store.dispatch("wiki_list", {
@@ -95,22 +103,22 @@ export default {
 
       this.page.data = [];
 
-      for (let one of page_info.data) {
+      for (let one of page_info.data)      {
         this.page.data.push(one);
       }
       this.loading = false;
     },
-    on_search() {
+    on_search()    {
       this.fetch(1);
     },
-    row_class({ row, rowIndex }) {
+    row_class({ row, rowIndex })    {
       let classes = [];
 
-      if (row._id == this.$route.params.article) {
+      if (row._id == this.$route.params.article)      {
         classes.push("primary-row");
       }
 
-      if (rowIndex % 2 == 0) {
+      if (rowIndex % 2 == 0)      {
         classes.push("normal-row");
       }
 

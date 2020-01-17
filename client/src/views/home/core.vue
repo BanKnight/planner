@@ -1,16 +1,12 @@
 <template>
   <el-container class="full">
-    <el-container
-      class="full"
-      direction="vertical"
-      :style="{ width: collapse ? '68px' : '200px' }"
-    >
+    <el-container class="full" direction="vertical" :style="{ width: collapse ? '68px' : '200px' }">
       <el-main style="padding:0;background-color:#334444">
         <el-menu
           :router="true"
           :collapse="collapse"
           :default-active="default_route"
-          class="full-width"
+          class="small"
           background-color="#334444"
           text-color="#fff"
           active-text-color="#ff9800"
@@ -35,6 +31,7 @@
           text-color="#fff"
           active-text-color="#ff9800"
           style="border-right:0px"
+          class="small"
         >
           <el-menu-item
             v-for="star in stars"
@@ -54,10 +51,7 @@
         style="background-color:#334444;color:white;padding:0 5px;border-top:1px solid #6b6f6f"
       >
         <el-row class="full" type="flex" justify="space-around" align="middle">
-          <i
-            class="el-icon-setting clickable"
-            @click="$router.replace('/setting')"
-          />
+          <i class="el-icon-setting clickable" @click="$router.replace('/setting')" />
           <i class="el-icon-s-fold clickable" @click="collapse = !collapse" />
         </el-row>
       </el-footer>
@@ -74,12 +68,12 @@ export default {
   path: "/",
   weight: 0,
   meta: { require_logined: true },
-  provide() {
+  provide()  {
     return {
       reload_menu: this.fetch
     };
   },
-  data() {
+  data()  {
     return {
       collapse: false,
       width: "200px",
@@ -89,27 +83,27 @@ export default {
     };
   },
   computed: {
-    children() {
-      return children.filter(one => {
-        if (one.meta && one.meta.menu_title) {
+    children()    {
+      return children.filter(one =>      {
+        if (one.meta && one.meta.menu_title)        {
           return true;
         }
 
         return false;
       });
     },
-    root() {
+    root()    {
       return "";
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     }
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
   methods: {
-    async fetch() {
+    async fetch()    {
       let stars = await this.$store.dispatch("planner_list_star");
 
       this.stars = await this.$store.dispatch("planner_public", {
@@ -123,5 +117,6 @@ export default {
 <style>
 .el-collapse-item__header {
   background-color: transparent;
-}</style
+}
+</style
 >>

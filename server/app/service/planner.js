@@ -126,8 +126,4 @@ module.exports = class Planner extends Service
         this.sorted.pop(one)
     }
 
-    get(id)
-    {
-        return this.ids[id]
-    }
 }

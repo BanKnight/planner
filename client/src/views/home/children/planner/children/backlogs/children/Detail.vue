@@ -3,15 +3,15 @@
     <el-header height="auto" style="padding:0;margin-bottom:10px">
       <template v-if="editing">
         <el-button-group>
-          <el-button icon="el-icon-close" @click="reload_curr">取消</el-button>
-          <el-button type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
+          <el-button size="mini" icon="el-icon-close" @click="reload_curr">取消</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-upload" @click="summit">保存</el-button>
         </el-button-group>
       </template>
 
       <template v-else>
         <el-button-group>
-          <el-button icon="el-icon-s-fold" @click="folding = !folding">选项</el-button>
-          <el-button icon="el-icon-edit" @click="editing = !editing">编辑</el-button>
+          <el-button size="mini" icon="el-icon-s-fold" @click="folding = !folding">选项</el-button>
+          <el-button size="mini" icon="el-icon-edit" @click="editing = !editing">编辑</el-button>
         </el-button-group>
       </template>
     </el-header>

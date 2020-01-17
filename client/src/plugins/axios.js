@@ -21,7 +21,7 @@ if (process.env.NODE_ENV == "development")
 //定义一个请求拦截器
 axios.interceptors.request.use(function(config)
 {
-  NProgress.start();
+  // NProgress.start();
   return config;
 });
 

@@ -81,7 +81,7 @@ module.exports = class Current extends Service
             updated: Date.now(),
         }
 
-        one.attachments = []                //附件
+        one.attachments = one.attachments || []                //附件
         one.content = one.content || ""
         one.tags = one.tags || []
 
