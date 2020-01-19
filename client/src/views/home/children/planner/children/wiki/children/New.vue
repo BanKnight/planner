@@ -52,7 +52,13 @@
           </el-popover>
         </el-row>
       </el-header>
-      <md-editor v-model="article.content" theme="small" :editable="true" :planner="planner_id" />
+      <md-editor
+        v-model="article.content"
+        theme="small"
+        :editable="true"
+        :planner="planner_id"
+        @save="summit"
+      />
     </el-container>
   </el-container>
 </template>

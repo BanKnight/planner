@@ -112,6 +112,7 @@
           theme="small"
           :editable="editing"
           :planner="planner_id"
+          @save="save"
         />
       </el-container>
     </el-container>
@@ -200,7 +201,6 @@ export default {
 
       if (title.length == 0)      {
         this.$message.error("请输入完整的标题后再提交");
-
         return;
       }
 
@@ -223,6 +223,16 @@ export default {
 
       this.editing = false;
       this.adding = [];
+    },
+    async save(value)
+    {
+      await this.$store.dispatch("backlogs_update", {
+        planner: this.planner_id,
+        backlog: this.id,
+        data: { content: value }
+      });
+
+      this.$message.success("内容保存成功");
     },
     goback()    {
       if (this.from)      {

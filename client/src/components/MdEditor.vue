@@ -5,6 +5,7 @@
     @input="on_input"
     v-bind="options"
     @imgAdd="add_img"
+    @save="save"
     class="full"
     style="border:none"
     toolbarsBackground="#f0f9eb"
@@ -13,7 +14,7 @@
 
 <script>
 export default {
-  data() {
+  data()  {
     return {
       content: ""
     };
@@ -33,12 +34,12 @@ export default {
     planner: String
   },
   computed: {
-    options() {
+    options()    {
       let theme = `${this.theme}_${this.editable ? "edit" : "preview"}`;
 
       return this[theme];
     },
-    mini_edit() {
+    mini_edit()    {
       return {
         boxShadow: false,
         ishljs: false,
@@ -48,7 +49,7 @@ export default {
         defaultOpen: "edit"
       };
     },
-    mini_preview() {
+    mini_preview()    {
       return {
         boxShadow: false,
         ishljs: false,
@@ -58,7 +59,7 @@ export default {
         defaultOpen: "preview"
       };
     },
-    small_edit() {
+    small_edit()    {
       return {
         boxShadow: false,
         ishljs: false,
@@ -73,30 +74,31 @@ export default {
           redo: true, // 下一步
           trash: true, // 清空
           table: true, // 表格
+          save: true,
 
           subfield: true, // 单双栏模式
           preview: true // 预览
         }
       };
     },
-    small_preview() {
+    small_preview()    {
       return this.mini_preview;
     }
   },
-  mounted() {
+  mounted()  {
     this.content = this.value;
   },
   watch: {
-    value(new_val) {
+    value(new_val)    {
       this.content = new_val;
     }
   },
   methods: {
-    on_input(val) {
+    on_input(val)    {
       this.content = val;
       this.$emit("input", val);
     },
-    async add_img(pos, raw_file) {
+    async add_img(pos, raw_file)    {
       const formdata = new FormData();
       formdata.append("file", raw_file);
 
@@ -108,6 +110,10 @@ export default {
       let url = `${this.$http.defaults.baseURL}/public/upload/${this.planner}/${file.res}`;
 
       this.$refs.md.$img2Url(pos, url);
+    },
+    save(value, render)
+    {
+      this.$emit("save", value, render);
     }
   }
 };

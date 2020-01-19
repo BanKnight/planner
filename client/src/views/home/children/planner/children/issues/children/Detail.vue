@@ -105,7 +105,13 @@
             </el-popover>
           </el-row>
         </el-header>
-        <md-editor v-model="article.content" theme="small" :editable="editing" />
+        <md-editor
+          v-model="article.content"
+          theme="small"
+          :editable="editing"
+          :planner="planner_id"
+          @save="save"
+        />
       </el-container>
     </el-container>
   </el-container>
@@ -216,6 +222,16 @@ export default {
 
       this.editing = false;
       this.adding = [];
+    },
+    async save(value)
+    {
+      await this.$store.dispatch("issues_update", {
+        planner: this.planner_id,
+        issue: this.id,
+        data: { content: value }
+      });
+
+      this.$message.success("内容保存成功");
     },
     goback()    {
       if (this.from)      {

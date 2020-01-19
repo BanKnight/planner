@@ -82,6 +82,7 @@
           theme="small"
           :editable="editing"
           :planner="planner_id"
+          @save="save"
         />
       </el-container>
     </el-container>
@@ -183,6 +184,16 @@ export default {
 
       this.editing = false;
       this.adding = [];
+    },
+    async save(value)
+    {
+      await this.$store.dispatch("wiki_update", {
+        planner: this.planner_id,
+        article: this.id,
+        data: { content: value }
+      });
+
+      this.$message.success("内容保存成功");
     },
     async destroy()    {
       await this.$confirm("是否确认删除?", "提示", {
