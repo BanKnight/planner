@@ -1,6 +1,6 @@
 <template>
   <el-container class="full">
-    <el-aside width="180px" style="margin-right:10px">
+    <el-aside width="200px" style="margin-right:10px">
       <articles ref="articles" :planner="planner_id" />
     </el-aside>
 

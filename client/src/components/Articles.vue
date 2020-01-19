@@ -25,15 +25,10 @@
     >
       <el-table-column :fixed="true">
         <template slot-scope="scope">
-          <router-link
-            :to="`${root}/detail/${scope.row._id}`"
-            class="el-link el-link--default"
-          >{{ scope.row.title }}</router-link>
-        </template>
-      </el-table-column>
-      <el-table-column width="80">
-        <template slot-scope="scope">
-          <member-preview size="mini" :planner="planner" v-model="scope.row.author" />
+          <router-link :to="`${root}/detail/${scope.row._id}`" class="el-link el-link--default">
+            <member-preview size="mini" :planner="planner" v-model="scope.row.author" />
+            {{ scope.row.title }}
+          </router-link>
         </template>
       </el-table-column>
     </el-table>

@@ -80,7 +80,7 @@ export default {
   path: "/",
   weight: 0,
   meta: {
-    menu_title: "项目",
+    menu_title: "全部项目",
     menu_icon: "el-icon-finished",
     require_logined: true
   },

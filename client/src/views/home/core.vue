@@ -1,55 +1,47 @@
 <template>
   <el-container class="full">
     <el-container class="full" direction="vertical" :style="{ width: collapse ? '68px' : '200px' }">
-      <el-main style="padding:0;background-color:#334444">
-        <el-menu
-          :router="true"
-          :collapse="collapse"
-          :default-active="default_route"
-          class="small"
-          background-color="#334444"
-          text-color="#fff"
-          active-text-color="#ff9800"
-          style="border-right:0px;height:200px;border-bottom:1px solid #6b6f6f"
-        >
-          <el-menu-item
-            :index="child.meta.menu_title"
-            v-for="child in children"
-            :key="child.path"
-            :route="{ path: child.path }"
-          >
-            <i :class="child.meta.menu_icon"></i>
-            <span slot="title">{{ child.meta.menu_title }}</span>
-          </el-menu-item>
-        </el-menu>
+      <el-main style="padding:0">
+        <el-collapse accordion value="1">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <span v-if="!collapse" style="margin-left:20px">项目</span>
+            </template>
+            <el-menu
+              :router="true"
+              :collapse="collapse"
+              :default-active="default_active"
+              background-color="transparent"
+              active-text-color="#77b36b"
+              text-color="#000"
+              class="small"
+            >
+              <el-menu-item
+                v-for="star in stars"
+                :key="star._id"
+                :index="star._id"
+                :route="{ path: '/planner/' + star._id }"
+              >
+                <i class="el-icon-star-on"></i>
 
-        <el-menu
-          :router="true"
-          :collapse="collapse"
-          :default-active="planner_id"
-          background-color="#334444"
-          text-color="#fff"
-          active-text-color="#ff9800"
-          style="border-right:0px"
-          class="small"
-        >
-          <el-menu-item
-            v-for="star in stars"
-            :key="star._id"
-            :index="star._id"
-            :route="{ path: '/planner/' + star._id }"
-          >
-            <i class="el-icon-star-on"></i>
+                <span slot="title">{{ star.name }}</span>
+              </el-menu-item>
 
-            <span slot="title">{{ star.name }}</span>
-          </el-menu-item>
-        </el-menu>
+              <el-menu-item
+                :index="child.meta.menu_title"
+                v-for="child in children"
+                :key="child.path"
+                :route="{ path: child.path }"
+              >
+                <i :class="child.meta.menu_icon"></i>
+                <span slot="title">{{ child.meta.menu_title }}</span>
+              </el-menu-item>
+            </el-menu>
+          </el-collapse-item>
+        </el-collapse>
       </el-main>
 
-      <el-footer
-        height="40px"
-        style="background-color:#334444;color:white;padding:0 5px;border-top:1px solid #6b6f6f"
-      >
+      <el-footer height="40px" style="padding:0 5px;">
         <el-row class="full" type="flex" justify="space-around" align="middle">
           <i class="el-icon-setting clickable" @click="$router.replace('/setting')" />
           <i class="el-icon-s-fold clickable" @click="collapse = !collapse" />
@@ -77,7 +69,6 @@ export default {
     return {
       collapse: false,
       width: "200px",
-      default_route: children[0].menu_title,
       array: [],
       stars: {}
     };
@@ -91,6 +82,13 @@ export default {
 
         return false;
       });
+    },
+    default_active()    {
+      if (this.planner_id == null || this.planner_id.length == 0)
+      {
+        return this.children[0].meta.menu_title
+      }
+      return this.planner_id
     },
     root()    {
       return "";
