@@ -8,7 +8,6 @@
         background-color="transparent"
         active-text-color="#77b36b"
         text-color="#000"
-        style="width:fit-content;"
         class="small"
         :router="true"
       >
