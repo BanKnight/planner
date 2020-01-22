@@ -67,12 +67,7 @@ router.beforeEach(function(to, from, next)
     return next();
   }
 
-
-  let cookie = Cookie.get("token")
-
-  console.log(to, cookie)
-
-  if (cookie == null)
+  if (Cookie.get("token") == null)
   {
     return next({
       path: "/login",

@@ -204,9 +204,9 @@ export default {
           this.loading = false;
 
           this.$router.push({
-            path: this.redirect || "/",
-            query: this.otherQuery
+            path: "/",
           });
+
         } catch (e)        {
           this.loading = false;
         }
@@ -223,9 +223,10 @@ export default {
           await this.$store.dispatch("regist", this.regist_form);
 
           this.$router.push({
-            path: this.redirect || "/",
-            query: this.otherQuery
+            path: "/",
           });
+
+          this.$message.success("注册成功")
 
           this.loading = false;
         } catch (e)        {
