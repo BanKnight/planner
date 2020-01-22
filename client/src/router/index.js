@@ -9,8 +9,10 @@ Vue.use(VueRouter);
 
 const routes = [];
 
-function make_routes(container, views, parent) {
-  for (let key in views) {
+function make_routes(container, views, parent)
+{
+  for (let key in views)
+  {
     let view = views[key];
     let page = view.core || view;
     let route = {
@@ -21,11 +23,13 @@ function make_routes(container, views, parent) {
     };
     container.push(route);
 
-    if (parent && route.meta.menu_title == null) {
+    if (parent && route.meta.menu_title == null)
+    {
       route.meta.menu_title = parent.meta.menu_title;
     }
 
-    if (view.children == null) {
+    if (view.children == null)
+    {
       continue;
     }
 
@@ -49,28 +53,38 @@ NProgress.configure({
   showSpinner: false
 });
 
-router.beforeEach(function(to, from, next) {
+router.beforeEach(function(to, from, next)
+{
   NProgress.start();
 
-  if (to.meta == null) {
+  if (to.meta == null)
+  {
     return next();
   }
 
-  if (!to.meta.require_logined) {
+  if (!to.meta.require_logined)
+  {
     return next();
   }
 
-  if (Cookie.get("token") == null) {
+
+  let cookie = Cookie.get("token")
+
+  console.log(to, cookie)
+
+  if (cookie == null)
+  {
     return next({
       path: "/login",
-      query: { redirect: to.fullPath }
+      // query: { redirect: to.fullPath }
     });
   }
 
   return next();
 });
 
-router.afterEach(() => {
+router.afterEach(() =>
+{
   NProgress.done();
 });
 

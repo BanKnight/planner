@@ -119,8 +119,6 @@
 
 <script>
 
-import Cookie from "js-cookie";
-
 export default {
   name: "login",
   path: "/login",
@@ -159,9 +157,6 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted()  {
-
-    Cookie.remove("token");
-
     this.$refs.login_name.focus();
   },
   destroyed()  {
