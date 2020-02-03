@@ -10,12 +10,10 @@ services:
         - ./db:/data/db
         - /etc/localtime:/etc/localtime:ro
 
-  server:                                 
-    container_name: planner.server     
+  server: 
+    image: banknight/planner-server                               
+    container_name: planner-server     
     restart: always                     # 重启策略: 容器退出时总是重启容器
-    build:
-      context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
-      dockerfile: ./docker/server.Dockerfile
     environment:
       - TZ=Asia/Shanghai
       - NODE_ENV=production
@@ -29,12 +27,10 @@ services:
     depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - db
 
-  client:                                 
-    container_name: planner.client     
+  client:     
+    image: banknight/planner-client                            
+    container_name: planner-client     
     restart: always                     # 重启策略: 容器退出时总是重启容器
-    build:
-      context: ./                       # 指定设定上下文根目录，然后以该目录为准指定Dockerfile
-      dockerfile: ./docker/client.Dockerfile
     environment:
       - TZ=Asia/Shanghai
       - API_URL=http://server
