@@ -22,8 +22,6 @@ services:
       - JWT_SECRET=fasdf234
     volumes:                           
       - ./public:/app/public                 
-    ports:                              # 映射端口
-      - 8000:80
     depends_on:                          # 依赖于server容器，被依赖容器启动后此web容器才可启动
       - db
 
