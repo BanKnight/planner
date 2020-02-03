@@ -4,8 +4,6 @@ services:
       image: mongo
       container_name: planner-mongo
       restart: always
-      ports:
-        - 5522:27017
       volumes:
         - ./db:/data/db
         - /etc/localtime:/etc/localtime:ro
