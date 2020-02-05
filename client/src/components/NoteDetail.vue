@@ -1,32 +1,19 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-header height="auto" style="padding:0;margin-bottom:10px">
+    <el-row type="flex" style="margin-bottom: 10px" justify="space-between" align="middle">
       <el-button-group>
-        <el-button size="mini" icon="el-icon-close" @click="cancel"
-          >取消</el-button
-        >
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-upload"
-          @click="save"
-          >保存</el-button
-        >
-        <el-button size="mini" type="danger" icon="el-icon-check" @click="close"
-          >关闭</el-button
-        >
+        <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
+        <el-button size="mini" type="danger" icon="el-icon-check" @click="close">完成</el-button>
       </el-button-group>
-    </el-header>
+
+      <el-button size="mini" icon="el-icon-close" @click="cancel"></el-button>
+    </el-row>
 
     <el-main style="padding:0">
       <el-tabs type="border-card">
         <el-tab-pane label="基础">
           <el-container class="el-card full" direction="vertical">
-            <el-input
-              placeholder="标题"
-              v-model="form.title"
-              class="no-border-input"
-            />
+            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
 
             <md-editor
               v-model="form.content"
@@ -98,11 +85,7 @@
           <div style="text-align:center;">
             <h2>
               {{ backlog.title }}
-              <member-preview
-                size="mini"
-                :planner="value.planner"
-                v-model="backlog.assignee"
-              />
+              <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
             </h2>
           </div>
 
@@ -113,11 +96,7 @@
           <div style="text-align:center;">
             <h2>
               {{ issue.title }}
-              <member-preview
-                size="mini"
-                :planner="value.planner"
-                v-model="issue.assignee"
-              />
+              <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
             </h2>
           </div>
           <md-editor :value="issue.content" :editable="false" size="mini" />
@@ -148,7 +127,7 @@ export default {
   props: {
     value: Object
   },
-  data() {
+  data()  {
     return {
       editing: false,
       form: {
@@ -160,30 +139,30 @@ export default {
     };
   },
 
-  mounted() {
+  mounted()  {
     this.init();
   },
   watch: {
-    value() {
+    value()    {
       this.init();
     },
-    "form.backlog": function(new_val) {
+    "form.backlog": function(new_val)    {
       this.fetch_backlog(new_val);
     },
-    "form.issue": function(new_val) {
+    "form.issue": function(new_val)    {
       this.fetch_issue(new_val);
     }
   },
 
   methods: {
-    init() {
+    init()    {
       this.form = Object.assign({}, this.value);
     },
-    cancel() {
+    cancel()    {
       this.$emit("cancel");
     },
-    save() {
-      if (!this.form.title) {
+    save()    {
+      if (!this.form.title)      {
         this.$message.error("请先输入标题");
         return;
       }
@@ -191,7 +170,7 @@ export default {
       this.form.title = this.form.title.trim();
       this.form.content = (this.form.content || "").trim();
 
-      if (this.form.title.length == 0) {
+      if (this.form.title.length == 0)      {
         this.$message.error("请先输入标题");
         return;
       }
@@ -199,7 +178,7 @@ export default {
       this.$emit("save", this.form);
     },
 
-    close() {
+    close()    {
       this.$confirm(
         "单子关闭后，将进行归档不可见(一般交给下单者关闭)",
         "是否确认关闭",
@@ -209,15 +188,15 @@ export default {
           type: "warning"
         }
       )
-        .then(() => {
+        .then(() =>        {
           this.form.closed = true;
 
           this.save();
         })
-        .catch(() => {});
+        .catch(() => { });
     },
-    async fetch_backlog() {
-      if (!this.form.backlog) {
+    async fetch_backlog()    {
+      if (!this.form.backlog)      {
         this.backlog = null;
         return;
       }
@@ -227,8 +206,8 @@ export default {
         backlog: this.form.backlog
       });
     },
-    async fetch_issue() {
-      if (!this.form.issue) {
+    async fetch_issue()    {
+      if (!this.form.issue)      {
         this.issue = null;
         return;
       }

@@ -1,20 +1,13 @@
 <template>
-  <el-container class="note-card" :id="value._id">
+  <el-container class="note-card" :id="value._id" @click.native.capture="$emit('edit', value)">
     <el-header class="note-card-head" height="fit-content">
-      <i
-        class="el-icon-document"
-        style="margin-bottom:5px;cursor:pointer"
-        @click="$emit('edit', value)"
-        >{{ value.title }}</i
-      >
+      <i class="el-icon-document" style="margin-bottom:5px;">{{ value.title }}</i>
 
       <el-dropdown trigger="click" size="small" @command="on_command">
         <el-button size="mini" type="text" icon="el-icon-more" />
 
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item icon="el-icon-delete" command="delete"
-            >删除</el-dropdown-item
-          >
+          <el-dropdown-item icon="el-icon-delete" command="delete">删除</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-header>
@@ -30,16 +23,8 @@
       height="fit-content"
       style="flex-wrap: wrap;"
     >
-      <member-preview
-        :value="value.assignee"
-        size="mini"
-        :planner="value.planner"
-      />
-      <milestone-preview
-        :value="value.milestone"
-        size="mini"
-        :planner="value.planner"
-      />
+      <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
+      <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
       <date-preview :value="value.stop" />
     </el-footer>
   </el-container>
@@ -56,8 +41,8 @@ export default {
     value: Object
   },
   computed: {
-    diff() {
-      if (this.value.stop == null) {
+    diff()    {
+      if (this.value.stop == null)      {
         return Infinity;
       }
 
@@ -66,15 +51,15 @@ export default {
 
       return first.diff(second, "day");
     },
-    day_option() {
-      if (this.diff <= 0) {
+    day_option()    {
+      if (this.diff <= 0)      {
         return {
           type: "info",
           effect: "dark"
         };
       }
 
-      if (this.diff < 2) {
+      if (this.diff < 2)      {
         return {
           type: "",
           effect: "dark"
@@ -88,23 +73,23 @@ export default {
     }
   },
   methods: {
-    on_command(cmd) {
-      switch (cmd) {
+    on_command(cmd)    {
+      switch (cmd)      {
         case "delete":
           this.do_delete();
           break;
       }
     },
-    do_delete() {
+    do_delete()    {
       this.$confirm("准备删除了, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
+        .then(() =>        {
           this.$emit("remove", this.value);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }
 };

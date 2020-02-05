@@ -1,11 +1,12 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-header height="auto" style="padding:0;margin-bottom:10px">
+    <el-row type="flex" style="margin-bottom: 10px" justify="space-between" align="middle">
       <el-button-group>
-        <el-button size="mini" icon="el-icon-close" @click="cancel">取消</el-button>
         <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
       </el-button-group>
-    </el-header>
+
+      <el-button size="mini" icon="el-icon-close" @click="cancel"></el-button>
+    </el-row>
 
     <el-main style="padding:0">
       <el-tabs type="border-card">
