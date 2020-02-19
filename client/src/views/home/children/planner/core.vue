@@ -23,8 +23,9 @@
       </el-menu>
       <el-tag effect="dark" type="success" class="el-icon-s-home">{{ detail.name }}</el-tag>
     </el-row>
-
-    <router-view v-if="is_showing" />
+    <el-main class="full" style="padding:10px">
+      <router-view v-if="is_showing" />
+    </el-main>
   </el-container>
 </template>
 

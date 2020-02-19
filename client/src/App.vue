@@ -42,7 +42,7 @@ html {
   font-size: 14px;
   line-height: 1.5;
   color: #24292e;
-  background-color: #f4f5f5;
+  background-color: #f7f7f7;
 }
 
 h1,

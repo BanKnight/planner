@@ -1,7 +1,10 @@
 <template>
   <el-container class="note-card" :id="value._id" @click.native.capture="$emit('edit', value)">
     <el-header class="note-card-head" height="fit-content">
-      <i class="el-icon-document" style="margin-bottom:5px;">{{ value.title }}</i>
+      <span style="margin-bottom:5px;">
+        <i class="el-icon-document" style="margin-right:5px;"></i>
+        {{ value.title }}
+      </span>
 
       <el-dropdown trigger="click" size="small" @command="on_command">
         <el-button size="mini" type="text" icon="el-icon-more" />

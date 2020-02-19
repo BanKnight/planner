@@ -1,11 +1,8 @@
 <template>
-  <layout>
-    <router-view />
-  </layout>
+  <router-view />
 </template>
 
 <script>
-import layout from "../../layout";
 
 export default {
   path: "issues",
@@ -15,6 +12,5 @@ export default {
     menu_icon: "el-icon-question",
     require_logined: true
   },
-  components: { layout }
 };
 </script>

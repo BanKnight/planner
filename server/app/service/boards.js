@@ -1,7 +1,8 @@
 const shortid = require('shortid')
 const extend = require("extend2")
-const { Service } = require("../core")
+const { board_status } = require("../define")
 
+const { Service } = require("../core")
 /**
  * 被关闭了的note不会存放在col中
  */
@@ -42,6 +43,7 @@ module.exports = class Current extends Service
 
             for (let note of notes)
             {
+                note.status = note.status || board_status.default
                 planner.notes[note._id] = note
             }
         }

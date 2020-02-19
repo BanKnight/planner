@@ -1,33 +1,31 @@
 <template>
-  <el-main class="full" style="padding:10px">
-    <el-container class="full">
-      <el-container class="scroll-if-need">
-        <draggable
-          :list="cols"
-          handle=".note-col-head.moveable"
-          draggable=".note-col"
-          ghostClass="ghost"
-          class="col-layout el-row el-row--flex"
-          @end="on_drag_end"
-        >
-          <note-col
-            v-for="col in cols"
-            :key="col"
-            :planner="planner_id"
-            :col="col"
-            @destroy="destroy(col)"
-          />
-        </draggable>
+  <el-container class="full">
+    <el-container class="scroll-if-need">
+      <draggable
+        :list="cols"
+        handle=".note-col-head.moveable"
+        draggable=".note-col"
+        ghostClass="ghost"
+        class="col-layout el-row el-row--flex"
+        @end="on_drag_end"
+      >
+        <note-col
+          v-for="col in cols"
+          :key="col"
+          :planner="planner_id"
+          :col="col"
+          @destroy="destroy(col)"
+        />
+      </draggable>
 
-        <el-button
-          style="width:250px;margin-left:10px;background-color:transparent;color:#8ea29e;font-size:2em;border:2px dashed #8ea29e"
-          plain
-          icon="el-icon-plus"
-          @click="add_col"
-        >添加</el-button>
-      </el-container>
+      <el-button
+        style="width:250px;margin-left:10px;background-color:transparent;color:#8ea29e;font-size:2em;border:2px dashed #8ea29e"
+        plain
+        icon="el-icon-plus"
+        @click="add_col"
+      >添加</el-button>
     </el-container>
-  </el-main>
+  </el-container>
 </template>
 
 <script>
