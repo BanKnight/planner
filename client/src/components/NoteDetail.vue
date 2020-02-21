@@ -1,19 +1,14 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-row type="flex" style="margin-bottom: 10px" justify="space-between" align="middle">
-      <el-button-group>
-        <el-button size="mini" type="primary" icon="el-icon-upload" @click="save">保存</el-button>
-        <el-button size="mini" type="danger" icon="el-icon-check" @click="close">完成</el-button>
-      </el-button-group>
-
-      <el-button size="mini" icon="el-icon-close" @click="cancel"></el-button>
+    <el-row type="flex" justify="space-between" align="middle">
+      <el-button size="mini" type="danger" icon="el-icon-check" @click="close" class="full-width">关闭</el-button>
     </el-row>
 
-    <el-main style="padding:0">
-      <el-tabs type="border-card">
+    <el-container style="padding:0">
+      <el-tabs style="margin-right:10px">
         <el-tab-pane label="基础">
           <el-container class="el-card full" direction="vertical">
-            <el-input placeholder="标题" v-model="form.title" class="no-border-input" />
+            <el-input placeholder="标题" v-model="form.title" />
 
             <md-editor
               v-model="form.content"
@@ -24,26 +19,41 @@
           </el-container>
         </el-tab-pane>
 
-        <el-tab-pane label="选项">
+        <el-tab-pane label="需求" v-if="backlog">
+          <el-card>
+            <div style="text-align:center;">
+              <h2>
+                {{ backlog.title }}
+                <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
+              </h2>
+            </div>
+
+            <md-editor :value="backlog.content" :editable="false" size="mini" />
+          </el-card>
+        </el-tab-pane>
+
+        <el-tab-pane label="问题" v-if="issue">
+          <el-card>
+            <div style="text-align:center;">
+              <h2>
+                {{ issue.title }}
+                <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
+              </h2>
+            </div>
+            <md-editor :value="issue.content" :editable="false" size="mini" />
+          </el-card>
+        </el-tab-pane>
+      </el-tabs>
+
+      <el-aside width="300px">
+        <el-card style="margin-top:55px">
           <el-form size="mini" label-position="left" label-width="6em">
             <el-form-item label="指派：">
-              <member-select
-                v-model="form.assignee"
-                size="mini"
-                :planner="value.planner"
-                class="no-border-input"
-              ></member-select>
+              <member-select v-model="form.assignee" size="mini" :planner="value.planner"></member-select>
             </el-form-item>
 
-            <el-divider />
-
             <el-form-item label="里程碑：">
-              <milestone-select
-                v-model="form.milestone"
-                size="mini"
-                :planner="value.planner"
-                class="no-border-input"
-              />
+              <milestone-select v-model="form.milestone" size="mini" :planner="value.planner" />
             </el-form-item>
 
             <el-form-item label="结束时间：">
@@ -53,56 +63,32 @@
                 placeholder="结束时间"
                 v-model="form.stop"
                 value-format="timestamp"
-                class="no-border-input"
               ></el-date-picker>
             </el-form-item>
 
-            <el-divider />
-
             <el-form-item label="需求：">
-              <backlog-select
-                v-model="form.backlog"
-                size="mini"
-                :planner="value.planner"
-                class="no-border-input"
-              ></backlog-select>
+              <backlog-select v-model="form.backlog" size="mini" :planner="value.planner"></backlog-select>
               <el-checkbox v-model="form.close_backlog">关联完成</el-checkbox>
             </el-form-item>
 
             <el-form-item label="问题：">
-              <issue-select
-                v-model="form.issue"
-                size="mini"
-                :planner="value.planner"
-                class="no-border-input"
-              ></issue-select>
+              <issue-select v-model="form.issue" size="mini" :planner="value.planner"></issue-select>
               <el-checkbox v-model="form.close_issue">关联完成</el-checkbox>
             </el-form-item>
+
+            <el-form-item>
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-upload"
+                class="full-width"
+                @click="save"
+              >保存</el-button>
+            </el-form-item>
           </el-form>
-        </el-tab-pane>
-
-        <el-tab-pane label="需求" v-if="backlog">
-          <div style="text-align:center;">
-            <h2>
-              {{ backlog.title }}
-              <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
-            </h2>
-          </div>
-
-          <md-editor :value="backlog.content" :editable="false" size="mini" />
-        </el-tab-pane>
-
-        <el-tab-pane label="问题" v-if="issue">
-          <div style="text-align:center;">
-            <h2>
-              {{ issue.title }}
-              <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
-            </h2>
-          </div>
-          <md-editor :value="issue.content" :editable="false" size="mini" />
-        </el-tab-pane>
-      </el-tabs>
-    </el-main>
+        </el-card>
+      </el-aside>
+    </el-container>
   </el-container>
 </template>
 
@@ -158,11 +144,8 @@ export default {
     init()    {
       this.form = Object.assign({}, this.value);
     },
-    cancel()    {
-      this.$emit("cancel");
-    },
     save()    {
-      if (!this.form.title)      {
+      if (this.form.title.length == 0)      {
         this.$message.error("请先输入标题");
         return;
       }

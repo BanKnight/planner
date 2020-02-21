@@ -15,15 +15,11 @@
 
         <span @dblclick="edit_name">
           {{ title }}
-          <el-tag type="success" size="mini">{{ curr.length }}</el-tag>
+          <el-tag type="success" size="mini">{{ notes.length }}</el-tag>
         </span>
 
         <span>
-          <i
-            class="el-icon-refresh"
-            style="cursor:pointer"
-            @click="refresh"
-          ></i>
+          <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>
         </span>
       </template>
       <template v-else>
@@ -50,7 +46,7 @@
 
           <draggable
             :id="col"
-            :list="curr"
+            :list="notes"
             group="note"
             class="list-group"
             ghostClass="ghost"
@@ -58,38 +54,23 @@
             @end="on_end"
           >
             <note-card
-              v-for="note in curr"
+              v-for="note in notes"
               :class="{ editing: note == editing_note }"
               :key="note._id"
               :value="note"
-              @edit="start_edit"
+              @click.native.capture="start_edit(note)"
               @remove="remove_note"
             ></note-card>
           </draggable>
         </el-aside>
 
-        <el-main
-          v-if="adding"
-          style="margin-left:10px;padding:10px 0;width:fit-content"
-        >
-          <new-note
-            :planner="planner"
-            :col="col"
-            @save="add_note"
-            @cancel="adding = false"
-          />
-        </el-main>
+        <el-dialog title="新增" :visible.sync="adding" width="fit-content">
+          <new-note :planner="planner" :col="col" @save="add_note" />
+        </el-dialog>
 
-        <el-main
-          v-if="editing_note"
-          style="margin-left:10px;padding:10px 0;width:fit-content"
-        >
-          <note-detail
-            :value="editing_note"
-            @save="save_note"
-            @cancel="editing_note = null"
-          />
-        </el-main>
+        <el-dialog title="编辑" :visible.sync="editing_note_dialog" width="fit-content">
+          <note-detail :value="editing_note" @save="save_note" />
+        </el-dialog>
       </el-container>
     </el-main>
   </el-container>
@@ -105,98 +86,101 @@ export default {
   components: { NewNote, NoteCard, NoteDetail, draggable },
   props: {
     planner: String,
-    col: String
+    group: String,
+    col: String,
+    mode: String
   },
-  data() {
+  data()  {
     return {
       title: "",
-      curr: [],
+      notes: [],
       adding: false,
       loading: false,
       editing: false,
+      editing_note_dialog: false,
       editing_note: null,
       editing_form: {
         title: null
       }
     };
   },
-  mounted() {
+  mounted()  {
     this.fetch();
   },
   methods: {
-    refresh() {
+    refresh()    {
       this.adding = false;
       this.editing = false;
       this.editing_note = null;
       this.fetch();
     },
 
-    async fetch() {
+    async fetch()    {
       this.loading = true;
 
-      Object.defineProperty(this.curr, "col", {
+      Object.defineProperty(this.notes, "col", {
         value: this.col,
         enumerable: false
       });
 
       let col = await this.$store.dispatch("boards_col_detail", {
         planner: this.planner,
+        group: this.group,
         col: this.col
       });
 
       this.title = col.title;
-      this.curr = [];
-
-      for (let one of col.curr) {
-        this.curr.push(one);
-      }
+      this.notes = col.notes;
 
       this.loading = false;
     },
-    async destroy() {
+    async destroy()    {
       this.$emit("destroy");
     },
-    edit_name() {
-      if (this.editing) {
+    edit_name()    {
+      if (this.editing)      {
         return;
       }
       this.editing = true;
       this.editing_form.title = this.title;
-      this.$nextTick(() => {
+      this.$nextTick(() =>      {
         this.$refs.editing_name.focus();
       });
     },
-    async change_name() {
+    async change_name()    {
       this.editing = false;
-      if (this.editing_form.title.length == 0) {
+      if (this.editing_form.title.length == 0)      {
         return;
       }
 
-      await this.$store.dispatch("boards_update", {
+      await this.$store.dispatch("boards_update_col", {
         planner: this.planner,
+        group: this.group,
         col: this.col,
         data: this.editing_form
       });
 
       this.title = this.editing_form.title;
     },
-    start_edit(note) {
+    start_edit(note)    {
       this.adding = false;
-
       this.editing_note = note;
+      this.editing_note_dialog = true
     },
-    async add_note(form) {
+    async add_note(form)    {
       await this.$store.dispatch("note_create", {
         planner: this.planner,
+        group: this.group,
         col: this.col,
         data: form
       });
 
       this.refresh();
     },
-    async save_note(form) {
+    async save_note(form)    {
       await this.$store.dispatch("note_update", {
         planner: this.planner,
+        group: this.group,
         col: this.col,
         note: this.editing_note._id,
         data: form
@@ -204,11 +188,14 @@ export default {
 
       this.refresh();
 
+      this.editing_note_dialog = false
       this.editing_note = null;
+
     },
-    async remove_note(note) {
+    async remove_note(note)    {
       await this.$store.dispatch("note_destroy", {
         planner: this.planner,
+        group: this.group,
         col: this.col,
         note: note._id
       });
@@ -216,19 +203,20 @@ export default {
       this.refresh();
     },
 
-    async on_end(evt) {
-      try {
+    async on_end(evt)    {
+      try      {
         await this.$store.dispatch("note_move", {
           planner: this.planner,
+          group: this.group,
           data: {
-            from: evt.from.id,
-            to: evt.to.id,
-            target: evt.item.id,
-            old: evt.oldDraggableIndex,
-            new: evt.newDraggableIndex
+            from: evt.from.id,      //from col id
+            to: evt.to.id,          //to col id
+            target: evt.item.id,    //note id
+            old: evt.oldDraggableIndex,   //old index
+            new: evt.newDraggableIndex    //new index
           }
         });
-      } finally {
+      } finally      {
         this.refresh();
       }
     }
@@ -267,10 +255,6 @@ export default {
 
 .note-col-body {
   padding: 0;
-}
-
-.note-col:last-child {
-  margin-right: 0;
 }
 
 .editing {

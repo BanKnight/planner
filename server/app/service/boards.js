@@ -3,6 +3,8 @@ const extend = require("extend2")
 const { board_status } = require("../define")
 
 const { Service } = require("../core")
+
+const { shadow_copy } = require("../utils")
 /**
  * 被关闭了的note不会存放在col中
  */
@@ -12,6 +14,12 @@ module.exports = class Current extends Service
     {
         super(app)
 
+        /*
+        [planner_id] = {groups:[],...}
+        group = {cols:[],...}
+        col = {notes:[],...}
+        note = {planner,...}        
+        */
         this.planners = {}
     }
 
@@ -21,23 +29,9 @@ module.exports = class Current extends Service
 
         for (let one of array)
         {
-            let planner = { ...one, notes: {} }
+            let planner = { ...one, notes: {}, groups: [] }
 
             this.planners[one._id] = planner
-
-            planner.curr = []
-
-            for (let col_id of one.curr)
-            {
-                const col = await this.app.db.get("planner.boards.cols", col_id)
-
-                if (col == null)
-                {
-                    continue
-                }
-
-                planner.curr.push(col)
-            }
 
             const notes = await this.app.db.load("planner.boards.notes", { planner: one._id })
 
@@ -46,18 +40,60 @@ module.exports = class Current extends Service
                 note.status = note.status || board_status.default
                 planner.notes[note._id] = note
             }
+
+            for (let group_id of one.groups)
+            {
+                const db_group = await this.app.db.get("planner.boards.groups", group_id)
+
+                if (db_group == null)
+                {
+                    continue
+                }
+
+                let group = { ...db_group, cols: [] }
+
+                for (let col_id of db_group.cols)
+                {
+                    const db_col = await this.app.db.get("planner.boards.cols", col_id)
+
+                    if (db_col == null)
+                    {
+                        continue
+                    }
+
+                    let col = { ...db_col, notes: [] }
+                    for (let note_id of db_col.notes)
+                    {
+                        const note = planner.notes[note_id]
+
+                        col.notes.push(note)
+                    }
+
+                    group.cols.push(col)
+                }
+
+                planner.groups.push(group)
+            }
         }
     }
+
+    static find_by_id(one)
+    {
+        return one._id == this
+    }
+
     /**
-     *option = {
-         title:
-         author:
-         planner
-     }
+     * {
+     *  title:
+     *  planner:
+     *  author:
+     *  
+     * }
      *
      * @param {*} option
+     * @returns
      */
-    create_col(option)
+    create_group(option)
     {
         let planner = this.get_planner(option.planner)
         if (planner == null)
@@ -65,42 +101,92 @@ module.exports = class Current extends Service
             planner = this.create_planner(option.planner)
         }
 
-        let col = {
+        let group = {
             _id: shortid.generate(),
             ...option,
-            curr: [],                //当前的note的id
+            cols: [],        //所有列
             created: Date.now(),
             updated: Date.now(),
         }
 
-        planner.curr.push(col)
+        planner.groups.push(group)
 
         this.save_planner(planner)
 
-        this.save_col(col)
+        this.save_group(group)
 
-        return col
+        return group
     }
 
-    destroy_col(planner_id, col_id)
+    update_group(group, option)
+    {
+        delete option._id
+        delete option.cols
+
+        extend(group, option)
+
+        group.updated = Date.now()
+
+        this.save_group(group)
+    }
+
+    destroy_group(planner_id, group_id)
     {
         let planner = this.get_planner(planner_id)
 
-        let col = this.del_col(planner, col_id)
+        let group = this.del_group(planner, group_id)
 
-        if (col == null)
+        if (group == null)
         {
             return
         }
 
         this.save_planner(planner)
 
-        for (let id in col.notes)
+        for (let col of group.cols)
         {
-            this.app.db.delete("planner.boards.notes", id)
+            for (let note of col.notes)
+            {
+                this.app.db.delete("planner.boards.notes", note._id)
+            }
+
+            this.app.db.delete("planner.boards.cols", col._id)
         }
 
-        this.app.db.delete("planner.boards.cols", col_id)
+        this.app.db.delete("planner.boards.groups", group_id)
+
+        return group
+    }
+
+    /**
+     *option = {
+         title:
+         author:
+         planner
+         group
+     }
+     *
+     * @param {*} option
+     */
+    create_col(option)
+    {
+        let planner = this.get_planner(option.planner)
+
+        let group = this.get_group(planner, option.group)
+
+        let col = {
+            _id: shortid.generate(),
+            ...option,
+            notes: [],
+            created: Date.now(),
+            updated: Date.now(),
+        }
+
+        group.cols.push(col)
+
+        this.save_group(group)
+
+        this.save_col(col)
 
         return col
     }
@@ -108,12 +194,38 @@ module.exports = class Current extends Service
     update_col(one, option)
     {
         delete option._id
+        delete option.notes
 
         extend(one, option)
 
         one.updated = Date.now()
 
         this.save_col(one)
+    }
+
+    destroy_col(planner_id, group_id, col_id)
+    {
+        let planner = this.get_planner(planner_id)
+
+        let group = this.get_group(planner, group_id)
+
+        let col = this.del_col(group, col_id)
+
+        if (col == null)
+        {
+            return
+        }
+
+        this.save_group(group)
+
+        for (let note of col.notes)
+        {
+            this.app.db.delete("planner.boards.notes", note._id)
+        }
+
+        this.app.db.delete("planner.boards.cols", col_id)
+
+        return col
     }
 
     search(planner_id, option)
@@ -135,25 +247,27 @@ module.exports = class Current extends Service
     {
         let result = []
 
-        for (let col of planner.curr)
+        for (let group of planner.groups)
         {
-            for (let note_id of col.curr)
+            for (let cols of group.cols)
             {
-                let note = planner.notes[note_id]
-
-                if (note.assignee == assignee)
+                for (let note of cols.notes)
                 {
-                    result.push(note)
+                    if (note.assignee == assignee)
+                    {
+                        result.push(note)
+                    }
                 }
             }
         }
+
         return result
     }
 
     /**
      * 移动两个列
      */
-    move(planner_id, option)
+    move_col(planner_id, group_id, option)
     {
         let planner = this.get_planner(planner_id)
         if (planner == null)
@@ -161,58 +275,62 @@ module.exports = class Current extends Service
             return false
         }
 
-        let from_col = planner.curr[option.from]
+        let group = this.get_group(planner, group_id)
 
-        if (from_col == null || planner.curr[option.to] == null)
+        let from_col = group.cols[option.from]
+
+        if (from_col == null || group.cols[option.to] == null)
         {
             return false
         }
 
-        planner.curr.splice(option.from, 1)
-        planner.curr.splice(option.to, 0, from_col)
+        group.cols.splice(option.from, 1)
+        group.cols.splice(option.to, 0, from_col)
 
-        this.save_planner(planner)
+        this.save_group(group)
 
-        return planner.curr
+        return group.cols
     }
 
-    move_note(planner_id, option)
+    move_note(planner_id, group_id, option)
     {
         let planner = this.get_planner(planner_id)
 
-        let from = this.get_col(planner, option.from)
-        let to = this.get_col(planner, option.to)
+        let group = this.get_group(planner, group_id)
+
+        let from = this.get_col(group, option.from)
+        let to = this.get_col(group, option.to)
 
         if (from == null || to == null)
         {
             throw new Error("no such col")
         }
 
-        let note_id = from.curr[option.old]
+        let note = from.notes[option.old]
 
-        if (note_id == null)
+        if (note == null)
         {
             throw new Error("数据太旧请先刷新")
         }
 
-        if (option.target && note_id != option.target)
+        if (option.target && note.id != option.target)
         {
-            option.old = from.curr.indexOf(option.target)
-            console.log("数据版本太旧请先刷新")
+            note = planner.notes[option.target]
+            option.old = from.notes.indexOf(note)
+
+            if (option.old < 0)
+            {
+                throw new Error("数据太旧请先刷新")
+            }
         }
 
-        if (option.old < 0)
+        if (option.new > to.notes.length)
         {
-            throw new Error("数据太旧请先刷新")
+            option.new = to.notes.length
         }
 
-        if (option.new > to.curr.length)
-        {
-            option.new = to.curr.length
-        }
-
-        from.curr.splice(option.old, 1)
-        to.curr.splice(option.new, 0, option.target)
+        from.notes.splice(option.old, 1)
+        to.notes.splice(option.new, 0, note)
 
         this.save_col(from)
 
@@ -227,6 +345,8 @@ module.exports = class Current extends Service
      *  title:          //可选
      *  author:
      *  planner:
+     *  group
+     *  col:
      * }
      *
      * @param {*} option
@@ -242,7 +362,8 @@ module.exports = class Current extends Service
             updated: Date.now(),
         }
 
-        col.curr.unshift(note._id)
+        col.notes.unshift(note)
+
         planner.notes[note._id] = note
 
         this.save_note(note)
@@ -266,13 +387,13 @@ module.exports = class Current extends Service
         {
             note.closed = null
         }
-        else if (!is_closed)
+        else if (!is_closed)        //从不关闭到关闭
         {
             note.closed = Date.now()
 
-            let index = col.curr.indexOf(note._id)
+            let index = col.notes.indexOf(note)
 
-            col.curr.splice(index, 1)
+            col.notes.splice(index, 1)
 
             this.save_col(col)
         }
@@ -283,12 +404,15 @@ module.exports = class Current extends Service
     /**
      * 删除某个列中的note
      */
-    destroy_note(planner, col, id)
+    destroy_note(planner, group_id, col_id, id)
     {
         let note = planner.notes[id]
-        let index = col.curr.indexOf(id)
+        let group = this.get_group(planner, group_id)
+        let col = this.get_col(group, col_id)
 
-        col.curr.splice(index, 1)
+        let index = col.notes.indexOf(note)
+
+        col.notes.splice(index, 1)
 
         delete planner.notes[note._id]
 
@@ -297,11 +421,43 @@ module.exports = class Current extends Service
         this.app.db.delete("planner.boards.notes", note._id)
     }
 
+    del_group(planner, group_id)
+    {
+        let index = planner.groups.findIndex(Current.find_by_id, group_id)
+
+        if (index < 0)
+        {
+            return
+        }
+
+        let group = planner.groups[index]
+
+        planner.groups.splice(index, 1)
+
+        return group
+    }
+
+    del_col(group, col_id)
+    {
+        let index = group.cols.findIndex(Current.find_by_id, col_id)
+
+        if (index < 0)
+        {
+            return
+        }
+
+        let col = group.cols[index]
+
+        group.cols.splice(index, 1)
+
+        return col
+    }
+
     create_planner(id)
     {
         let one = {
             _id: id,
-            curr: [],        //当前在用的col
+            groups: [],       //分组
             notes: {},       //所有工单，无论是否关闭
             created: Date.now()
         }
@@ -311,50 +467,30 @@ module.exports = class Current extends Service
         return one
     }
 
-    del_col(planner, col_id)
-    {
-        let col = null
-        for (let i = 0; i < planner.curr.length; ++i)
-        {
-            let one = planner.curr[i]
-
-            if (one._id == col_id)
-            {
-                col = one
-                planner.curr.splice(i, 1)
-                break
-            }
-        }
-
-        return col
-    }
-
-    get_col(planner, col_id)
-    {
-        let col = null
-        for (let one of planner.curr)
-        {
-            if (one._id == col_id)
-            {
-                col = one
-                break
-            }
-        }
-        return col
-    }
-
     get_planner(id)
     {
         return this.planners[id]
     }
 
+    get_group(planner, group_id)
+    {
+        let index = planner.groups.findIndex(Current.find_by_id, group_id)
+
+        return planner.groups[index]
+    }
+
+    get_col(group, col_id)
+    {
+        let index = group.cols.findIndex(Current.find_by_id, col_id)
+
+        return group.cols[index]
+    }
+
     save_planner(planner)
     {
-        const record = { ...planner }
+        const record = shadow_copy(planner, ["notes", "groups"])
 
-        delete record.notes
-
-        record.curr = planner.curr.map((one) =>
+        record.groups = planner.groups.map((one) =>
         {
             return one._id
         })
@@ -362,9 +498,26 @@ module.exports = class Current extends Service
         this.app.db.set("planner.boards", record._id, record)
     }
 
+    save_group(group)
+    {
+        const record = shadow_copy(group, "cols")
+
+        record.cols = group.cols.map((one) =>
+        {
+            return one._id
+        })
+
+        this.app.db.set("planner.boards.groups", record._id, record)
+    }
+
     save_col(col)
     {
-        let record = { ...col }
+        let record = shadow_copy(col, "notes")
+
+        record.notes = col.notes.map((one) =>
+        {
+            return one._id
+        })
 
         this.app.db.set("planner.boards.cols", col._id, record)
     }

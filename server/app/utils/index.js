@@ -1,6 +1,8 @@
 const fs = require("fs")
 const path = require("path")
 
+const empty_array = []
+
 exports.load_folder = function(root)
 {
     let ret = {}
@@ -64,3 +66,20 @@ exports.cal_page = function(array, size, curr, filter = default_filter)
 }
 
 exports.SortedArray = require("./SortedArray")
+
+exports.shadow_copy = (target, blacks) =>
+{
+    blacks = blacks || empty_array
+
+    let ret = {}
+
+    for (let name in target)
+    {
+        if (blacks.indexOf(name) < 0)
+        {
+            ret[name] = target[name]
+        }
+    }
+
+    return ret
+}

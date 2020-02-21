@@ -9,13 +9,13 @@ module.exports = class Current extends Controller
     }
 
     /**
-     * 获得当前在使用中的列表信息，
-     * 单子信息不包括在里面
+     * 获得当前在使用中的任务分组
+     * 列信息以及工单信息不在里面
      */
     list()
     {
         const { ctx, service } = this
-        const { user, planner } = ctx
+        const { planner } = ctx
 
         const current = service.boards
 
@@ -23,19 +23,64 @@ module.exports = class Current extends Controller
         if (col_planner == null)
         {
             ctx.body = []
-
             return
         }
 
-        ctx.body = col_planner.curr.map((one) =>
+        ctx.body = col_planner.groups.map((one) =>
         {
-            return one._id
+            return {
+                _id: one._id,
+                planner: one.planner,
+                title: one.title,
+                mode: one.mode,
+            }
         })
     }
+
     /**
-     * 获得一列的具体信息
+     * 创建一个分组
      */
-    col_detail()
+    create_group()
+    {
+        const { ctx, service } = this
+        const { user, planner } = ctx
+
+        const current = service.boards
+
+        const body = ctx.request.body
+
+        body.title = (body.title || "").trim()
+
+        if (body.title.length == 0)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "title is invalid"
+            }
+            return
+        }
+
+        if (body.mode.length == 0)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "mode is invalid"
+            }
+            return
+        }
+
+        body.author = user._id
+        body.planner = planner._id
+
+        const one = current.create_group(body)
+
+        ctx.body = one
+    }
+
+    /**
+    * 获得某个group的具体信息
+    */
+    group_detail()
     {
         const { ctx, service } = this
 
@@ -46,14 +91,52 @@ module.exports = class Current extends Controller
         {
             ctx.status = 404
             ctx.body = {
-                error: "no such col exists"
+                error: "no such planner exists"
             }
             return
         }
 
-        let col = current.get_col(planner, ctx.params.col)
+        let group = current.get_group(planner, ctx.params.group)
 
-        if (col == null)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        ctx.body = {
+            _id: group._id, title: group.title, mode: group.mode, updated: group.updated
+        }
+
+        ctx.body.cols = group.cols.map(one =>
+        {
+            return {
+                _id: one._id, title: one.title, updated: one.updated
+            }
+        })
+    }
+
+    update_group()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        const planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such planner exists"
+            }
+            return
+        }
+
+        let one = current.get_group(planner, ctx.params.group)
+        if (one == null)
         {
             ctx.status = 404
             ctx.body = {
@@ -62,23 +145,28 @@ module.exports = class Current extends Controller
             return
         }
 
-        ctx.body = {
-            _id: col._id, title: col.title, updated: col.updated
-        }
+        const body = ctx.request.body
 
-        ctx.body.curr = col.curr.map(id =>
-        {
-            let note = planner.notes[id]
+        current.update_col(one, body)
 
-            return note
-        })
+        ctx.body = {}
+    }
 
+    destroy_group()
+    {
+        const { ctx, service } = this
+
+        const boards = service.boards
+
+        boards.destroy_group(ctx.params.planner, ctx.params.group)
+
+        ctx.body = {}
     }
 
     /**
-     * 创建一列
-     */
-    create()
+   * 创建一列
+   */
+    create_col()
     {
         const { ctx, service } = this
         const { user, planner } = ctx
@@ -100,13 +188,17 @@ module.exports = class Current extends Controller
 
         body.author = user._id
         body.planner = planner._id
+        body.group = ctx.params.group
 
         const col = current.create_col(body)
 
-        ctx.body = { _id: col._id }
+        ctx.body = col
     }
 
-    update()
+    /**
+     * 获得一列的具体信息
+     */
+    col_detail()
     {
         const { ctx, service } = this
 
@@ -122,8 +214,59 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = current.get_col(planner, ctx.params.col)
+        let group = current.get_group(planner, ctx.params.group)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        let col = current.get_col(group, ctx.params.col)
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
+
+        ctx.body = {
+            _id: col._id, title: col.title, updated: col.updated, notes: col.notes
+        }
+    }
+
+    update_col()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        const planner = current.get_planner(ctx.params.planner)
         if (planner == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such planner exists"
+            }
+            return
+        }
+
+        let group = current.get_group(planner, ctx.params.group)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        let col = current.get_col(group, ctx.params.col)
+        if (col == null)
         {
             ctx.status = 404
             ctx.body = {
@@ -139,7 +282,7 @@ module.exports = class Current extends Controller
         ctx.body = {}
     }
 
-    move()
+    move_col()
     {
         const { ctx, service } = this
 
@@ -156,7 +299,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        let result = current.move(ctx.params.planner, body)
+        let result = current.move_col(ctx.params.planner, ctx.params.group, body)
         if (!result)
         {
             ctx.status = error.BAD_REQUEST
@@ -169,17 +312,19 @@ module.exports = class Current extends Controller
 
         ctx.body = result.map((one) =>
         {
-            return one._id
+            return {
+                _id: one._id, title: one.title, updated: one.updated
+            }
         })
     }
 
-    destroy()
+    destroy_col()
     {
         const { ctx, service } = this
 
         const boards = service.boards
 
-        boards.destroy_col(ctx.params.planner, ctx.params.col)
+        boards.destroy_col(ctx.params.planner, ctx.params.group, ctx.params.col)
 
         ctx.body = {}
     }
@@ -201,8 +346,18 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = current.get_col(planner, ctx.params.col)
-        if (planner == null)
+        let group = current.get_group(planner, ctx.params.group)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        let col = current.get_col(group, ctx.params.col)
+        if (col == null)
         {
             ctx.status = 404
             ctx.body = {
@@ -274,7 +429,17 @@ module.exports = class Current extends Controller
             return
         }
 
-        let col = current.get_col(planner, ctx.params.col)
+        let group = current.get_group(planner, ctx.params.group)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        let col = current.get_col(group, ctx.params.col)
         if (col == null)
         {
             ctx.status = 404
@@ -284,7 +449,7 @@ module.exports = class Current extends Controller
             return
         }
 
-        if (col.curr.indexOf(note._id) < 0)
+        if (col.notes.indexOf(note) < 0)
         {
             ctx.status = 404
             ctx.body = {
@@ -342,6 +507,28 @@ module.exports = class Current extends Controller
         ctx.body = note
     }
 
+    move_note()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        const body = ctx.request.body
+
+        if (body.old < 0 || body.new < 0)
+        {
+            ctx.status = error.BAD_REQUEST
+            ctx.body = {
+                error: "old or new is invalid"
+            }
+            return
+        }
+
+        current.move_note(ctx.params.planner, ctx.params.group, ctx.request.body)
+
+        ctx.body = {}
+    }
+
     /**
      * 删除col中的note
      * 
@@ -362,60 +549,10 @@ module.exports = class Current extends Controller
             return
         }
 
-        const note = planner.notes[ctx.params.note]
-
-        if (note == null)
-        {
-            ctx.status = 404
-            ctx.body = {
-                error: "no such note"
-            }
-            return
-        }
-
-        let col = current.get_col(planner, ctx.params.col)
-        if (col == null)
-        {
-            ctx.status = 404
-            ctx.body = {
-                error: "no such col exists"
-            }
-            return
-        }
-
-        if (col.curr.indexOf(note._id) < 0)
-        {
-            ctx.status = 404
-            ctx.body = {
-                error: "no such note in col"
-            }
-            return
-        }
-
-        current.destroy_note(planner, col, note._id)
+        current.destroy_note(planner, ctx.params.group, ctx.params.col, ctx.params.note)
 
         ctx.body = {}
     }
 
-    move_note()
-    {
-        const { ctx, service } = this
 
-        const current = service.boards
-
-        const body = ctx.request.body
-
-        if (body.old < 0 || body.new < 0)
-        {
-            ctx.status = error.BAD_REQUEST
-            ctx.body = {
-                error: "old or new is invalid"
-            }
-            return
-        }
-
-        current.move_note(ctx.params.planner, ctx.request.body)
-
-        ctx.body = {}
-    }
 }

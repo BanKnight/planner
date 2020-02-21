@@ -1,5 +1,5 @@
 <template>
-  <el-container class="note-card" :id="value._id" @click.native.capture="$emit('edit', value)">
+  <el-container class="note-card doing" :id="value._id">
     <el-header class="note-card-head" height="fit-content">
       <span style="margin-bottom:5px;">
         <i class="el-icon-document" style="margin-right:5px;"></i>
@@ -112,6 +112,16 @@ export default {
   padding: 5px;
   cursor: move;
   cursor: -webkit-grabbing;
+}
+
+.note-card.doing {
+  background-color: #f1f7f9;
+}
+
+.note-card.done {
+  background-color: #eff7ef;
+  -moz-window-shadow: #a6caf4;
+  border: 1px solid #75b367;
 }
 
 header.note-card-head {
