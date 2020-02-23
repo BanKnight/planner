@@ -3,6 +3,7 @@
     <el-aside width="150px">
       <el-table
         :data="groups"
+        v-loading="loading"
         style="width: 100%"
         height="100%"
         size="mini"
@@ -88,6 +89,7 @@ export default {
   data()  {
     return {
       groups: [],
+      loading: false,
       is_editing: false,
       add_form_visible: false,
       add_form: {
@@ -123,6 +125,7 @@ export default {
   },
   methods: {
     async refresh()    {
+      this.loading = true
       let data = await this.$store.dispatch("boards_group_list", {
         planner: this.planner_id
       });
@@ -131,6 +134,8 @@ export default {
       for (let one of data)      {
         this.groups.push(one); //全部都是id
       }
+
+      this.loading = false
 
       if (this.groups.length == 0)
       {

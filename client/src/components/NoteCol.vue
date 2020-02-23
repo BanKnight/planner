@@ -55,17 +55,16 @@
           >
             <note-card
               v-for="note in notes"
-              :class="{ editing: note == editing_note }"
               :key="note._id"
               :value="note"
-              @click.native.capture="start_edit(note)"
+              @click.native.stop="start_edit(note)"
               @remove="remove_note"
             ></note-card>
           </draggable>
         </el-aside>
 
         <el-dialog title="新增" :visible.sync="adding" width="fit-content">
-          <new-note :planner="planner" :col="col" @save="add_note" />
+          <new-note v-if="adding" :planner="planner" :col="col" @save="add_note" />
         </el-dialog>
 
         <el-dialog title="编辑" :visible.sync="editing_note_dialog" width="fit-content">

@@ -115,13 +115,12 @@ export default {
 }
 
 .note-card.doing {
+  border: 1px solid #75b367;
   background-color: #f1f7f9;
 }
 
 .note-card.done {
-  background-color: #eff7ef;
-  -moz-window-shadow: #a6caf4;
-  border: 1px solid #75b367;
+  text-decoration: line-through;
 }
 
 header.note-card-head {

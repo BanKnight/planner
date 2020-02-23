@@ -1,10 +1,28 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-row type="flex" justify="space-between" align="middle">
-      <el-button size="mini" type="danger" icon="el-icon-check" @click="close" class="full-width">关闭</el-button>
+    <el-row :gutter="20">
+      <el-col :span="20">
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-upload"
+          class="full-width"
+          @click="save"
+        >保存</el-button>
+      </el-col>
+
+      <el-col :span="4">
+        <el-button
+          size="mini"
+          type="danger"
+          icon="el-icon-check"
+          class="full-width"
+          @click="close"
+        >回收</el-button>
+      </el-col>
     </el-row>
 
-    <el-container style="padding:0">
+    <el-container>
       <el-tabs style="margin-right:10px">
         <el-tab-pane label="基础">
           <el-container class="el-card full" direction="vertical">
@@ -47,7 +65,7 @@
 
       <el-aside width="300px">
         <el-card style="margin-top:55px">
-          <el-form size="mini" label-position="left" label-width="6em">
+          <el-form size="mini" label-position="left" label-width="5em">
             <el-form-item label="指派：">
               <member-select v-model="form.assignee" size="mini" :planner="value.planner"></member-select>
             </el-form-item>
@@ -56,7 +74,7 @@
               <milestone-select v-model="form.milestone" size="mini" :planner="value.planner" />
             </el-form-item>
 
-            <el-form-item label="结束时间：">
+            <el-form-item label="结束：">
               <el-date-picker
                 type="date"
                 size="mini"
@@ -74,16 +92,6 @@
             <el-form-item label="问题：">
               <issue-select v-model="form.issue" size="mini" :planner="value.planner"></issue-select>
               <el-checkbox v-model="form.close_issue">关联完成</el-checkbox>
-            </el-form-item>
-
-            <el-form-item>
-              <el-button
-                size="mini"
-                type="primary"
-                icon="el-icon-upload"
-                class="full-width"
-                @click="save"
-              >保存</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -132,10 +140,10 @@ export default {
     value()    {
       this.init();
     },
-    "form.backlog": function(new_val)    {
+    "form.backlog": function (new_val)    {
       this.fetch_backlog(new_val);
     },
-    "form.issue": function(new_val)    {
+    "form.issue": function (new_val)    {
       this.fetch_issue(new_val);
     }
   },
@@ -163,8 +171,8 @@ export default {
 
     close()    {
       this.$confirm(
-        "单子关闭后，将进行归档不可见(一般交给下单者关闭)",
-        "是否确认关闭",
+        "单子回收后，将进行归档不可见(一般交给下单者关闭)",
+        "是否确认回收",
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
