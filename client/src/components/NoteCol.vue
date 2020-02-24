@@ -40,7 +40,7 @@
           <el-button
             size="mini"
             icon="el-icon-plus"
-            style="width:100%;margin-top:10px; border: 1px dashed #75b367;"
+            style="width:100%;margin-top:10px; border: 1px solid rgba(0, 0, 0, 0.1);;"
             @click="(adding = !adding), (editing_note = null)"
           />
 

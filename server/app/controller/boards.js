@@ -147,7 +147,7 @@ module.exports = class Current extends Controller
 
         const body = ctx.request.body
 
-        current.update_col(one, body)
+        current.update_group(one, body)
 
         ctx.body = {}
     }

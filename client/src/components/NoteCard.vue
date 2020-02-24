@@ -1,5 +1,5 @@
 <template>
-  <el-container class="note-card doing" :id="value._id">
+  <el-container class="note-card" :id="value._id">
     <el-header class="note-card-head" height="fit-content">
       <span style="margin-bottom:5px;">
         <i class="el-icon-document" style="margin-right:5px;"></i>
@@ -100,11 +100,7 @@ export default {
 
 <style>
 .note-card {
-  border-radius: 4px;
-  border: 1px dashed #75b367;
-  background-color: #ffffff;
   overflow: hidden;
-  color: #303133;
   -webkit-transition: 0.3s;
   transition: 0.3s;
   margin-top: 10px;
@@ -112,15 +108,20 @@ export default {
   padding: 5px;
   cursor: move;
   cursor: -webkit-grabbing;
+
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
 .note-card.doing {
   border: 1px solid #75b367;
-  background-color: #f1f7f9;
 }
 
 .note-card.done {
   text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 header.note-card-head {

@@ -1,6 +1,6 @@
 <template>
   <el-container class="full" direction="horizontal">
-    <el-aside width="150px">
+    <el-aside width="180px">
       <el-table
         :data="groups"
         v-loading="loading"
@@ -14,35 +14,37 @@
       >
         <el-table-column>
           <template slot="header">
-            <el-button
-              icon="el-icon-plus"
-              type="success"
-              size="mini"
-              title="添加分组"
-              @click="add_form_visible = true"
-            ></el-button>
-            <el-button icon="el-icon-edit" size="mini" title="编辑" @click="begin_edit"></el-button>
+            <el-button-group>
+              <el-button
+                icon="el-icon-plus"
+                type="primary"
+                size="mini"
+                title="添加分组"
+                @click="add_form_visible = true"
+              ></el-button>
+              <el-button
+                icon="el-icon-edit"
+                type="success"
+                size="mini"
+                title="编辑"
+                @click="change_name"
+              ></el-button>
+              <el-button
+                icon="el-icon-delete"
+                type="danger"
+                size="mini"
+                title="删除"
+                @click="destroy_group"
+              ></el-button>
+            </el-button-group>
           </template>
 
           <template slot-scope="scope">
-            <router-link
-              v-if="!is_editing"
-              :to="`${root}/detail/${scope.row._id}`"
-              class="el-link el-link--default"
-            >
+            <router-link :to="`${root}/detail/${scope.row._id}`" class="el-link el-link--default">
               <i v-if="scope.row.mode == 'normal'" class="el-icon-s-grid"></i>
               <i v-else class="el-icon-s-data"></i>
               {{ scope.row.title }}
             </router-link>
-
-            <template v-else>
-              <el-tag
-                :disable-transitions="true"
-                effect="dark"
-                :closable="true"
-                @close="destroy_group(scope.row)"
-              >{{ scope.row.title }}</el-tag>
-            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -90,7 +92,6 @@ export default {
     return {
       groups: [],
       loading: false,
-      is_editing: false,
       add_form_visible: false,
       add_form: {
         title: "",
@@ -118,6 +119,20 @@ export default {
           { required: true, message: "请输入标题", trigger: "blur" },
         ]
       };
+    },
+    current_group_id()    {
+      return this.$route.params.group
+    },
+    current_group()    {
+      let id = this.current_group_id
+
+      for (let group of this.groups)      {
+        if (group._id == id)
+        {
+          return group
+        }
+      }
+      return null
     }
   },
   mounted()  {
@@ -149,14 +164,50 @@ export default {
         this.$router.push(`${this.root}/detail/${group._id}`);
       }
     },
-    begin_edit()
+    change_name()
     {
-      this.is_editing = !this.is_editing;
+      let group = this.current_group
 
-      console.log("this is editing", this.is_editing)
+      if (group == null)
+      {
+        return
+      }
+
+      this.$prompt('请输入新的名称', '修改名称', {
+        inputValue: group.title,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(async ({ value }) =>      {
+
+        value = value.trim()
+
+        if (value.length == 0)
+        {
+          return
+        }
+        await this.$store.dispatch("boards_update_group", {
+          planner: this.planner_id,
+          group: group._id,
+          data: {
+            title: value
+          }
+        });
+
+        this.refresh()
+
+      }).catch(() =>      {
+
+      });
     },
     add_group()
     {
+      let group = this.current_group
+
+      if (group == null)
+      {
+        return
+      }
+
       this.$refs.add_form.validate(async valid =>      {
         if (!valid)        {
           return false;
@@ -182,8 +233,14 @@ export default {
         // this.refresh();
       });
     },
-    destroy_group(group)
+    destroy_group()
     {
+      let group = this.current_group
+
+      if (group == null)
+      {
+        return
+      }
       this.$confirm("一旦删除分组，不可恢复，是否删除?", group.title, {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -207,7 +264,7 @@ export default {
     row_class({ row, rowIndex })    {
       let classes = [];
 
-      if (row._id == this.$route.params.group)      {
+      if (row._id == this.current_group_id)      {
         classes.push("primary-row");
       }
 

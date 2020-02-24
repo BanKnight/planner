@@ -20,7 +20,7 @@
     </draggable>
 
     <el-button
-      style="width:250px;background-color:transparent;color:#8ea29e;font-size:2em;border:2px dashed #8ea29e"
+      style="width:250px;background-color:transparent;color:#8ea29e;font-size:2em;border:1px solid rgba(0, 0, 0, 0.1)"
       plain
       icon="el-icon-plus"
       @click="add_col"
