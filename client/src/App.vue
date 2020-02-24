@@ -106,6 +106,24 @@ p {
   padding: 10px;
 }
 
+.el-dialog__header {
+  padding: 10px;
+  padding-bottom: 10px;
+  background-color: #dce8d6;
+}
+
+.el-dialog__headerbtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 .sidebar {
   background-color: #334444;
   color: white;

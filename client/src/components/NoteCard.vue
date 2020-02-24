@@ -9,12 +9,6 @@
       <el-button type="text" class="el-icon-delete" @click.stop="ask_delete" style="cursor:pointer"></el-button>
     </el-header>
 
-    <el-main
-      v-if="value.content && value.content.length > 0"
-      class="note-card-body markdown-body"
-      v-html="$md(value.content)"
-    ></el-main>
-
     <el-footer
       class="note-card-footer el-row el-row--flex"
       height="fit-content"

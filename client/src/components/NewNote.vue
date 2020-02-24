@@ -21,8 +21,12 @@
       </el-form-item>
 
       <el-form-item label="内容：">
-        <el-switch v-model="editing" active-text="编辑"></el-switch>
-
+        <el-row type="flex" justify="space-between" align="middle">
+          <el-radio-group v-model="editing">
+            <el-radio-button :label="true">编辑</el-radio-button>
+            <el-radio-button :label="false">预览</el-radio-button>
+          </el-radio-group>
+        </el-row>
         <el-input
           v-if="editing"
           type="textarea"
@@ -31,7 +35,9 @@
           placeholder="内容"
           v-model="form.content"
         />
-        <md-editor v-else :value="form.content" :editable="false" size="mini" />
+        <div v-else style="border:1px solid #dcdfe6">
+          <md-editor :value="form.content" :editable="false" size="mini" />
+        </div>
       </el-form-item>
 
       <el-divider />
@@ -45,25 +51,31 @@
         />
       </el-form-item>
 
-      <el-form-item label="需求：">
-        <el-row class="full-width">
-          <backlog-select v-model="form.backlog" size="mini" :planner="planner"></backlog-select>
-          <el-link :disabled="!form.backlog" @click="read_backlog = true">
-            <i class="el-icon-view el-icon--right"></i>
-          </el-link>
-        </el-row>
+      <el-row type="flex" justify="space-between">
+        <el-col :span="12">
+          <el-form-item label="需求：">
+            <el-row class="full-width">
+              <backlog-select v-model="form.backlog" size="mini" :planner="planner"></backlog-select>
+              <el-link :disabled="!form.backlog" @click="read_backlog = true">
+                <i class="el-icon-view el-icon--right"></i>
+              </el-link>
+            </el-row>
 
-        <el-checkbox :disabled="!form.backlog" v-model="form.close_backlog">关联完成</el-checkbox>
-      </el-form-item>
-      <el-form-item label="问题：">
-        <el-row class="full-width">
-          <issue-select v-model="form.issue" size="mini" :planner="planner"></issue-select>
-          <el-link :disabled="!form.issue" @click="read_issue = true">
-            <i class="el-icon-view el-icon--right"></i>
-          </el-link>
-        </el-row>
-        <el-checkbox :disabled="!form.issue" v-model="form.close_issue">关联完成</el-checkbox>
-      </el-form-item>
+            <el-checkbox :disabled="!form.backlog" v-model="form.close_backlog">关联完成</el-checkbox>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="问题：" label-width="4em">
+            <el-row class="full-width">
+              <issue-select v-model="form.issue" size="mini" :planner="planner"></issue-select>
+              <el-link :disabled="!form.issue" @click="read_issue = true">
+                <i class="el-icon-view el-icon--right"></i>
+              </el-link>
+            </el-row>
+            <el-checkbox :disabled="!form.issue" v-model="form.close_issue">关联完成</el-checkbox>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-form-item>
         <el-row type="flex" justify="space-between">
