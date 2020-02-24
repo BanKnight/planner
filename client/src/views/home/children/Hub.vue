@@ -40,18 +40,16 @@
       ></el-pagination>
     </el-footer>
 
-    <el-dialog :visible.sync="adding" title="添加">
-      <el-form label-position="top" :model="form" ref="new_plan">
-        <el-form-item label="标题">
+    <el-dialog :visible.sync="adding" title="新的项目" width="500px">
+      <el-form :model="form" ref="new_plan" label-position="top">
+        <el-form-item label="标题:">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item label="描述:">
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-row type="flex" justify="center">
-            <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
-          </el-row>
+          <el-button type="primary" class="full-width" :loading="loading" @click="on_create">立即创建</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
