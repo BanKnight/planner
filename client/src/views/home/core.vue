@@ -34,23 +34,28 @@
         icon="el-icon-user"
         style="border-bottom: solid 1px #e6e6e6;"
         class="no-border"
-        @click="$router.push('/setting')"
+        @click="user_visible = !user_visible"
       >用户</el-button>
     </el-row>
 
-    <el-dialog></el-dialog>
+    <el-dialog :visible.sync="user_visible" v-if="user_visible" title="用户">
+      <setting />
+    </el-dialog>
 
     <router-view />
   </el-container>
 </template>
 
 <script>
+
+import Setting from "@/components/Setting"
 import children from "./children";
 
 export default {
   path: "/",
   weight: 0,
   meta: { require_logined: true },
+  components: { Setting },
   provide()  {
     return {
       reload_menu: this.fetch
@@ -58,8 +63,8 @@ export default {
   },
   data()  {
     return {
-      collapse: false,
       array: [],
+      user_visible: false,
       detail: {
         name: ""
       },
@@ -115,8 +120,3 @@ export default {
 };
 </script>
 
-<style>
-.el-collapse-item__header {
-  background-color: transparent;
-}
-</style>

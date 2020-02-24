@@ -1,27 +1,25 @@
 <template>
   <el-container class="full" direction="vertical" :key="planner_id">
-    <el-row type="flex" justify="space-between" align="middle" style="padding:0 10px">
-      <el-menu
-        :collapse="collapse"
-        :default-active="$route.meta.menu_title"
-        mode="horizontal"
-        background-color="transparent"
-        active-text-color="#77b36b"
-        text-color="#000"
-        class="small"
-        :router="true"
+    <el-menu
+      :collapse="collapse"
+      :default-active="$route.meta.menu_title"
+      mode="horizontal"
+      background-color="transparent"
+      active-text-color="#77b36b"
+      text-color="#000"
+      class="small full-width"
+      :router="true"
+    >
+      <el-menu-item
+        v-for="child in children"
+        :index="child.meta.menu_title"
+        :key="child.meta.menu_title"
+        :route="{ path: `${root}/${child.path}` }"
       >
-        <el-menu-item
-          v-for="child in children"
-          :index="child.meta.menu_title"
-          :key="child.meta.menu_title"
-          :route="{ path: `${root}/${child.path}` }"
-        >
-          <i :class="child.meta.menu_icon"></i>
-          <span slot="title">{{ child.meta.menu_title }}</span>
-        </el-menu-item>
-      </el-menu>
-    </el-row>
+        <i :class="child.meta.menu_icon"></i>
+        <span slot="title">{{ child.meta.menu_title }}</span>
+      </el-menu-item>
+    </el-menu>
     <el-main class="full" style="padding:10px">
       <router-view v-if="is_showing" />
     </el-main>
@@ -81,7 +79,6 @@ export default {
   },
   methods: {
     refresh()    {
-      this.fetch();
       if (this.check_timer)      {
         clearInterval(this.check_timer);
       }

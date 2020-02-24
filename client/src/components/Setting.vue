@@ -1,72 +1,66 @@
 <template>
-  <el-container class="full" style="padding:10px">
-    <el-tabs tab-position="left" type="border-card" class="full">
-      <el-tab-pane label="基础" class="full">
-        <el-form label-width="100px" label-position="top">
-          <el-form-item label="修改姓名:">
-            <el-input v-model="basic_form.name" prefix-icon="el-icon-user" />
-          </el-form-item>
+  <el-tabs tab-position="top" type="border-card">
+    <el-tab-pane label="基础">
+      <el-form label-width="100px" label-position="top">
+        <el-form-item label="修改姓名:">
+          <el-input v-model="basic_form.name" prefix-icon="el-icon-user" />
+        </el-form-item>
 
-          <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button type="primary" size="medium" style="width:200px" @click="reset_name">确定</el-button>
-            </el-row>
-          </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="medium" class="full-width" @click="reset_name">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
+    <el-tab-pane label="登录密码">
+      <el-form label-width="100px" label-position="top">
+        <el-form-item label="旧密码:">
+          <el-input
+            name="old"
+            type="password"
+            v-model="password_form.old"
+            placeholder="Password"
+            tabindex="1"
+            autocomplete="on"
+            show-password
+            prefix-icon="el-icon-lock"
+          ></el-input>
+        </el-form-item>
 
-          <el-form-item label="登出：">
-            <el-button type="danger" plain size="medium" @click="quit">登出</el-button>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="更改密码：" class="full">
-        <el-form label-width="100px" label-position="top">
-          <el-form-item label="旧密码:">
-            <el-input
-              name="old"
-              type="password"
-              v-model="password_form.old"
-              placeholder="Password"
-              tabindex="1"
-              autocomplete="on"
-              show-password
-              prefix-icon="el-icon-lock"
-            ></el-input>
-          </el-form-item>
+        <el-form-item label="新密码:">
+          <el-input
+            name="password"
+            type="password"
+            v-model="password_form.new"
+            placeholder="Password"
+            tabindex="2"
+            autocomplete="on"
+            show-password
+            prefix-icon="el-icon-lock"
+          ></el-input>
+        </el-form-item>
 
-          <el-form-item label="新密码:">
-            <el-input
-              name="password"
-              type="password"
-              v-model="password_form.new"
-              placeholder="Password"
-              tabindex="2"
-              autocomplete="on"
-              show-password
-              prefix-icon="el-icon-lock"
-            ></el-input>
-          </el-form-item>
+        <el-form-item label="新密码确认:">
+          <el-input
+            name="password"
+            type="password"
+            v-model="password_form.again"
+            placeholder="Password"
+            tabindex="3"
+            autocomplete="on"
+            show-password
+            prefix-icon="el-icon-lock"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="full-width" size="medium" @click="reset_password">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
 
-          <el-form-item label="新密码确认:">
-            <el-input
-              name="password"
-              type="password"
-              v-model="password_form.again"
-              placeholder="Password"
-              tabindex="3"
-              autocomplete="on"
-              show-password
-              prefix-icon="el-icon-lock"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button type="primary" style="width:200px" size="medium" @click="reset_password">确定</el-button>
-            </el-row>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-    </el-tabs>
-  </el-container>
+    <el-tab-pane label="登出">
+      <el-button type="danger" class="full-width" size="medium" @click="quit">登出</el-button>
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script>
