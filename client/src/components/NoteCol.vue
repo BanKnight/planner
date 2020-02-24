@@ -27,7 +27,7 @@
           ref="editing_name"
           autofocus
           v-model="editing_form.title"
-          class="no-border-input"
+          class="no-border"
           @keydown.enter.native="change_name"
           @blur="editing = false"
         ></el-input>

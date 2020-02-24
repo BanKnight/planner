@@ -188,11 +188,15 @@ p {
   text-decoration: line-through;
 }
 
-.no-border-input input {
+.no-border {
   border: none;
 }
 
-.no-border-input textarea {
+.no-border input {
+  border: none;
+}
+
+.no-border textarea {
   border: none;
   border-radius: 4px;
   background-color: transparent;

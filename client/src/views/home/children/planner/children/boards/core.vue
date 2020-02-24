@@ -17,23 +17,23 @@
             <el-button-group>
               <el-button
                 icon="el-icon-plus"
-                type="primary"
                 size="mini"
                 title="添加分组"
+                class="no-border"
                 @click="add_form_visible = true"
               ></el-button>
               <el-button
                 icon="el-icon-edit"
-                type="success"
+                class="no-border"
                 size="mini"
                 title="编辑"
                 @click="change_name"
               ></el-button>
               <el-button
                 icon="el-icon-delete"
-                type="danger"
                 size="mini"
                 title="删除"
+                class="no-border"
                 @click="destroy_group"
               ></el-button>
             </el-button-group>
@@ -158,8 +158,9 @@ export default {
       }
 
       const group = this.groups[0]
+      const current_group = this.current_group
 
-      if (this.$route.params.group == null)
+      if (current_group == null)
       {
         this.$router.push(`${this.root}/detail/${group._id}`);
       }
@@ -201,12 +202,6 @@ export default {
     },
     add_group()
     {
-      let group = this.current_group
-
-      if (group == null)
-      {
-        return
-      }
 
       this.$refs.add_form.validate(async valid =>      {
         if (!valid)        {
@@ -256,6 +251,9 @@ export default {
           let index = this.groups.indexOf(group)
 
           this.groups.splice(index, 1);
+
+          this.$router.push(this.root);
+
         })
         .catch(() =>        {
 
