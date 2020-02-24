@@ -107,6 +107,20 @@ export default {
       this.fetch(1);
     },
 
+    row_class({ row, rowIndex })    {
+      let classes = [];
+
+      if (row._id == this.$route.params.article)      {
+        classes.push("primary-row");
+      }
+
+      if (rowIndex % 2 == 0)      {
+        classes.push("normal-row");
+      }
+
+      return classes.concat(" ");
+    }
+
   }
 };
 </script>

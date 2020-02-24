@@ -68,7 +68,7 @@
         </el-dialog>
 
         <el-dialog title="工单编辑" :visible.sync="editing_note_dialog" width="fit-content">
-          <note-detail :value="editing_note" @save="save_note" />
+          <note-detail v-if="editing_note_dialog" :value="editing_note" @save="save_note" />
         </el-dialog>
       </el-container>
     </el-main>
