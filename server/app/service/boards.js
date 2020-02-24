@@ -1,6 +1,6 @@
 const shortid = require('shortid')
 const extend = require("extend2")
-const { board_status } = require("../define")
+const { STATS_ORDER } = require("../define")
 
 const { Service } = require("../core")
 
@@ -37,7 +37,6 @@ module.exports = class Current extends Service
 
             for (let note of notes)
             {
-                note.status = note.status || board_status.default
                 planner.notes[note._id] = note
             }
 
@@ -80,6 +79,46 @@ module.exports = class Current extends Service
     static find_by_id(one)
     {
         return one._id == this
+    }
+
+    static note_cmp(first, second)
+    {
+        if (first.stats != null && second.stats == null)
+        {
+            return 1
+        }
+
+        if (first.stats == null && second.stats != null)
+        {
+            return -1
+        }
+
+        if (first.stats != second.stats)
+        {
+            return STATS_ORDER[second.stats] - STATS_ORDER[first.stats]
+        }
+
+        if (first.updated != second.updated)
+        {
+            return second.updated - first.updated;
+        }
+
+        if (first.created != second.created)
+        {
+            return second.created - first.created
+        }
+
+        if (first._id < second._id)
+        {
+            return -1
+        }
+
+        if (first._id > second._id)
+        {
+            return 1
+        }
+
+        return 0
     }
 
     /**
@@ -332,6 +371,8 @@ module.exports = class Current extends Service
         from.notes.splice(option.old, 1)
         to.notes.splice(option.new, 0, note)
 
+        to.notes.sort(Current.note_cmp)
+
         this.save_col(from)
 
         if (from != to)
@@ -363,6 +404,8 @@ module.exports = class Current extends Service
         }
 
         col.notes.unshift(note)
+
+        col.notes.sort(Current.note_cmp)
 
         planner.notes[note._id] = note
 
@@ -406,6 +449,10 @@ module.exports = class Current extends Service
                     {
                         col.notes.splice(index, 1)
                         new_col.notes.splice(0, 0, note)
+
+                        new_col.notes.sort(Current.note_cmp)
+
+                        this.save_col(new_col)
                     }
                 }
             }
@@ -413,6 +460,9 @@ module.exports = class Current extends Service
             {
                 note.stats = stats
             }
+
+            col.notes.sort(Current.note_cmp)
+
         }
         else if (!is_closed)        //从不关闭到关闭
         {
