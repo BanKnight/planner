@@ -351,7 +351,7 @@ module.exports = class Current extends Service
      *
      * @param {*} option
      */
-    create_note(planner, col, option)
+    create_note(planner, group, col, option)
     {
         col.updated = Date.now()
 
@@ -367,15 +367,21 @@ module.exports = class Current extends Service
         planner.notes[note._id] = note
 
         this.save_note(note)
-
         this.save_col(col)
 
         return note
     }
 
-    update_note(col, note, option)
+    /**
+     * 工作流模式中：改变状态就是改变所在列
+     * 普通模式中：改变状态只能是有限的那几个状态
+     */
+    update_note(group, col, note, option)
     {
+        const stats = option.stats
+
         delete option._id
+        delete option.stats
 
         let is_closed = note.closed
 
@@ -383,15 +389,34 @@ module.exports = class Current extends Service
 
         note.updated = Date.now()
 
+        let index = col.notes.indexOf(note)
+
         if (!option.closed)
         {
             note.closed = null
+
+            // 工作流模式改变列
+            if (group.mode == "workflow")
+            {
+                if (stats != null && stats != col._id)
+                {
+                    let new_col = this.get_col(group, stats)
+
+                    if (new_col)
+                    {
+                        col.notes.splice(index, 1)
+                        new_col.notes.splice(0, 0, note)
+                    }
+                }
+            }
+            else
+            {
+                note.stats = stats
+            }
         }
         else if (!is_closed)        //从不关闭到关闭
         {
             note.closed = Date.now()
-
-            let index = col.notes.indexOf(note)
 
             col.notes.splice(index, 1)
 

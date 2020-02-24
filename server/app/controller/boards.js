@@ -393,7 +393,7 @@ module.exports = class Current extends Controller
             body.stop = new Date(body.stop)
         }
 
-        const note = current.create_note(planner, col, body)
+        const note = current.create_note(planner, group, col, body)
 
         ctx.body = { _id: note._id }
     }
@@ -479,7 +479,7 @@ module.exports = class Current extends Controller
             body.stop = new Date(body.stop)
         }
 
-        current.update_note(col, note, body)
+        current.update_note(group, col, note, body)
 
         if (!body.closed)
         {
