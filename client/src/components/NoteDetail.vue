@@ -101,24 +101,27 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog width="500px" title="查看" :visible.sync="read_backlog" v-if="backlog" append-to-body>
-      <div style="text-align:center;">
-        <h2>
-          {{ backlog.title }}
-          <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
-        </h2>
-      </div>
+    <el-dialog
+      v-if="backlog"
+      width="500px"
+      :title="backlog.title"
+      :visible.sync="read_backlog"
+      append-to-body
+    >
+      <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
 
       <md-editor :value="backlog.content" :editable="false" size="mini" />
     </el-dialog>
 
-    <el-dialog width="500px" title="查看" :visible.sync="read_issue" v-if="issue" append-to-body>
-      <div style="text-align:center;">
-        <h2>
-          {{ issue.title }}
-          <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
-        </h2>
-      </div>
+    <el-dialog
+      v-if="issue"
+      width="500px"
+      :title="issue.title"
+      :visible.sync="read_issue"
+      append-to-body
+    >
+      <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
+
       <md-editor :value="issue.content" :editable="false" size="mini" />
     </el-dialog>
   </el-container>
