@@ -1,5 +1,7 @@
-export function utc_to_local(time) {
-  let formatNum = num => {
+export function utc_to_local(time)
+{
+  let formatNum = num =>
+  {
     return num >= 10 ? num : "0" + num;
   };
   let arr = time.split(/[^0-9]/);
@@ -20,12 +22,15 @@ export function utc_to_local(time) {
   );
 }
 
-export function planner_res_url(base, planner, res) {
+export function planner_res_url(base, planner, res)
+{
   return `${base}/public/upload/${planner}/${res}`;
 }
 
-export function is_img(ext) {
-  switch (ext) {
+export function is_img(ext)
+{
+  switch (ext)
+  {
     case ".jpg":
     case ".jpeg":
     case ".png":
@@ -36,70 +41,86 @@ export function is_img(ext) {
   }
 }
 
-export function do_together(together) {
+export function do_together(together)
+{
   let waiting = null;
   let running = null;
 
-  let do_ = id => {
+  let do_ = id =>
+  {
     waiting = waiting || {};
 
     let existed = waiting[id];
-    if (existed == null) {
+    if (existed == null)
+    {
       existed = [];
       waiting[id] = existed;
     }
 
-    let pro = new Promise((resolve, reject) => {
+    let pro = new Promise((resolve, reject) =>
+    {
       existed.push({
         resolve,
         reject
       });
     });
 
-    if (!running) {
+    if (!running)
+    {
       run();
     }
 
     return pro;
   };
 
-  let run = () => {
+  let run = () =>
+  {
     running = true;
-    setImmediate(async () => {
+    setImmediate(async () =>
+    {
       let temp = waiting;
 
       waiting = null;
 
       let ids = [];
 
-      for (let id in temp) {
+      for (let id in temp)
+      {
         ids.push(id);
       }
 
-      try {
+      try
+      {
         let resps = await together(ids);
 
-        for (let index = 0; index < ids.length; ++index) {
+        for (let index = 0; index < ids.length; ++index)
+        {
           let id = ids[index];
           let resp = resps[index];
 
-          for (let pro of temp[id]) {
+          for (let pro of temp[id])
+          {
             pro.resolve(resp);
           }
         }
-      } catch (e) {
-        for (let index = 0; index < ids.length; ++index) {
+      } catch (e)
+      {
+        for (let index = 0; index < ids.length; ++index)
+        {
           let id = ids[index];
 
-          for (let pro of temp[id]) {
+          for (let pro of temp[id])
+          {
             pro.reject(e);
           }
         }
       }
 
-      if (waiting == null) {
+      if (waiting == null)
+      {
         running = false;
-      } else {
+      } else
+      {
         run();
       }
     });

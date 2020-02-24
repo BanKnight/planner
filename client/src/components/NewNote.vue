@@ -5,6 +5,17 @@
         <el-input placeholder="标题" class="full-width" v-model="form.title" />
       </el-form-item>
 
+      <el-form-item v-if="mode != 'workflow' " label="状态：">
+        <el-select v-model="form.stats" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="指派：">
         <member-select v-model="form.assignee" class="full-width" size="mini" :planner="planner"></member-select>
       </el-form-item>
@@ -117,6 +128,7 @@
 </template>
 
 <script>
+
 import MemberSelect from "./MemberSelect";
 import MemberPreview from "./MemberPreview";
 
@@ -124,6 +136,8 @@ import MilestoneSelect from "./MilestoneSelect";
 import BacklogSelect from "./BacklogSelect";
 import IssueSelect from "./IssueSelect";
 import MdEditor from "./MdEditor";
+
+import { STATS_OPTIONS } from "@/define"
 
 export default {
   components: {
@@ -136,7 +150,8 @@ export default {
   },
   props: {
     planner: String,
-    col: String
+    col: String,
+    mode: String,
   },
   data()  {
     return {
@@ -145,7 +160,8 @@ export default {
       read_issue: false,
       form: {
         backlog: null,
-        issue: null
+        issue: null,
+        stats: null,
       },
       backlog: null,
       issue: null
@@ -153,11 +169,7 @@ export default {
   },
   computed: {
     options()    {
-      return {
-        imagelink: true, // 图片链接
-        table: true, // 表格
-        preview: true // 预览
-      };
+      return STATS_OPTIONS
     }
   },
   watch: {
@@ -166,6 +178,12 @@ export default {
     },
     "form.issue": function(new_val)    {
       this.fetch_issue(new_val);
+    }
+  },
+  mounted()  {
+    if (this.mode != "workflow")
+    {
+      this.form.stats = "default"
     }
   },
   methods: {

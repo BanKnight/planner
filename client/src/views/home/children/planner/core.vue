@@ -21,7 +21,6 @@
           <span slot="title">{{ child.meta.menu_title }}</span>
         </el-menu-item>
       </el-menu>
-      <el-tag effect="dark" type="success" class="el-icon-s-home">{{ detail.name }}</el-tag>
     </el-row>
     <el-main class="full" style="padding:10px">
       <router-view v-if="is_showing" />
@@ -46,9 +45,6 @@ export default {
     return {
       collapse: false,
       is_showing: true,
-      detail: {
-        name: ""
-      },
       check_timer: null,
       last_check: null
     };
@@ -95,13 +91,7 @@ export default {
         this.check();
       }, 10000);
     },
-    async fetch()    {
-      const public_info = await this.$store.dispatch("planner_public", {
-        data: [this.planner_id]
-      });
 
-      Object.assign(this.detail, public_info[0]);
-    },
     reload()    {
       this.is_showing = false;
       this.$nextTick(() =>      {

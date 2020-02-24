@@ -5,6 +5,17 @@
         <el-input placeholder="标题" class="full-width" v-model="form.title" />
       </el-form-item>
 
+      <el-form-item v-if="mode != 'workflow' " label="状态：">
+        <el-select v-model="form.stats" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="指派：">
         <member-select
           v-model="form.assignee"
@@ -136,6 +147,8 @@ import BacklogSelect from "./BacklogSelect";
 import IssueSelect from "./IssueSelect";
 import MdEditor from "./MdEditor";
 
+import { STATS_OPTIONS } from "@/define"
+
 export default {
   components: {
     MemberSelect,
@@ -146,7 +159,8 @@ export default {
     MdEditor
   },
   props: {
-    value: Object
+    value: Object,
+    mode: String,
   },
   data()  {
     return {
@@ -164,6 +178,11 @@ export default {
 
   mounted()  {
     this.init();
+  },
+  computed: {
+    options()    {
+      return STATS_OPTIONS
+    }
   },
   watch: {
     value()    {

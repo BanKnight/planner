@@ -1,53 +1,44 @@
 <template>
-  <el-container class="full">
-    <el-container class="full" direction="vertical" :style="{ width: collapse ? '68px' : '200px' }">
-      <el-main style="padding:0">
-        <el-collapse accordion value="1">
-          <el-collapse-item name="1">
-            <template slot="title">
-              <span v-if="!collapse" style="margin-left:20px">项目</span>
-            </template>
-            <el-menu
-              :router="true"
-              :collapse="collapse"
-              :default-active="default_active"
-              background-color="transparent"
-              active-text-color="#77b36b"
-              text-color="#000"
-              class="small"
-            >
-              <el-menu-item
-                v-for="star in stars"
-                :key="star._id"
-                :index="star._id"
-                :route="{ path: '/planner/' + star._id }"
-              >
-                <i class="el-icon-star-on"></i>
+  <el-container class="full" direction="vertical">
+    <el-row type="flex" justify="space-between">
+      <el-menu
+        :router="true"
+        class="full-width"
+        mode="horizontal"
+        :default-active="default_active"
+        active-text-color="#77b36b"
+        text-color="#000"
+      >
+        <el-menu-item
+          :index="child.meta.menu_title"
+          v-for="child in children"
+          :key="child.path"
+          :route="{ path: child.path }"
+        >
+          <i :class="child.meta.menu_icon"></i>
+          <span slot="title">{{ child.meta.menu_title }}</span>
+        </el-menu-item>
 
-                <span slot="title">{{ star.name }}</span>
-              </el-menu-item>
+        <el-menu-item
+          v-if="planner_id"
+          :index="planner_id"
+          :route="{ path: '/planner/' + planner_id }"
+        >
+          <i class="el-icon-star-on"></i>
 
-              <el-menu-item
-                :index="child.meta.menu_title"
-                v-for="child in children"
-                :key="child.path"
-                :route="{ path: child.path }"
-              >
-                <i :class="child.meta.menu_icon"></i>
-                <span slot="title">{{ child.meta.menu_title }}</span>
-              </el-menu-item>
-            </el-menu>
-          </el-collapse-item>
-        </el-collapse>
-      </el-main>
+          <span slot="title">{{ detail.name }}</span>
+        </el-menu-item>
+      </el-menu>
 
-      <el-footer height="40px" style="padding:0 5px;">
-        <el-row class="full" type="flex" justify="space-around" align="middle">
-          <i class="el-icon-setting clickable" @click="$router.replace('/setting')" />
-          <i class="el-icon-s-fold clickable" @click="collapse = !collapse" />
-        </el-row>
-      </el-footer>
-    </el-container>
+      <el-button
+        icon="el-icon-user"
+        style="border-bottom: solid 1px #e6e6e6;"
+        class="no-border"
+        @click="$router.push('/setting')"
+      >用户</el-button>
+    </el-row>
+
+    <el-dialog></el-dialog>
 
     <router-view />
   </el-container>
@@ -68,9 +59,10 @@ export default {
   data()  {
     return {
       collapse: false,
-      width: "200px",
       array: [],
-      stars: {}
+      detail: {
+        name: ""
+      },
     };
   },
   computed: {
@@ -97,16 +89,27 @@ export default {
       return this.$route.params.planner;
     }
   },
+  watch: {
+    planner_id()    {
+      this.fetch()
+    }
+  },
   mounted()  {
     this.fetch();
   },
   methods: {
     async fetch()    {
-      let stars = await this.$store.dispatch("planner_list_star");
 
-      this.stars = await this.$store.dispatch("planner_public", {
-        data: stars
+      if (!this.planner_id)
+      {
+        return
+      }
+
+      const public_info = await this.$store.dispatch("planner_public", {
+        data: [this.planner_id]
       });
+
+      Object.assign(this.detail, public_info[0]);
     }
   }
 };
@@ -116,5 +119,4 @@ export default {
 .el-collapse-item__header {
   background-color: transparent;
 }
-</style
->>
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="note-card" :id="value._id" @click.native="$emit('edit')">
+  <el-container :class="class_name" :id="value._id" @click.native="$emit('edit')">
     <el-header class="note-card-head" height="fit-content">
       <span style="margin-bottom:5px;">
         <i class="el-icon-document" style="margin-right:5px;"></i>
@@ -61,6 +61,13 @@ export default {
         type: "success",
         effect: "plain"
       };
+    },
+    class_name()    {
+      return {
+        "note-card": true,
+        "doing": this.value.stats == "doing",
+        "done": this.value.stats == "done"
+      }
     }
   },
   methods: {
@@ -72,8 +79,6 @@ export default {
       }
     },
     ask_delete()    {
-
-      console.log("ask delete")
 
       this.$confirm("准备删除了, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -102,7 +107,7 @@ export default {
 
   background-color: #fff;
   border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px dashed #75b367;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -113,6 +118,7 @@ export default {
 .note-card.done {
   text-decoration: line-through;
   color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 header.note-card-head {
