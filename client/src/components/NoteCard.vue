@@ -1,18 +1,12 @@
 <template>
-  <el-container class="note-card" :id="value._id">
+  <el-container class="note-card" :id="value._id" @click.native="$emit('edit')">
     <el-header class="note-card-head" height="fit-content">
       <span style="margin-bottom:5px;">
         <i class="el-icon-document" style="margin-right:5px;"></i>
         {{ value.title }}
       </span>
 
-      <el-dropdown trigger="click" size="small" @command="on_command">
-        <el-button size="mini" type="text" icon="el-icon-more" />
-
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item icon="el-icon-delete" command="delete">删除</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <el-button type="text" class="el-icon-delete" @click.stop="ask_delete" style="cursor:pointer"></el-button>
     </el-header>
 
     <el-main
@@ -83,7 +77,10 @@ export default {
           break;
       }
     },
-    do_delete()    {
+    ask_delete()    {
+
+      console.log("ask delete")
+
       this.$confirm("准备删除了, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

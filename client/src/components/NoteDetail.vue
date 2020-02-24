@@ -26,13 +26,16 @@
       </el-form-item>
 
       <el-form-item label="内容：">
+        <el-switch v-model="editing" active-text="编辑"></el-switch>
         <el-input
+          v-if="editing"
           type="textarea"
           class="full-width"
           :rows="2"
           placeholder="内容"
           v-model="form.content"
         />
+        <md-editor v-else :value="form.content" :editable="false" size="mini" />
       </el-form-item>
 
       <el-divider />

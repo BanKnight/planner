@@ -57,7 +57,7 @@
               v-for="note in notes"
               :key="note._id"
               :value="note"
-              @click.native.stop="start_edit(note)"
+              @edit="start_edit(note)"
               @remove="remove_note"
             ></note-card>
           </draggable>
