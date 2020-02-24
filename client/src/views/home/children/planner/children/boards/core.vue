@@ -200,7 +200,9 @@ export default {
 
           this.groups.splice(index, 1);
         })
-        .catch(() => { });
+        .catch(() =>        {
+
+        });
     },
     row_class({ row, rowIndex })    {
       let classes = [];
