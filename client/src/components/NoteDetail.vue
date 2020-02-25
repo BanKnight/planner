@@ -96,13 +96,6 @@
         <el-row type="flex" justify="space-between">
           <el-button
             size="mini"
-            type="danger"
-            class="full-width"
-            icon="el-icon-check"
-            @click="close"
-          >回收</el-button>
-          <el-button
-            size="mini"
             type="primary"
             class="full-width"
             icon="el-icon-upload"

@@ -190,7 +190,7 @@
                 <el-table-column label="标题" prop="title">
                   <template slot-scope="scope">
                     <router-link
-                      :to="`${root}/backlogs/detail/${scope.row._id}`"
+                      :to="`${root}/issues/detail/${scope.row._id}`"
                       class="el-link el-icon-s-opportunity el-link--default"
                     >{{ scope.row.title }}</router-link>
                   </template>
