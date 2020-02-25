@@ -219,7 +219,7 @@ module.exports = class Current extends Service
 
         if (option.assignee)
         {
-            return this.search_assignee(planner, option.assignee)
+            return this.search_assignee(planner, option.assignee, option.filter)
         }
 
         if (option.milestone)
@@ -264,13 +264,18 @@ module.exports = class Current extends Service
         return result.data
     }
 
-    search_assignee(planner, assignee)
+    search_assignee(planner, assignee, filter)
     {
         let result = []
 
         for (let one of planner.items.data)
         {
-            if (one.assignee == assignee)
+            if (one.assignee != assignee)
+            {
+                continue
+            }
+
+            if (filter && filter(one))
             {
                 result.push(one)
             }

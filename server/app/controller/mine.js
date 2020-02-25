@@ -15,7 +15,12 @@ module.exports = class Current extends Controller
 
         const planner_id = ctx.params.planner
 
-        const option = { assignee: user._id }
+        const option = {
+            assignee: user._id, filter(one)
+            {
+                return (!!one.closed) == false
+            }
+        }
 
         let backlogs = service.backlogs.search(planner_id, option)
         let issues = service.issues.search(planner_id, option)
