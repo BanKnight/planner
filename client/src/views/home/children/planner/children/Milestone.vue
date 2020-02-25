@@ -362,6 +362,23 @@ export default {
       this.fetch(this.page.curr);
     },
     async close(milestone, value)    {
+
+      if (value)
+      {
+        try
+        {
+          await this.$confirm("注意：关闭后，相关内容都会被关闭", milestone.title, {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          });
+        }
+        catch (e)        {
+          milestone.closed = !value
+          return
+        }
+      }
+
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: milestone._id,
