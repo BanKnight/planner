@@ -22,7 +22,7 @@
           >
             <el-checkbox slot="dot" :value="!!one.closed" @change="close(one, $event)"></el-checkbox>
 
-            <el-card>
+            <el-card shadow="hover">
               <el-button-group>
                 <el-button
                   title="展开"
@@ -44,12 +44,9 @@
               </el-button-group>
 
               <el-divider direction="vertical" />
-
-              <el-tag style="cursor:pointer" effect="dark" type="info" @click="edit(one)">
-                {{ one.title }}
-                :
-                {{ one.desc }}
-              </el-tag>
+              {{ one.title }}
+              <el-divider direction="vertical" />
+              {{ one.desc }}
             </el-card>
           </el-timeline-item>
         </el-timeline>
@@ -135,7 +132,13 @@
       :visible.sync="view_dailog_visible"
       v-if="view_dailog_visible"
       width="500px"
-    ></el-dialog>
+    >
+      <el-tabs>
+        <el-tab-pane label="需求"></el-tab-pane>
+        <el-tab-pane label="工单"></el-tab-pane>
+        <el-tab-pane label="问题"></el-tab-pane>
+      </el-tabs>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -163,6 +166,11 @@ export default {
         title: "",
         desc: "",
         due: null
+      },
+      view: {
+        backlogs: [],
+        boards: [],
+        issues: [],
       },
       current: null,
       editing_form: null,
