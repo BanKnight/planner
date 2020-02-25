@@ -311,17 +311,13 @@ module.exports = class Current extends Service
     {
         let result = []
 
-        for (let group of planner.groups)
+        for (let id in planner.notes)
         {
-            for (let col of group.cols)
+            let note = planner.notes[id]
+
+            if (note.milestone == milestone)
             {
-                for (let note of col.notes)
-                {
-                    if (note.milestone == milestone)
-                    {
-                        result.push(note)
-                    }
-                }
+                result.push(note)
             }
         }
 
