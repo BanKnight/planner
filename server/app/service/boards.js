@@ -313,9 +313,9 @@ module.exports = class Current extends Service
 
         for (let group of planner.groups)
         {
-            for (let cols of group.cols)
+            for (let col of group.cols)
             {
-                for (let note of cols.notes)
+                for (let note of col.notes)
                 {
                     if (note.milestone == milestone)
                     {
@@ -499,6 +499,28 @@ module.exports = class Current extends Service
         }
 
         this.save_note(note)
+    }
+
+    close_by_milestone(planner_id, milestone)
+    {
+        let planner = this.get_planner(planner_id)
+        if (planner == null)
+        {
+            return
+        }
+        for (let group of planner.groups)
+        {
+            for (let col of group.cols)
+            {
+                for (let note of col.notes)
+                {
+                    if (note.milestone == milestone)
+                    {
+                        this.update_note(group, col, note, { closed: true })
+                    }
+                }
+            }
+        }
     }
 
     /**

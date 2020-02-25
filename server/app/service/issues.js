@@ -171,6 +171,29 @@ module.exports = class Current extends Service
         this.app.db.set("planner.issues", one._id, one)
     }
 
+    close_by_milestone(planner_id, milestone)
+    {
+        let planner = this.get_planner(planner_id)
+        if (planner == null)
+        {
+            return
+        }
+        let result = []
+
+        for (let one of planner.items.data)
+        {
+            if (one.milestone == milestone && !one.closed)
+            {
+                result.push(one)
+            }
+        }
+
+        for (let one of result)
+        {
+            this.update(one, { closed: true })
+        }
+    }
+
     search(planner_id, option)
     {
         let planner = this.get_planner(planner_id)

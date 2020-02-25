@@ -119,6 +119,13 @@ module.exports = class Current extends Controller
 
         milestone.update(item, body)
 
+        if (body.closed)
+        {
+            service.backlogs.close_by_milestone(planner._id, stone)
+            service.issues.close_by_milestone(planner._id, stone)
+            service.boards.close_by_milestone(planner._id, stone)
+        }
+
         ctx.body = {}
     }
 
