@@ -10,7 +10,7 @@
             placement="top"
             timestamp="新的里程碑"
           >
-            <el-button type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
+            <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
           </el-timeline-item>
 
           <el-timeline-item
@@ -22,18 +22,34 @@
           >
             <el-checkbox slot="dot" :value="!!one.closed" @change="close(one, $event)"></el-checkbox>
 
-            <el-card shadow="hover">
-              <i
-                class="el-icon-s-opportunity"
-                style="cursor:pointer"
-                @click="edit(one)"
-              >{{ one.title }}</i>
+            <el-card>
+              <el-button-group>
+                <el-button
+                  title="展开"
+                  size="mini"
+                  type="success"
+                  class="no-border"
+                  icon="el-icon-view"
+                  @click="view_dailog_visible = true;current = one"
+                ></el-button>
 
-              <el-button-group style="float: right;">
-                <el-button size="mini" icon="el-icon-delete" type="text" plain @click="del(one)"></el-button>
+                <el-button
+                  title="编辑"
+                  size="mini"
+                  type="primary"
+                  class="no-border"
+                  icon="el-icon-edit"
+                  @click="edit(one)"
+                ></el-button>
               </el-button-group>
 
-              <p>{{ one.desc }}</p>
+              <el-divider direction="vertical" />
+
+              <el-tag style="cursor:pointer" effect="dark" type="info" @click="edit(one)">
+                {{ one.title }}
+                :
+                {{ one.desc }}
+              </el-tag>
             </el-card>
           </el-timeline-item>
         </el-timeline>
@@ -79,7 +95,7 @@
       :visible.sync="editing_dialog_visible"
       v-if="editing_dialog_visible"
       width="500px"
-      :title="editing.title"
+      :title="current.title"
     >
       <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
         <el-form-item label="标题" prop="title">
@@ -99,10 +115,27 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" class="full-width" :loading="loading" @click="finish_edit">确定修改</el-button>
+          <el-button
+            type="primary"
+            class="full-width"
+            icon="el-icon-upload"
+            :loading="loading"
+            @click="finish_edit"
+          >确定修改</el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="danger" class="full-width" icon="el-icon-delete" @click="del(current)">删除</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      :title="current.title"
+      :visible.sync="view_dailog_visible"
+      v-if="view_dailog_visible"
+      width="500px"
+    ></el-dialog>
   </el-container>
 </template>
 
@@ -131,9 +164,10 @@ export default {
         desc: "",
         due: null
       },
-      editing: null,
+      current: null,
       editing_form: null,
-      editing_dialog_visible: false
+      editing_dialog_visible: false,
+      view_dailog_visible: false
     };
   },
   mounted()  {
@@ -169,7 +203,7 @@ export default {
     row_class({ row, rowIndex })    {
       let classes = [];
 
-      if (row == this.editing)      {
+      if (row == this.current)      {
         classes.push("primary-row");
       }
 
@@ -206,7 +240,7 @@ export default {
     },
 
     async fetch(page)    {
-      this.editing = null;
+      this.current = null;
       this.loading = true;
 
       const page_info = await this.$store.dispatch("milestone_list", {
@@ -231,7 +265,7 @@ export default {
 
     edit(milestone)    {
 
-      this.editing = milestone;
+      this.current = milestone;
       this.editing_form = Object.assign({}, milestone);
 
       this.editing_dialog_visible = true
@@ -240,12 +274,12 @@ export default {
 
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
-        milestone: this.editing._id,
+        milestone: this.current._id,
         data: this.editing_form
       });
 
       this.editing_dialog_visible = false
-      this.editing = null;
+      this.current = null;
       this.editing_form = null;
 
       this.fetch(this.page.curr);
@@ -275,6 +309,10 @@ export default {
         type: "success",
         message: "删除成功!"
       });
+
+      this.editing_dialog_visible = false
+      this.current = null;
+      this.editing_form = null;
 
       this.fetch(this.page.curr);
     }
