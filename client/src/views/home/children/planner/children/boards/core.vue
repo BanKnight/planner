@@ -51,23 +51,26 @@
     </el-aside>
 
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
-      <el-form label-position="left" :model="add_form" :rules="rules" ref="add_form">
-        <el-form-item prop="title">
+      <el-form label-position="top" :model="add_form" :rules="rules" ref="add_form">
+        <el-form-item prop="title" label="标题：">
           <el-input autofocus placeholder="请输入标题" v-model="add_form.title" clearable />
         </el-form-item>
-        <el-form-item>
-          <el-radio v-model="add_form.mode" label="normal" border>
-            <i class="el-icon-s-grid">普通模式:工单不会进行流程间的迁移,仅有状态变化</i>
-          </el-radio>
-        </el-form-item>
-        <el-form-item>
-          <el-radio v-model="add_form.mode" label="workflow" border>
-            <i class="el-icon-s-data">工作流模式:工单在流程间迁移</i>
-          </el-radio>
+        <el-form-item label="模式：">
+          <span>
+            <el-radio v-model="add_form.mode" label="normal" border>
+              <i class="el-icon-s-grid">普通模式:工单不会进行流程间的迁移,仅有状态变化</i>
+            </el-radio>
+          </span>
+
+          <span>
+            <el-radio v-model="add_form.mode" label="workflow" border>
+              <i class="el-icon-s-data">工作流模式:工单在流程间迁移</i>
+            </el-radio>
+          </span>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="add_group">确定</el-button>
+          <el-button type="primary" class="full-width" @click="add_group">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

@@ -23,13 +23,7 @@
     </el-row>
 
     <el-dialog title="快速添加" :visible.sync="add_form_visible">
-      <el-form
-        label-position="left"
-        label-width="60px"
-        :model="add_form"
-        :rules="rules"
-        ref="add_form"
-      >
+      <el-form label-position="top" :model="add_form" :rules="rules" ref="add_form">
         <el-form-item label="标题:" prop="title">
           <el-input placeholder="请输入标题" v-model="add_form.title" clearable tabindex="1" />
         </el-form-item>
@@ -40,7 +34,7 @@
           <milestone-select v-model="add_form.milestone" :planner="planner_id" tabindex="3" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="add_one">确定</el-button>
+          <el-button type="primary" class="full-width" @click="add_one">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

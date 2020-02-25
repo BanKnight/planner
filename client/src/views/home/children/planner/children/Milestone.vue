@@ -32,9 +32,12 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-row type="flex" justify="center">
-                    <el-button type="primary" :loading="loading" @click="on_create">立即创建</el-button>
-                  </el-row>
+                  <el-button
+                    type="primary"
+                    class="full-width"
+                    :loading="loading"
+                    @click="on_create"
+                  >立即创建</el-button>
                 </el-form-item>
               </el-form>
             </el-dialog>
@@ -101,9 +104,7 @@
           </el-form-item>
 
           <el-form-item>
-            <el-row type="flex" justify="center">
-              <el-button type="primary" :loading="loading" @click="on_edit">确定修改</el-button>
-            </el-row>
+            <el-button type="primary" class="full-width" :loading="loading" @click="on_edit">确定修改</el-button>
           </el-form-item>
         </el-form>
       </el-main>

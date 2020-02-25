@@ -164,7 +164,7 @@ export default {
   },
   data()  {
     return {
-      editing: false,
+      editing: true,
       read_backlog: false,
       read_issue: false,
       form: {

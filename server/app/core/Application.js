@@ -13,7 +13,6 @@ module.exports = class Application extends KoaApplication
         super()
 
         this.app_path = options.app_path
-
     }
 
     async run()
@@ -22,7 +21,7 @@ module.exports = class Application extends KoaApplication
 
         this.load_config()
 
-        await this.load_app()
+        const after = await this.load_app()
 
         this.load_service()
 
@@ -35,6 +34,8 @@ module.exports = class Application extends KoaApplication
         this.load_router()
 
         await this.start_service()
+
+        await after(this)
 
         this
             .use(this.router.routes())
@@ -143,9 +144,11 @@ module.exports = class Application extends KoaApplication
 
     async load_app()
     {
-        const func = require(path.join(this.app_path, "./app"))
+        const funcs = require(path.join(this.app_path, "./app"))
 
-        await func(this)
+        await funcs.before(this)
+
+        return funcs.after
     }
 
     wrap_controller(Controller)
@@ -181,7 +184,7 @@ module.exports = class Application extends KoaApplication
     to_route(Controller, key)
     {
         const app = this
-        return function (ctx, next)
+        return function(ctx, next)
         {
             const controller = new Controller(ctx, app);
             const fun = controller[key]
