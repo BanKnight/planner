@@ -42,6 +42,7 @@ module.exports = function(app)
         router.post("/api/planner/:planner/milestone", logined, in_project, app.controller.milestone.detail)
         router.post("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.update)
         router.delete("/api/planner/:planner/milestone/:milestone", logined, in_project, app.controller.milestone.destroy)
+        router.get("/api/planner/:planner/milestone/:milestone/about", logined, in_project, app.controller.milestone.about)
     }
 
     {

@@ -165,4 +165,24 @@ module.exports = class Current extends Controller
         ctx.body = resp
     }
 
+    about()
+    {
+        const { ctx, service } = this
+
+        const stone = ctx.params.milestone
+
+        const planner_id = ctx.params.planner
+
+        const option = { milestone: stone }
+
+        let backlogs = service.backlogs.search(planner_id, option)
+        let issues = service.issues.search(planner_id, option)
+        let notes = service.boards.search(planner_id, option)
+
+        ctx.body = {
+            backlogs,
+            issues,
+            notes,
+        }
+    }
 }

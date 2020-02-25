@@ -199,6 +199,11 @@ module.exports = class Current extends Service
             return this.search_assignee(planner, option.assignee)
         }
 
+        if (option.milestone)
+        {
+            return this.search_milestone(planner, option.milestone)
+        }
+
         return planner.items.data
     }
 
@@ -243,6 +248,21 @@ module.exports = class Current extends Service
         for (let one of planner.items.data)
         {
             if (one.assignee == assignee)
+            {
+                result.push(one)
+            }
+        }
+
+        return result
+    }
+
+    search_milestone(planner, milestone)
+    {
+        let result = []
+
+        for (let one of planner.items.data)
+        {
+            if (one.milestone == milestone)
             {
                 result.push(one)
             }

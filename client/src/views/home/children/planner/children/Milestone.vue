@@ -2,54 +2,55 @@
   <el-container direction="horizontal" class="full">
     <el-container direction="vertical">
       <el-main style="padding:0">
-        <el-timeline>
-          <el-timeline-item
-            size="large"
-            icon="el-icon-plus"
-            color="#469ffc"
-            placement="top"
-            timestamp="新的里程碑"
-          >
-            <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
-          </el-timeline-item>
+        <el-table
+          ref="data"
+          v-loading="loading"
+          :data="page.data"
+          style="width: 100%"
+          height="100%"
+          size="small"
+          :stripe="true"
+          border
+          :row-class-name="row_class"
+          row-key="_id"
+        >
+          <el-table-column width="80">
+            <template slot="header">
+              <i class="el-icon-check"></i>
+            </template>
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.closed"
+                title="关闭或者打开"
+                active-color="#ff4949"
+                inactive-color="#13ce66"
+                @change="close(scope.row, $event)"
+              ></el-switch>
+            </template>
+          </el-table-column>
 
-          <el-timeline-item
-            size="large"
-            v-for="one in page.data"
-            :key="one._id"
-            placement="top"
-            :timestamp="$format(one.due)"
-          >
-            <el-checkbox slot="dot" :value="!!one.closed" @change="close(one, $event)"></el-checkbox>
+          <el-table-column width="120" label="日期">
+            <template slot-scope="scope">{{$format(scope.row.due)}}</template>
+          </el-table-column>
 
-            <el-card shadow="hover">
-              <el-button-group>
-                <el-button
-                  title="展开"
-                  size="mini"
-                  type="success"
-                  class="no-border"
-                  icon="el-icon-view"
-                  @click="view_dailog_visible = true;current = one"
-                ></el-button>
+          <el-table-column label="标题" prop="title">
+            <template slot-scope="scope">
+              <el-button type="success" size="small" @click="edit(scope.row)">{{ scope.row.title }}</el-button>
+            </template>
+          </el-table-column>
 
-                <el-button
-                  title="编辑"
-                  size="mini"
-                  type="primary"
-                  class="no-border"
-                  icon="el-icon-edit"
-                  @click="edit(one)"
-                ></el-button>
-              </el-button-group>
+          <el-table-column label="描述" prop="desc">
+            <template slot-scope="scope">
+              <span @click="edit(scope.row)">{{ scope.row.desc }}</span>
+            </template>
+          </el-table-column>
 
-              <el-divider direction="vertical" />
-              {{ one.title }}
-              <el-divider direction="vertical" />
-              {{ one.desc }}
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
+          <el-table-column width="120" align="right" fixed="right">
+            <template slot="header">
+              <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-main>
       <el-footer height="auto" style="display: flex;justify-content: center">
         <el-pagination
@@ -91,58 +92,121 @@
     <el-dialog
       :visible.sync="editing_dialog_visible"
       v-if="editing_dialog_visible"
-      width="500px"
+      width="600px"
       :title="current.title"
     >
-      <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="editing_form.title"></el-input>
-        </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
-        </el-form-item>
+      <el-container>
+        <el-aside width="250px" style="border-right: 1px solid #e4e7ed;padding-right:10px">
+          <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="editing_form.title"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" prop="desc">
+              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
+            </el-form-item>
 
-        <el-form-item label="截止时间" prop="due">
-          <el-date-picker
-            type="date"
-            placeholder="选择日期"
-            v-model="editing_form.due"
-            value-format="timestamp"
-          ></el-date-picker>
-        </el-form-item>
+            <el-form-item label="截止时间" prop="due">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="editing_form.due"
+                value-format="timestamp"
+              ></el-date-picker>
+            </el-form-item>
 
-        <el-form-item>
-          <el-button
-            type="primary"
-            class="full-width"
-            icon="el-icon-upload"
-            :loading="loading"
-            @click="finish_edit"
-          >确定修改</el-button>
-        </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                class="full-width"
+                icon="el-icon-upload"
+                :loading="loading"
+                @click="finish_edit"
+              >确定修改</el-button>
+            </el-form-item>
 
-        <el-form-item>
-          <el-button type="danger" class="full-width" icon="el-icon-delete" @click="del(current)">删除</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+            <el-form-item>
+              <el-button
+                type="danger"
+                class="full-width"
+                icon="el-icon-delete"
+                @click="del(current)"
+              >删除</el-button>
+            </el-form-item>
+          </el-form>
+        </el-aside>
 
-    <el-dialog
-      :title="current.title"
-      :visible.sync="view_dailog_visible"
-      v-if="view_dailog_visible"
-      width="500px"
-    >
-      <el-tabs>
-        <el-tab-pane label="需求"></el-tab-pane>
-        <el-tab-pane label="工单"></el-tab-pane>
-        <el-tab-pane label="问题"></el-tab-pane>
-      </el-tabs>
+        <el-main>
+          <el-tabs class="full">
+            <el-tab-pane label="需求">
+              <el-table
+                :data="view.backlogs"
+                style="width: 100%"
+                :show-header="false"
+                size="small"
+                row-key="_id"
+              >
+                <el-table-column label="标题" prop="title">
+                  <template slot-scope="scope">
+                    <router-link
+                      :to="`${root}/backlogs/detail/${scope.row._id}`"
+                      class="el-link el-icon-s-opportunity el-link--default"
+                    >{{ scope.row.title }}</router-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="工单">
+              <el-table
+                :data="view.notes"
+                style="width: 100%"
+                :show-header="false"
+                size="small"
+                row-key="_id"
+              >
+                <el-table-column label="标题" prop="title">
+                  <template slot-scope="scope">
+                    <router-link
+                      :to="`${root}/boards`"
+                      class="el-link el-icon-document el-link--default"
+                    >{{ scope.row.title }}</router-link>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="截止日期" width="130">
+                  <template slot-scope="scope">
+                    <date-preview :value="scope.row.stop" />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="问题">
+              <el-table
+                :data="view.issues"
+                style="width: 100%"
+                :show-header="false"
+                size="small"
+                row-key="_id"
+              >
+                <el-table-column label="标题" prop="title">
+                  <template slot-scope="scope">
+                    <router-link
+                      :to="`${root}/backlogs/detail/${scope.row._id}`"
+                      class="el-link el-icon-s-opportunity el-link--default"
+                    >{{ scope.row.title }}</router-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+          </el-tabs>
+        </el-main>
+      </el-container>
     </el-dialog>
   </el-container>
 </template>
 
 <script>
+
+import DatePreview from "@/components/DatePreview";
 
 export default {
   path: "milestone",
@@ -152,6 +216,7 @@ export default {
     menu_icon: "el-icon-s-opportunity",
     require_logined: true
   },
+  components: { DatePreview },
   data()  {
     return {
       adding: false,
@@ -169,19 +234,21 @@ export default {
       },
       view: {
         backlogs: [],
-        boards: [],
+        notes: [],
         issues: [],
       },
       current: null,
       editing_form: null,
       editing_dialog_visible: false,
-      view_dailog_visible: false
     };
   },
   mounted()  {
     this.fetch(1);
   },
   computed: {
+    root()    {
+      return `/planner/${this.planner_id}`;
+    },
     planner_id()    {
       return this.$route.params.planner;
     },
@@ -265,7 +332,7 @@ export default {
       this.page.data = [];
 
       for (let one of page_info.data)      {
-        one.percent = one.percent || parseInt(Math.random().toFixed(2) * 100);
+        one.closed = !!one.closed
         this.page.data.push(one);
       }
       this.loading = false;
@@ -277,6 +344,8 @@ export default {
       this.editing_form = Object.assign({}, milestone);
 
       this.editing_dialog_visible = true
+
+      this.look_about(milestone)
     },
     async finish_edit()    {
 
@@ -323,6 +392,17 @@ export default {
       this.editing_form = null;
 
       this.fetch(this.page.curr);
+    },
+    async look_about(milestone)
+    {
+      this.current = milestone
+
+      const data = await this.$store.dispatch("milestone_about", {
+        planner: this.planner_id,
+        milestone: milestone._id
+      });
+
+      this.view = data
     }
   }
 };

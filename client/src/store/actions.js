@@ -127,6 +127,12 @@ export default {
     );
   },
 
+  async milestone_about(context, payload)
+  {
+    return Vue.axios.get(
+      `/api/planner/${payload.planner}/milestone/${payload.milestone}/about`);
+  },
+
   //-----------------------
   async backlogs_list(context, payload)
   {

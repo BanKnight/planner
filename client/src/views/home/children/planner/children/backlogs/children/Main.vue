@@ -51,13 +51,18 @@
       :row-class-name="row_class"
       row-key="_id"
     >
-      <el-table-column width="38">
+      <el-table-column width="80">
         <template slot="header">
           <i class="el-icon-check"></i>
         </template>
-
         <template slot-scope="scope">
-          <el-checkbox :value="!!scope.row.closed" @change="close(scope.row, $event)"></el-checkbox>
+          <el-switch
+            v-model="scope.row.closed"
+            title="关闭或者打开"
+            active-color="#ff4949"
+            inactive-color="#13ce66"
+            @change="close(scope.row, $event)"
+          ></el-switch>
         </template>
       </el-table-column>
 
@@ -204,6 +209,7 @@ export default {
       this.page.data = [];
 
       for (let one of page_info.data)      {
+        one.closed = !!one.closed
         this.page.data.push(one);
       }
 
