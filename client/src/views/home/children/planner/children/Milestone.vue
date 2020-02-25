@@ -11,36 +11,6 @@
             timestamp="新的里程碑"
           >
             <el-button type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
-
-            <el-dialog title="快速添加" :visible.sync="adding">
-              <el-form label-position="top" :model="form" :rules="rules" ref="new_one">
-                <el-form-item label="标题" prop="title">
-                  <el-input v-model="form.title"></el-input>
-                </el-form-item>
-                <el-form-item label="描述" prop="desc">
-                  <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
-                </el-form-item>
-
-                <el-form-item label="截止时间" prop="due">
-                  <el-date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="form.due"
-                    value-format="timestamp"
-                    class="full-width"
-                  ></el-date-picker>
-                </el-form-item>
-
-                <el-form-item>
-                  <el-button
-                    type="primary"
-                    class="full-width"
-                    :loading="loading"
-                    @click="on_create"
-                  >立即创建</el-button>
-                </el-form-item>
-              </el-form>
-            </el-dialog>
           </el-timeline-item>
 
           <el-timeline-item
@@ -80,35 +50,59 @@
       </el-footer>
     </el-container>
 
-    <transition name="el-zoom-in-center">
-      <el-main width="300px" v-if="editing" class="el-card">
-        <el-row type="flex" justify="space-between" align="middle">
-          <h1>{{ editing.title }}</h1>
-          <el-button size="mini" icon="el-message-box__close el-icon-close" @click="edit(editing)" />
-        </el-row>
-        <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="editing_form.title"></el-input>
-          </el-form-item>
-          <el-form-item label="描述" prop="desc">
-            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
-          </el-form-item>
+    <el-dialog title="快速添加" width="500px" :visible.sync="adding">
+      <el-form label-position="top" :model="form" :rules="rules" ref="new_one">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="form.title"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+        </el-form-item>
 
-          <el-form-item label="截止时间" prop="due">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="editing_form.due"
-              value-format="timestamp"
-            ></el-date-picker>
-          </el-form-item>
+        <el-form-item label="截止时间" prop="due">
+          <el-date-picker
+            type="date"
+            placeholder="选择日期"
+            v-model="form.due"
+            value-format="timestamp"
+            class="full-width"
+          ></el-date-picker>
+        </el-form-item>
 
-          <el-form-item>
-            <el-button type="primary" class="full-width" :loading="loading" @click="on_edit">确定修改</el-button>
-          </el-form-item>
-        </el-form>
-      </el-main>
-    </transition>
+        <el-form-item>
+          <el-button type="primary" class="full-width" :loading="loading" @click="on_create">立即创建</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="editing_dialog_visible"
+      v-if="editing_dialog_visible"
+      width="500px"
+      :title="editing.title"
+    >
+      <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="editing_form.title"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
+        </el-form-item>
+
+        <el-form-item label="截止时间" prop="due">
+          <el-date-picker
+            type="date"
+            placeholder="选择日期"
+            v-model="editing_form.due"
+            value-format="timestamp"
+          ></el-date-picker>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" class="full-width" :loading="loading" @click="finish_edit">确定修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -138,7 +132,8 @@ export default {
         due: null
       },
       editing: null,
-      editing_form: null
+      editing_form: null,
+      editing_dialog_visible: false
     };
   },
   mounted()  {
@@ -235,26 +230,25 @@ export default {
     },
 
     edit(milestone)    {
-      this.adding = false;
 
-      if (this.editing === milestone)      {
-        this.editing = null;
-        this.editing_form = null;
-      } else      {
-        this.editing = milestone;
-        this.editing_form = Object.assign({}, milestone);
-      }
+      this.editing = milestone;
+      this.editing_form = Object.assign({}, milestone);
+
+      this.editing_dialog_visible = true
     },
-    async on_edit()    {
+    async finish_edit()    {
+
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: this.editing._id,
         data: this.editing_form
       });
 
-      this.fetch(this.page.curr);
+      this.editing_dialog_visible = false
       this.editing = null;
       this.editing_form = null;
+
+      this.fetch(this.page.curr);
     },
     async close(milestone, value)    {
       await this.$store.dispatch("milestone_update", {

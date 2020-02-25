@@ -22,7 +22,7 @@
       <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{ one.title }}</el-checkbox>
     </el-row>
 
-    <el-dialog title="快速添加" :visible.sync="add_form_visible">
+    <el-dialog title="快速添加" width="500px" :visible.sync="add_form_visible">
       <el-form label-position="top" :model="add_form" :rules="rules" ref="add_form">
         <el-form-item label="标题:" prop="title">
           <el-input tabindex="1" autofocus placeholder="请输入标题" v-model="add_form.title" clearable />
