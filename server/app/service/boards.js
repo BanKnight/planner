@@ -483,7 +483,7 @@ module.exports = class Current extends Service
             }
 
             col.notes.sort(Current.note_cmp)
-
+            this.save_col(col)
         }
         else if (!is_closed)        //从不关闭到关闭
         {
