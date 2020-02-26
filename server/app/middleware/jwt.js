@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 
+let cookie_options = { httpOnly: false, maxAge: 1000 * 3600 * 24 * 30 }
+
 module.exports = (option, app) =>
 {
     let sign = (payload) =>
@@ -12,9 +14,7 @@ module.exports = (option, app) =>
         return jwt.verify(token, option.secret, option.options)
     }
 
-    let cookie_options = { httpOnly: false }
-
-    return async function (ctx, next)
+    return async function(ctx, next)
     {
         let token = ctx.cookies.get("token")
         if (token == null)
