@@ -48,6 +48,7 @@
           type="textarea"
           class="full-width"
           :rows="2"
+          autosize
           placeholder="内容"
           v-model="form.content"
         />
