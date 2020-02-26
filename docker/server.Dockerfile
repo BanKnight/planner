@@ -1,4 +1,4 @@
-FROM node:12-slim
+FROM banknight/node as builder
 
 WORKDIR /app
 
@@ -6,11 +6,22 @@ COPY server/package*.json ./
 
 RUN npm install --registry=https://registry.npm.taobao.org
 
+FROM banknight/node:slim
+
+ARG TZ='Asia/Shanghai'
+ENV TZ ${TZ}
+
+RUN apk add --no-cache tzdata && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && apk del tzdata
+
+WORKDIR /app
+
+COPY --from=builder /app ./
+
 COPY server/ .
 
-EXPOSE 80
-
-CMD [ "node", "index.js" ] 
+ENTRYPOINT [ "node", "index.js" ]
 
 
 
