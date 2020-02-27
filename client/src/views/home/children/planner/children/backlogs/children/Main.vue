@@ -53,7 +53,12 @@
     >
       <el-table-column width="80">
         <template slot="header">
-          <i class="el-icon-check"></i>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-plus"
+            @click="add_form_visible = true"
+          ></el-button>
         </template>
         <template slot-scope="scope">
           <el-switch
@@ -93,15 +98,6 @@
       </el-table-column>
 
       <el-table-column label="操作" width="120" align="right" fixed="right">
-        <template slot="header">
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-plus"
-            @click="add_form_visible = true"
-          ></el-button>
-        </template>
-
         <template slot-scope="scope">
           <el-button-group>
             <el-button size="mini" icon="el-icon-delete" type="danger" @click="destroy(scope.row)"></el-button>

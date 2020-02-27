@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="full scroll-if-need">
     <el-card class="box-card" shadow="hover">
       <div slot="header" class="clearfix">
         <h3>
@@ -131,5 +131,8 @@ export default {
 <style scoped>
 .el-card.box-card {
   margin-bottom: 10px;
+}
+.el-card.box-card:last-child {
+  margin-bottom: 0;
 }
 </style>

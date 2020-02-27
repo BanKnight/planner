@@ -1,78 +1,10 @@
 <template>
-  <el-container direction="horizontal" class="full">
-    <el-container direction="vertical">
-      <el-main style="padding:0">
-        <el-table
-          ref="data"
-          v-loading="loading"
-          :data="page.data"
-          style="width: 100%"
-          height="100%"
-          size="small"
-          :stripe="true"
-          border
-          :row-class-name="row_class"
-          row-key="_id"
-        >
-          <el-table-column width="80">
-            <template slot="header">
-              <i class="el-icon-check"></i>
-            </template>
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.closed"
-                title="关闭或者打开"
-                active-color="#ff4949"
-                inactive-color="#13ce66"
-                @change="close(scope.row, $event)"
-              ></el-switch>
-            </template>
-          </el-table-column>
-
-          <el-table-column width="120" label="日期">
-            <template slot-scope="scope">{{$format(scope.row.due)}}</template>
-          </el-table-column>
-
-          <el-table-column label="标题" prop="title">
-            <template slot-scope="scope">
-              <el-button type="success" size="small" @click="edit(scope.row)">{{ scope.row.title }}</el-button>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="描述" prop="desc">
-            <template slot-scope="scope">
-              <span @click="edit(scope.row)">{{ scope.row.desc }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column width="120" align="right" fixed="right">
-            <template slot="header">
-              <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-main>
-      <el-footer height="auto" style="display: flex;justify-content: center">
-        <el-pagination
-          :page-count="page.count"
-          layout="total,prev, pager, next"
-          :total="page.total"
-          @current-change="fetch"
-          @prev-click="fetch"
-          @next-click="fetch"
-        ></el-pagination>
-      </el-footer>
-    </el-container>
-
+  <el-container direction="vertical" class="full">
     <el-dialog title="快速添加" width="500px" :visible.sync="adding">
       <el-form label-position="top" :model="form" :rules="rules" ref="new_one">
         <el-form-item label="标题" prop="title">
           <el-input v-model="form.title"></el-input>
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
-        </el-form-item>
-
         <el-form-item label="截止时间" prop="due">
           <el-date-picker
             type="date"
@@ -82,7 +14,9 @@
             class="full-width"
           ></el-date-picker>
         </el-form-item>
-
+        <el-form-item label="描述" prop="desc">
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" class="full-width" :loading="loading" @click="on_create">立即创建</el-button>
         </el-form-item>
@@ -201,6 +135,61 @@
         </el-main>
       </el-container>
     </el-dialog>
+
+    <el-table
+      v-loading="loading"
+      :data="page.data"
+      style="width: 100%"
+      height="100%"
+      size="small"
+      :stripe="true"
+      :row-class-name="row_class"
+      row-key="_id"
+    >
+      <el-table-column width="80">
+        <template slot="header">
+          <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
+        </template>
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.closed"
+            title="关闭或者打开"
+            active-color="#ff4949"
+            inactive-color="#13ce66"
+            @change="close(scope.row, $event)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="200" label="标题" prop="title">
+        <template slot-scope="scope">
+          <el-button type="success" size="small" @click="edit(scope.row)">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="120" label="日期">
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ $format(scope.row.due) }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="描述" prop="desc">
+        <template slot-scope="scope">
+          <span @click="edit(scope.row)">{{ scope.row.desc }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-footer height="auto" style="display: flex;justify-content: center">
+      <el-pagination
+        :page-count="page.count"
+        layout="total,prev, pager, next"
+        :total="page.total"
+        @current-change="fetch"
+        @prev-click="fetch"
+        @next-click="fetch"
+      ></el-pagination>
+    </el-footer>
   </el-container>
 </template>
 
