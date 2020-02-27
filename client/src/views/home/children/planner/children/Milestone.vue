@@ -300,6 +300,12 @@ export default {
         } catch (e)        {
           this.loading = false;
         }
+
+        for (let name in this.form)
+        {
+          this.form[name] = null
+        }
+
       });
     },
 
