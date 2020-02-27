@@ -16,11 +16,15 @@
 
         <el-dropdown @command="do_command">
           <span>
-            <i class="el-icon-more" style="cursor:pointer" @click="refresh"></i>
+            <i class="el-icon-more" style="cursor:pointer"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="refresh">刷新</el-dropdown-item>
-            <el-dropdown-item command="destroy">删除</el-dropdown-item>
+            <el-dropdown-item command="refresh">
+              <i class="el-icon-refresh">刷新</i>
+            </el-dropdown-item>
+            <el-dropdown-item command="destroy">
+              <i class="el-icon-delete">删除</i>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </template>
