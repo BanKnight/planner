@@ -20,10 +20,8 @@ jobs:
         version: latest
     - name: Dump env
       run: echo ${{github.ref}}
-
     - name: Echo help
-    - run: docker buildx build --help
-    
+      run: docker buildx build --help
     - name: Build
       run: docker buildx build \
             --platform linux/amd64,linux/arm/v7,linux/arm64 \
