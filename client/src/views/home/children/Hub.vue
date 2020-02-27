@@ -1,5 +1,5 @@
 <template>
-  <el-container class="full" style="padding:10px">
+  <el-container class="full">
     <el-main class="full" style="padding:0;">
       <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
         <el-table-column prop="name" width="150">
