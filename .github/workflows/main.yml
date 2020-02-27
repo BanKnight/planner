@@ -25,7 +25,7 @@ jobs:
       run: |
         export VERSION=$(echo "${{github.ref}}" | grep -P "([0-9]+.[0-9]+.[0-9]+)" -o)
         echo $VERSION
-        docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/planner-server:$VERSION -f ./docker/server.Dockerfile . 
+        docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/planner-server:$VERSION -f ./docker/server.Dockerfile --push . 
 
   client:
     runs-on: ubuntu-latest
@@ -47,5 +47,5 @@ jobs:
       run: |
         export VERSION=$(echo "${{github.ref}}" | grep -P "([0-9]+.[0-9]+.[0-9]+)" -o)
         echo $VERSION
-        docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/planner-client:$VERSION -f ./docker/client.Dockerfile .     
+        docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/planner-client:$VERSION -f ./docker/client.Dockerfile --push .     
               
