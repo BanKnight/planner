@@ -1,5 +1,3 @@
-const path = require("path")
-
 module.exports = {
     port: 7000,
     db: {
