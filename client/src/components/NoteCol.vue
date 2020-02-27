@@ -5,22 +5,24 @@
         'note-col-head': true,
         moveable: !editing && !adding && !editing_note
       }"
-      height="24px"
+      height="40px"
       style="cursor:move;min-width:250px;"
     >
       <template v-if="!editing">
-        <el-popconfirm title="是否确定删除" @onConfirm="destroy">
-          <i class="el-icon-delete" slot="reference" style="cursor:pointer"></i>
-        </el-popconfirm>
-
-        <span @dblclick="edit_name">
+        <h4 @dblclick="edit_name">
           {{ title }}
-          <el-tag type="success" size="mini">{{ notes.length }}</el-tag>
-        </span>
+          <el-tag type="success" size="small" effect="dark">{{ notes.length }}</el-tag>
+        </h4>
 
-        <span>
-          <i class="el-icon-refresh" style="cursor:pointer" @click="refresh"></i>
-        </span>
+        <el-dropdown @command="do_command">
+          <span>
+            <i class="el-icon-more" style="cursor:pointer" @click="refresh"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="refresh">刷新</el-dropdown-item>
+            <el-dropdown-item command="destroy">删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </template>
       <template v-else>
         <el-input
@@ -138,6 +140,30 @@ export default {
 
       this.loading = false;
     },
+
+    async do_command(command)    {
+      switch (command)
+      {
+        case "refresh": this.refresh();
+          break
+        case "destroy":
+          try
+          {
+            await this.$confirm("删除后不可恢复", "是否确认删除", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            });
+
+            this.destroy()
+          }
+          catch (e) { break }
+          break
+
+      }
+
+    },
+
     async destroy()    {
       this.$emit("destroy");
     },
@@ -235,19 +261,15 @@ export default {
   min-width: 250px;
   width: auto;
   height: 100%;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
-.note-col-head {
+header.note-col-head {
   overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #8ea29e;
-
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  color: white;
+  padding: 0;
 }
 .note-col-head i {
   margin-right: 5px;
