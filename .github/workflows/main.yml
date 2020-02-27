@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - *
+    branches:
+      - master
+jobs:
+  server:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@master
+    - name: Dump env
+      run: echo ${{github.ref}}
+    - name: Build and publish image
+      uses: ilteoood/docker_buildx@master
+      with:
+        publish: false
+        imageName: banknight/planner-server
+        platform: linux/amd64,linux/arm64,linux/arm/v7 # 你准备构建的镜像平台
+        tag: latest
+        dockerFile: ./docker/server.Dockerfile
+        dockerHubUser: ${{ secrets.DOCKER_USERNAME }} # docker hub userid
+        dockerHubPassword: ${{ secrets.DOCKER_PASSWORD }} # docker hub password
+  client:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@master
+    - name: Dump env
+      run: echo ${{github.ref}}
+    - name: Build and publish image
+      uses: ilteoood/docker_buildx@master
+      with:
+        publish: false
+        imageName: banknight/planner-client
+        platform: linux/amd64,linux/arm64,linux/arm/v7 # 你准备构建的镜像平台
+        tag: latest
+        dockerFile: ./docker/client.Dockerfile
+        dockerHubUser: ${{ secrets.DOCKER_USERNAME }} # docker hub userid
+        dockerHubPassword: ${{ secrets.DOCKER_PASSWORD }} # docker hub password
