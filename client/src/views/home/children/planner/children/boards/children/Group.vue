@@ -1,5 +1,5 @@
 <template>
-  <el-container class="scroll-if-need">
+  <el-container class="full">
     <draggable
       :list="cols"
       handle=".note-col-head.moveable"

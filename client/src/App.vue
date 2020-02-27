@@ -137,7 +137,7 @@ p {
 
 ::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
+  height: 8px;
   background-color: transparent;
 }
 

@@ -75,7 +75,7 @@
       </el-form>
     </el-dialog>
 
-    <el-main style="padding:5px">
+    <el-main style="padding:10px">
       <router-view />
     </el-main>
   </el-container>
