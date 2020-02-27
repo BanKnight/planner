@@ -42,7 +42,9 @@
       <setting />
     </el-dialog>
 
-    <router-view />
+    <el-main style="padding:0">
+      <router-view />
+    </el-main>
   </el-container>
 </template>
 

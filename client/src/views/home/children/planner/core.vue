@@ -20,7 +20,9 @@
         <span slot="title">{{ child.meta.menu_title }}</span>
       </el-menu-item>
     </el-menu>
-    <router-view v-if="is_showing" />
+    <el-main style="padding:0">
+      <router-view v-if="is_showing" />
+    </el-main>
   </el-container>
 </template>
 

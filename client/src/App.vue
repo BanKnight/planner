@@ -1,7 +1,7 @@
 <template>
-  <el-container id="app" class="full">
+  <div id="app" class="full">
     <router-view v-if="is_showing" />
-  </el-container>
+  </div>
 </template>
 
 <script>

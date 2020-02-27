@@ -1,7 +1,14 @@
 <template>
   <el-container class="full" direction="vertical">
-    <el-form size="mini" label-position="left" label-width="5em">
-      <el-form-item label="标题：">
+    <el-form
+      size="small"
+      label-position="left"
+      label-width="5em"
+      :rules="rules"
+      ref="form"
+      :model="form"
+    >
+      <el-form-item label="标题：" prop="title">
         <el-input placeholder="标题" class="full-width" v-model="form.title" />
       </el-form-item>
 
@@ -176,6 +183,14 @@ export default {
   computed: {
     options()    {
       return STATS_OPTIONS
+    },
+    rules()    {
+      return {
+        title: [
+          { required: true, message: "请输入标题", trigger: "blur" },
+          { min: 3, message: "长度过短", trigger: "blur" }
+        ],
+      };
     }
   },
   watch: {
@@ -195,20 +210,17 @@ export default {
       this.form = Object.assign({}, this.value);
     },
     save()    {
-      if (this.form.title.length == 0)      {
-        this.$message.error("请先输入标题");
-        return;
-      }
 
-      this.form.title = this.form.title.trim();
-      this.form.content = (this.form.content || "").trim();
+      this.$refs.form.validate(async valid =>      {
+        if (!valid)        {
+          return false;
+        }
 
-      if (this.form.title.length == 0)      {
-        this.$message.error("请先输入标题");
-        return;
-      }
+        this.form.content = this.form.content || ""
 
-      this.$emit("save", this.form);
+        this.$emit("save", this.form);
+      });
+
     },
 
     close()    {
