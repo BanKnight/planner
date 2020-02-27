@@ -9,37 +9,22 @@ on:
 jobs:
   server:
     runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@master
-    - name: Dump env
-      run: echo ${{github.ref}}
-    - name: Build and publish image
-      uses: ilteoood/docker_buildx@master
-      with:
-        publish: false
-        imageName: banknight/planner-server
-        platform: linux/amd64,linux/arm64,linux/arm/v7 # 你准备构建的镜像平台
-        tag: latest
-        dockerFile: ./docker/server.Dockerfile
-        dockerHubUser: ${{ secrets.DOCKER_USERNAME }} # docker hub userid
-        dockerHubPassword: ${{ secrets.DOCKER_PASSWORD }} # docker hub password
-  client:
-    runs-on: ubuntu-latest
-
     steps:
     - name: Checkout master
-      uses: actions/checkout@master
-    - name: Dump env
-      run: echo ${{github.ref}}
-    - name: Build and publish image
-      uses: ilteoood/docker_buildx@master
+      uses: actions/checkout@v2     
+    -
+      name: Set up Docker Buildx
+      id: buildx
+      uses: crazy-max/ghaction-docker-buildx@v1
       with:
-        publish: false
-        imageName: banknight/planner-client
-        platform: linux/amd64,linux/arm64 # 你准备构建的镜像平台
-        tag: latest
-        dockerFile: ./docker/client.Dockerfile
-        dockerHubUser: ${{ secrets.DOCKER_USERNAME }} # docker hub userid
-        dockerHubPassword: ${{ secrets.DOCKER_PASSWORD }} # docker hub password
+        version: latest
+    -
+      name: Dump env
+      run: echo ${{github.ref}}
+        
+    - name: Build
+      run: docker buildx build \
+            --platform linux/amd64,linux/arm/v7,linux/arm64 \
+            -t banknight/planner-server \
+            -f ./docker/server.Dockerfile \
+            .
