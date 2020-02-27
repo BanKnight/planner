@@ -8,8 +8,10 @@ jobs:
   server:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout master
-      uses: actions/checkout@v2     
+    - name: Checkout tags
+      uses: actions/checkout@v2 
+      with:  
+        ref: ${{github.ref}}   
     -
       name: Set up Docker Buildx
       id: buildx
@@ -27,8 +29,10 @@ jobs:
   client:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout master
-      uses: actions/checkout@v2     
+    - name: Checkout tags
+      uses: actions/checkout@v2 
+      with:  
+        ref: ${{github.ref}}  
     -
       name: Set up Docker Buildx
       id: buildx
