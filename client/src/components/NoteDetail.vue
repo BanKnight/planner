@@ -115,9 +115,9 @@
 
     <el-dialog
       v-if="backlog"
-      width="500px"
       :title="backlog.title"
       :visible.sync="read_backlog"
+      :fullscreen="true"
       append-to-body
     >
       <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
@@ -127,14 +127,17 @@
 
     <el-dialog
       v-if="issue"
-      width="500px"
       :title="issue.title"
       :visible.sync="read_issue"
+      :fullscreen="true"
       append-to-body
     >
-      <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
-
-      <md-editor :value="issue.content" :editable="false" size="mini" />
+      <el-container class="full scroll-if-need">
+        <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
+        <el-main>
+          <md-editor :value="issue.content" :editable="false" size="mini" />
+        </el-main>
+      </el-container>
     </el-dialog>
   </el-container>
 </template>

@@ -46,7 +46,7 @@
           <el-button
             size="mini"
             icon="el-icon-plus"
-            style="width:100%;margin-top:10px; border: 1px solid rgba(0, 0, 0, 0.1);;"
+            class="add-note-button"
             @click="(adding = !adding), (editing_note = null)"
           />
 
@@ -285,6 +285,12 @@ header.note-col-head {
 
 .note-col-body {
   padding: 0;
+}
+
+.add-note-button {
+  width: 100%;
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .editing {
