@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout master
+    - name: Checkout
       uses: actions/checkout@master
     - name: Dump env
       run: echo ${{github.ref}}
@@ -38,7 +38,7 @@ jobs:
       with:
         publish: false
         imageName: banknight/planner-client
-        platform: linux/amd64,linux/arm64,linux/arm/v7 # 你准备构建的镜像平台
+        platform: linux/amd64,linux/arm64 # 你准备构建的镜像平台
         tag: latest
         dockerFile: ./docker/client.Dockerfile
         dockerHubUser: ${{ secrets.DOCKER_USERNAME }} # docker hub userid
