@@ -69,11 +69,16 @@
           </draggable>
         </el-aside>
 
-        <el-dialog title="工单新增" :visible.sync="adding" width="600px" :lock-scroll="false">
+        <el-dialog title="工单新增" :visible.sync="adding" width="600px" :close-on-click-modal="false">
           <new-note v-if="adding" :planner="planner" :col="col" :mode="mode" @save="add_note" />
         </el-dialog>
 
-        <el-dialog title="工单编辑" :visible.sync="editing_note_dialog" width="600px">
+        <el-dialog
+          title="工单编辑"
+          :visible.sync="editing_note_dialog"
+          width="600px"
+          :close-on-click-modal="false"
+        >
           <note-detail
             v-if="editing_note_dialog"
             :mode="mode"

@@ -118,10 +118,10 @@
       :title="backlog.title"
       :visible.sync="read_backlog"
       :fullscreen="true"
+      :close-on-click-modal="false"
       append-to-body
     >
       <member-preview size="mini" :planner="value.planner" v-model="backlog.assignee" />
-
       <md-editor :value="backlog.content" :editable="false" size="mini" />
     </el-dialog>
 
@@ -132,12 +132,8 @@
       :fullscreen="true"
       append-to-body
     >
-      <el-container class="full scroll-if-need">
-        <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
-        <el-main>
-          <md-editor :value="issue.content" :editable="false" size="mini" />
-        </el-main>
-      </el-container>
+      <member-preview size="mini" :planner="value.planner" v-model="issue.assignee" />
+      <md-editor :value="issue.content" :editable="false" size="mini" />
     </el-dialog>
   </el-container>
 </template>
