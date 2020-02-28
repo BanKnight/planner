@@ -38,7 +38,7 @@
       >用户</el-button>
     </el-row>
 
-    <el-dialog :visible.sync="user_visible" v-if="user_visible" title="用户">
+    <el-dialog :visible.sync="user_visible" v-if="user_visible" title="用户" width="500px">
       <setting />
     </el-dialog>
 
