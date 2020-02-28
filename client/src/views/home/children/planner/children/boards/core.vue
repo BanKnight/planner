@@ -50,7 +50,7 @@
       </el-table>
     </el-aside>
 
-    <el-dialog title="快速添加" :visible.sync="add_form_visible">
+    <el-dialog title="快速添加" width="500px" :visible.sync="add_form_visible">
       <el-form label-position="top" :model="add_form" :rules="rules" ref="add_form">
         <el-form-item prop="title" label="标题：">
           <el-input autofocus placeholder="请输入标题" v-model="add_form.title" clearable />
