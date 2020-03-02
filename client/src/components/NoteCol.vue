@@ -88,7 +88,7 @@
                 <el-dropdown @command="do_note_command">
                   <el-button
                     icon="el-icon-more"
-                    size-="small"
+                    size="small"
                     class="no-border"
                     style="background-color:transparent"
                   ></el-button>
@@ -104,7 +104,7 @@
                 </el-dropdown>
                 <el-button
                   icon="el-icon-close"
-                  size-="small"
+                  size="small"
                   class="no-border"
                   @click="editing_note_dialog=false"
                   style="background-color:transparent"
