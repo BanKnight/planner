@@ -1,6 +1,6 @@
 <template>
-  <el-tabs tab-position="left" type="border-card" class="full">
-    <el-tab-pane label="基础" class="full" style="padding:10px">
+  <el-tabs tab-position="left" class="full">
+    <el-tab-pane label="基础" style="padding:10px">
       <el-form label-width="100px" label-position="top">
         <el-form-item label="项目名称:">
           <el-input v-model="basic.name"></el-input>
@@ -19,7 +19,7 @@
         </el-form-item>
       </el-form>
     </el-tab-pane>
-    <el-tab-pane label="成员" class="full" style="padding:10px">
+    <el-tab-pane label="成员" style="padding:10px">
       <el-form label-width="100px" label-position="top">
         <el-form-item label="当前成员:">
           <el-tag

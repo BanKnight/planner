@@ -95,7 +95,7 @@ module.exports = class Planner extends Service
 
         this.del(one)
 
-        this.app.db.delete("planner", planner._id)
+        this.app.db.delete("planner", id)
     }
 
     update(planner, option)
