@@ -33,7 +33,7 @@
               closable
               size="small"
               effect="plain"
-              type="info"
+              type="danger"
               @close="del_tag(tag)"
             >{{tag}}</el-tag>
             <el-input

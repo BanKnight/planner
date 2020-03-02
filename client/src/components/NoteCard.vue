@@ -18,7 +18,13 @@
       <date-preview :value="value.stop" />
 
       <template v-if="value.tags">
-        <el-tag v-for="tag in value.tags" :key="tag" size="small" effect="plain" type="info">{{tag}}</el-tag>
+        <el-tag
+          v-for="tag in value.tags"
+          :key="tag"
+          size="small"
+          effect="plain"
+          type="danger"
+        >{{tag}}</el-tag>
       </template>
     </el-footer>
   </el-container>

@@ -12,16 +12,43 @@
         <el-input placeholder="标题" class="full-width" v-model="form.title" />
       </el-form-item>
 
-      <el-form-item v-if="mode != 'workflow' " label="状态：">
-        <el-select v-model="form.stats" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-form-item>
+      <el-row type="flex" justify="space-between">
+        <el-col :span="12">
+          <el-form-item v-if="mode != 'workflow' " label="状态：">
+            <el-select v-model="form.stats" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="标签:">
+            <el-tag
+              v-for="tag in form.tags"
+              :key="tag"
+              closable
+              size="small"
+              effect="plain"
+              type="danger"
+              @close="del_tag(tag)"
+            >{{tag}}</el-tag>
+            <el-input
+              class="input-new-tag"
+              v-if="input_visible"
+              v-model="input_value"
+              ref="saveTagInput"
+              size="small"
+              @keyup.enter.native="add_tag"
+              @blur="cancle_add_tag"
+            ></el-input>
+            <el-button v-else icon="el-icon-plus" size="mini" @click="show_input"></el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-form-item label="指派：">
         <member-select
@@ -172,7 +199,9 @@ export default {
         issue: null
       },
       backlog: null,
-      issue: null
+      issue: null,
+      input_visible: false,
+      input_value: ''
     };
   },
 
@@ -206,7 +235,8 @@ export default {
 
   methods: {
     init()    {
-      this.form = Object.assign({}, this.value);
+      this.form = JSON.parse(JSON.stringify(this.value))
+      this.form.tags = this.form.tags || [];
     },
     save()    {
 
@@ -259,6 +289,29 @@ export default {
       this.issue = await this.$store.dispatch("issues_detail", {
         planner: this.value.planner,
         issue: this.form.issue
+      });
+    },
+    add_tag()
+    {
+      let input_value = this.input_value;
+      if (input_value)      {
+        this.form.tags.push(this.input_value)
+      }
+      this.input_visible = false;
+      this.input_value = '';
+    },
+    del_tag(tag)    {
+      this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+    },
+    cancle_add_tag()
+    {
+      this.input_visible = false;
+      this.input_value = '';
+    },
+    show_input()    {
+      this.input_visible = true;
+      this.$nextTick(() =>      {
+        this.$refs.saveTagInput.$refs.input.focus();
       });
     }
   }
