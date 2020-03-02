@@ -311,6 +311,13 @@ export default {
     );
   },
 
+  async note_close(context, payload)
+  {
+    return await Vue.axios.post(
+      `/api/planner/${payload.planner}/boards/${payload.group}/${payload.col}/${payload.note}/close`,
+    );
+  },
+
   async note_move(context, payload)
   {
     return await Vue.axios.post(

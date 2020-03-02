@@ -79,6 +79,7 @@ module.exports = function(app)
 
         router.put("/api/planner/:planner/boards/:group/:col", logined, in_project, app.controller.boards.create_note)
         router.post("/api/planner/:planner/boards/:group/:col/:note", logined, in_project, app.controller.boards.update_note)
+        router.post("/api/planner/:planner/boards/:group/:col/:note/close", logined, in_project, app.controller.boards.close_note)
         router.delete("/api/planner/:planner/boards/:group/:col/:note", logined, in_project, app.controller.boards.destroy_note)
     }
 

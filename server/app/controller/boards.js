@@ -507,6 +507,84 @@ module.exports = class Current extends Controller
         ctx.body = note
     }
 
+    close_note()
+    {
+        const { ctx, service } = this
+
+        const current = service.boards
+
+        let planner = current.get_planner(ctx.params.planner)
+        if (planner == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such planner exists"
+            }
+            return
+        }
+
+
+        const note = planner.notes[ctx.params.note]
+
+        if (note == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such note"
+            }
+            return
+        }
+
+        let group = current.get_group(planner, ctx.params.group)
+        if (group == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such group exists"
+            }
+            return
+        }
+
+        let col = current.get_col(group, ctx.params.col)
+        if (col == null)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such col exists"
+            }
+            return
+        }
+
+        if (col.notes.indexOf(note) < 0)
+        {
+            ctx.status = 404
+            ctx.body = {
+                error: "no such note in col"
+            }
+            return
+        }
+
+        current.update_note(group, col, note, { closed: true })
+
+        if (note.close_backlog && note.backlog)
+        {
+            let target = service.backlogs.get(note.backlog)
+            service.backlogs.update(target, {
+                closed: true
+            })
+        }
+
+        if (note.close_issue && note.issue)
+        {
+            let target = service.issues.get(note.issue)
+            service.issues.update(target, {
+                closed: true
+            })
+        }
+
+        ctx.body = note
+    }
+
     move_note()
     {
         const { ctx, service } = this

@@ -6,7 +6,7 @@
         {{ value.title }}
       </span>
 
-      <el-button type="text" class="el-icon-delete" @click.stop="ask_delete" style="cursor:pointer"></el-button>
+      <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
     </el-header>
 
     <el-footer
@@ -14,7 +14,6 @@
       height="fit-content"
       style="flex-wrap: wrap;"
     >
-      <member-preview :value="value.assignee" size="mini" :planner="value.planner" />
       <milestone-preview :value="value.milestone" size="mini" :planner="value.planner" />
       <date-preview :value="value.stop" />
     </el-footer>

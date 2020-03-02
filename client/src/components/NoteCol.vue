@@ -75,10 +75,44 @@
 
         <el-dialog
           title="工单编辑"
-          :visible.sync="editing_note_dialog"
           width="600px"
+          :show-close="false"
+          :visible.sync="editing_note_dialog"
           :close-on-click-modal="false"
         >
+          <template slot="title">
+            <el-row type="flex" justify="space-between" align="center">
+              <span class="el-dialog__title">工单编辑</span>
+
+              <span>
+                <el-dropdown @command="do_note_command">
+                  <el-button
+                    icon="el-icon-more"
+                    size-="small"
+                    class="no-border"
+                    style="background-color:transparent"
+                  ></el-button>
+
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="close">
+                      <i class="el-icon-success">存档</i>
+                    </el-dropdown-item>
+                    <el-dropdown-item command="delete">
+                      <i class="el-icon-delete">删除</i>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <el-button
+                  icon="el-icon-close"
+                  size-="small"
+                  class="no-border"
+                  @click="editing_note_dialog=false"
+                  style="background-color:transparent"
+                ></el-button>
+              </span>
+            </el-row>
+          </template>
+
           <note-detail
             v-if="editing_note_dialog"
             :mode="mode"
@@ -257,6 +291,57 @@ export default {
         });
       } finally      {
         this.refresh();
+      }
+    },
+    async do_note_command(command)
+    {
+      let note = this.editing_note
+      switch (command)
+      {
+        case "close":
+          this.$confirm(
+            "单子存档后将不可见(一般交给下单者存档)",
+            "是否确认存档",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          )
+            .then(async () =>            {
+
+              await this.$store.dispatch("note_close", {
+                planner: this.planner,
+                group: this.group,
+                col: this.col,
+                note: note._id,
+              });
+
+              this.editing_note_dialog = false
+              this.editing_note = null;
+
+              this.refresh();
+
+            })
+            .catch(() => { });
+
+          break
+        case "delete":
+          try
+          {
+            await this.$confirm("删除后不可恢复", "是否确认删除", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            });
+
+            this.editing_note_dialog = false
+            this.editing = null
+            this.remove_note(note)
+          }
+          catch (e) { break }
+          break
+
       }
     }
   }
