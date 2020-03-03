@@ -12,43 +12,16 @@
         <el-input placeholder="标题" class="full-width" v-model="form.title" />
       </el-form-item>
 
-      <el-row type="flex" justify="space-between">
-        <el-col :span="12">
-          <el-form-item v-if="mode != 'workflow' " label="状态：">
-            <el-select v-model="form.stats" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="标签:">
-            <el-tag
-              v-for="tag in form.tags"
-              :key="tag"
-              closable
-              size="small"
-              effect="plain"
-              type="danger"
-              @close="del_tag(tag)"
-            >{{tag}}</el-tag>
-            <el-input
-              class="input-new-tag"
-              v-if="input_visible"
-              v-model="input_value"
-              ref="saveTagInput"
-              size="small"
-              @keyup.enter.native="add_tag"
-              @blur="cancle_add_tag"
-            ></el-input>
-            <el-button v-else icon="el-icon-plus" size="mini" @click="show_input"></el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item v-if="mode != 'workflow' " label="状态：">
+        <el-select v-model="form.stats" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
 
       <el-form-item label="指派：">
         <member-select v-model="form.assignee" class="full-width" size="mini" :planner="planner"></member-select>
@@ -63,6 +36,27 @@
           class="full-width"
           value-format="timestamp"
         ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="标签:">
+        <el-tag
+          v-for="tag in form.tags"
+          :key="tag"
+          closable
+          size="small"
+          effect="plain"
+          type="danger"
+          @close="del_tag(tag)"
+        >{{tag}}</el-tag>
+        <el-input
+          class="input-new-tag"
+          v-if="input_visible"
+          v-model="input_value"
+          ref="saveTagInput"
+          size="small"
+          @keyup.enter.native="add_tag"
+          @blur="cancle_add_tag"
+        ></el-input>
+        <el-button v-else icon="el-icon-plus" size="mini" @click="show_input"></el-button>
       </el-form-item>
 
       <el-form-item label="内容：">
