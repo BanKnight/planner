@@ -1,32 +1,21 @@
 <template>
   <el-container class="full">
-    <el-main class="full" style="padding:0;">
-      <el-table :data="planners" style="width: 100%" height="100%" :stripe="true">
-        <el-table-column prop="name" width="150">
-          <template slot="header">
-            <el-button type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
-          </template>
-          <template slot-scope="scope">
-            <router-link
-              v-if="scope.row.is_member"
-              :to="'/planner/' + scope.row._id"
-              class="el-link el-link--default"
-            >
-              <el-tag effect="dark" type="success">{{ scope.row.name }}</el-tag>
-            </router-link>
-            <el-tag effect="dark" type="info" v-else title="你不在这个项目中">{{ scope.row.name }}</el-tag>
-          </template>
-        </el-table-column>
+    <el-main class="full">
+      <div class="planner-cards full">
+        <el-button
+          icon="el-icon-plus"
+          style="width:220px;height:100px"
+          @click="adding = !adding"
+          >创建新计划</el-button
+        >
 
-        <el-table-column label="描述" prop="desc"></el-table-column>
-
-        <el-table-column label="创建日期" width="130">
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ $format(scope.row.created) }}</span>
-          </template>
-        </el-table-column>
-      </el-table>
+        <planner-card
+          v-for="planner in planners"
+          :key="planner._id"
+          :value="planner"
+          @click.native="goto(planner)"
+        />
+      </div>
     </el-main>
 
     <el-footer height="auto" style="display: flex;justify-content: center">
@@ -46,10 +35,21 @@
           <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-form-item label="描述:">
-          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="form.desc"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="full-width" :loading="loading" @click="on_create">立即创建</el-button>
+          <el-button
+            type="primary"
+            class="full-width"
+            :loading="loading"
+            @click="on_create"
+            >立即创建</el-button
+          >
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import PlannerCard from "@/components/PlannerCard";
+
 export default {
   path: "/",
   weight: 0,
@@ -66,7 +68,8 @@ export default {
     require_logined: true
   },
   inject: ["reload_menu"],
-  data()  {
+  components: { PlannerCard },
+  data() {
     return {
       form: {
         name: "",
@@ -81,18 +84,16 @@ export default {
         count: 1, //总页数
         total: 0, //条目总数
         data: [] //当前页的数据
-      },
+      }
     };
   },
 
-  mounted()  {
+  mounted() {
     this.fetch_planners(1);
     this.fetch_stars();
   },
   methods: {
-    async fetch_planners(page)    {
-      this.planners = [];
-
+    async fetch_planners(page) {
       let page_info = await this.$store.dispatch("planner_list", {
         params: {
           curr: page //页码
@@ -105,39 +106,58 @@ export default {
 
       this.page.data = [];
 
-      for (let one of page_info.data)      {
+      this.planners = [];
+
+      for (let one of page_info.data) {
         this.planners.push(one);
       }
     },
-    star_icon(planner)    {
-      if (this.stars.includes(planner._id))      {
+    star_icon(planner) {
+      if (this.stars.includes(planner._id)) {
         return "el-icon-star-on";
       }
       return "el-icon-star-off";
     },
-    async fetch_stars()    {
+    async fetch_stars() {
       this.stars = await this.$store.dispatch("planner_list_star");
     },
-    on_create()    {
-      this.$refs.new_plan.validate(async valid =>      {
-        if (!valid)        {
+    goto(planner) {
+      if (planner.is_member) {
+        this.$router.push(`/planner/${planner._id}`);
+      }
+    },
+    on_create() {
+      this.$refs.new_plan.validate(async valid => {
+        if (!valid) {
           return false;
         }
         this.loading = true;
 
-        try        {
+        try {
           await this.$store.dispatch("planner_create", this.form);
           this.loading = false;
           this.adding = false;
 
           this.fetch_planners(1);
-        } catch (e)        {
+        } catch (e) {
           this.adding = false;
           this.loading = false;
         }
       });
-    },
-
+    }
   }
 };
 </script>
+
+<style>
+.planner-cards {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: space-between;
+  align-content: flex-start;
+  flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+</style>

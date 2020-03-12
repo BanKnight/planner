@@ -22,11 +22,7 @@ export default {
   },
   props: {
     value: String,
-    size: String,
-    planner: {
-      type: String,
-      required: true
-    }
+    size: String
   },
   watch: {
     value() {

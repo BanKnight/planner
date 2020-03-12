@@ -1,24 +1,27 @@
 <template>
-  <el-card shadow="never" class="card">
-    <el-row slot="header" type="flex" justify="space-between">
-      <router-link
-        :to="'/planner/' + value._id"
-        class="el-link el-link--default"
-      >
-        <h4>{{ value.name }}</h4>
-      </router-link>
+  <div :class="{ 'my-planner': value.is_member, 'planner-card': true }">
+    <h3 class="planner-card-title">{{ value.name }}</h3>
+    <div class="full-width">
+      <el-tag size="mini" type="info">
+        <i class="el-icon-date">{{ $format(value.created) }}</i>
+      </el-tag>
 
-      <el-button-group>
-        <el-button size="mini" icon="el-icon-star-off"></el-button>
-        <el-button size="mini" icon="el-icon-more"></el-button>
-      </el-button-group>
-    </el-row>
-    <span>{{ value.desc }}</span>
-  </el-card>
+      <member-preview
+        :value="value.owner"
+        size="mini"
+        :planner="value.planner"
+      />
+    </div>
+    <span class="planner-card-desc">{{ value.desc }}</span>
+  </div>
 </template>
 
 <script>
+import MemberPreview from "./MemberPreview";
+
 export default {
+  components: { MemberPreview },
+
   props: {
     value: Object
   }
@@ -26,14 +29,32 @@ export default {
 </script>
 
 <style>
-.card {
-  min-width: 250px;
-  min-height: 100px;
+.planner-card {
+  width: 220px;
+  height: 100px;
+  padding: 10px;
 
-  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  background-color: #ffffff;
+  overflow: hidden;
+  color: #303133;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  display: inline-block;
+  box-sizing: border-box;
+
+  margin-bottom: 20px;
+}
+.my-planner.planner-card {
+  cursor: pointer;
 }
 
-.card:last-child {
-  margin-bottom: 0;
+.my-planner > .planner-card-title {
+  color: #79b36e;
+}
+
+.planner-card-desc {
+  color: #595959;
 }
 </style>
