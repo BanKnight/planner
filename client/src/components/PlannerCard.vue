@@ -46,6 +46,12 @@ export default {
 
   margin-bottom: 20px;
 }
+
+.planner-card:hover {
+  background-color: #ecf5ff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
 .my-planner.planner-card {
   cursor: pointer;
 }
