@@ -15,10 +15,21 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="form.desc"></el-input>
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="form.desc"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="full-width" :loading="loading" @click="on_create">立即创建</el-button>
+          <el-button
+            type="primary"
+            class="full-width"
+            :loading="loading"
+            @click="on_create"
+            >立即创建</el-button
+          >
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -30,13 +41,26 @@
       :title="current.title"
     >
       <el-container>
-        <el-aside width="250px" style="border-right: 1px solid #e4e7ed;padding-right:10px">
-          <el-form label-position="top" :model="editing_form" :rules="rules" ref="new_one">
+        <el-aside
+          width="250px"
+          style="border-right: 1px solid #e4e7ed;padding-right:10px"
+        >
+          <el-form
+            label-position="top"
+            :model="editing_form"
+            :rules="rules"
+            ref="new_one"
+          >
             <el-form-item label="标题" prop="title">
               <el-input v-model="editing_form.title"></el-input>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
-              <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="editing_form.desc"></el-input>
+              <el-input
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容"
+                v-model="editing_form.desc"
+              ></el-input>
             </el-form-item>
 
             <el-form-item label="截止时间" prop="due">
@@ -55,7 +79,8 @@
                 icon="el-icon-upload"
                 :loading="loading"
                 @click="finish_edit"
-              >确定修改</el-button>
+                >确定修改</el-button
+              >
             </el-form-item>
 
             <el-form-item>
@@ -64,7 +89,8 @@
                 class="full-width"
                 icon="el-icon-delete"
                 @click="del(current)"
-              >删除</el-button>
+                >删除</el-button
+              >
             </el-form-item>
           </el-form>
         </el-aside>
@@ -84,7 +110,8 @@
                     <router-link
                       :to="`${root}/backlogs/detail/${scope.row._id}`"
                       class="el-link el-icon-s-opportunity el-link--default"
-                    >{{ scope.row.title }}</router-link>
+                      >{{ scope.row.title }}</router-link
+                    >
                   </template>
                 </el-table-column>
               </el-table>
@@ -102,7 +129,8 @@
                     <router-link
                       :to="`${root}/boards`"
                       class="el-link el-icon-document el-link--default"
-                    >{{ scope.row.title }}</router-link>
+                      >{{ scope.row.title }}</router-link
+                    >
                   </template>
                 </el-table-column>
 
@@ -126,7 +154,8 @@
                     <router-link
                       :to="`${root}/issues/detail/${scope.row._id}`"
                       class="el-link el-icon-s-opportunity el-link--default"
-                    >{{ scope.row.title }}</router-link>
+                      >{{ scope.row.title }}</router-link
+                    >
                   </template>
                 </el-table-column>
               </el-table>
@@ -148,7 +177,12 @@
     >
       <el-table-column width="80">
         <template slot="header">
-          <el-button size="small" type="primary" icon="el-icon-plus" @click="adding = !adding"></el-button>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            @click="adding = !adding"
+          ></el-button>
         </template>
         <template slot-scope="scope">
           <el-switch
@@ -163,7 +197,9 @@
 
       <el-table-column width="200" label="标题" prop="title">
         <template slot-scope="scope">
-          <el-button type="success" size="small" @click="edit(scope.row)">{{ scope.row.title }}</el-button>
+          <el-button type="success" size="small" @click="edit(scope.row)">{{
+            scope.row.title
+          }}</el-button>
         </template>
       </el-table-column>
 
@@ -194,7 +230,6 @@
 </template>
 
 <script>
-
 import DatePreview from "@/components/DatePreview";
 
 export default {
@@ -206,7 +241,7 @@ export default {
     require_logined: true
   },
   components: { DatePreview },
-  data()  {
+  data() {
     return {
       adding: false,
       loading: false,
@@ -219,29 +254,30 @@ export default {
       form: {
         title: "",
         desc: "",
-        due: null
+        due: null,
+        url: window.location.href
       },
       view: {
         backlogs: [],
         notes: [],
-        issues: [],
+        issues: []
       },
       current: null,
       editing_form: null,
-      editing_dialog_visible: false,
+      editing_dialog_visible: false
     };
   },
-  mounted()  {
+  mounted() {
     this.fetch(1);
   },
   computed: {
-    root()    {
+    root() {
       return `/planner/${this.planner_id}`;
     },
-    planner_id()    {
+    planner_id() {
       return this.$route.params.planner;
     },
-    rules()    {
+    rules() {
       return {
         title: [
           {
@@ -264,30 +300,30 @@ export default {
     }
   },
   methods: {
-    row_class({ row, rowIndex })    {
+    row_class({ row, rowIndex }) {
       let classes = [];
 
-      if (row == this.current)      {
+      if (row == this.current) {
         classes.push("primary-row");
       }
 
-      if (row.closed)      {
+      if (row.closed) {
         classes.push("closed-row");
       }
 
-      if (rowIndex % 2 == 0)      {
+      if (rowIndex % 2 == 0) {
         classes.push("normal-row");
       }
       return classes.concat(" ");
     },
-    on_create()    {
-      this.$refs.new_one.validate(async valid =>      {
-        if (!valid)        {
+    on_create() {
+      this.$refs.new_one.validate(async valid => {
+        if (!valid) {
           return false;
         }
         this.loading = true;
 
-        try        {
+        try {
           await this.$store.dispatch("milestone_create", {
             planner: this.planner_id,
             data: this.form
@@ -297,19 +333,17 @@ export default {
           this.loading = false;
 
           this.fetch(1);
-        } catch (e)        {
+        } catch (e) {
           this.loading = false;
         }
 
-        for (let name in this.form)
-        {
-          this.form[name] = null
+        for (let name in this.form) {
+          this.form[name] = null;
         }
-
       });
     },
 
-    async fetch(page)    {
+    async fetch(page) {
       this.current = null;
       this.loading = true;
 
@@ -326,51 +360,49 @@ export default {
 
       this.page.data = [];
 
-      for (let one of page_info.data)      {
-        one.closed = !!one.closed
+      for (let one of page_info.data) {
+        one.closed = !!one.closed;
         this.page.data.push(one);
       }
       this.loading = false;
     },
 
-    edit(milestone)    {
-
+    edit(milestone) {
       this.current = milestone;
       this.editing_form = Object.assign({}, milestone);
 
-      this.editing_dialog_visible = true
+      this.editing_dialog_visible = true;
 
-      this.look_about(milestone)
+      this.look_about(milestone);
     },
-    async finish_edit()    {
-
+    async finish_edit() {
       await this.$store.dispatch("milestone_update", {
         planner: this.planner_id,
         milestone: this.current._id,
         data: this.editing_form
       });
 
-      this.editing_dialog_visible = false
+      this.editing_dialog_visible = false;
       this.current = null;
       this.editing_form = null;
 
       this.fetch(this.page.curr);
     },
-    async close(milestone, value)    {
-
-      if (value)
-      {
-        try
-        {
-          await this.$confirm("注意：关闭后，相关内容都会被关闭", milestone.title, {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          });
-        }
-        catch (e)        {
-          milestone.closed = !value
-          return
+    async close(milestone, value) {
+      if (value) {
+        try {
+          await this.$confirm(
+            "注意：关闭后，相关内容都会被关闭",
+            milestone.title,
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          );
+        } catch (e) {
+          milestone.closed = !value;
+          return;
         }
       }
 
@@ -382,7 +414,7 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    async del(milestone)    {
+    async del(milestone) {
       await this.$confirm(milestone.title, "是否确认删除?", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -399,22 +431,21 @@ export default {
         message: "删除成功!"
       });
 
-      this.editing_dialog_visible = false
+      this.editing_dialog_visible = false;
       this.current = null;
       this.editing_form = null;
 
       this.fetch(this.page.curr);
     },
-    async look_about(milestone)
-    {
-      this.current = milestone
+    async look_about(milestone) {
+      this.current = milestone;
 
       const data = await this.$store.dispatch("milestone_about", {
         planner: this.planner_id,
         milestone: milestone._id
       });
 
-      this.view = data
+      this.view = data;
     }
   }
 };

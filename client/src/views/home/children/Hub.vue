@@ -40,7 +40,11 @@
             :rows="2"
             placeholder="请输入内容"
             v-model="form.desc"
-          ></el-input>
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item label="hook地址:">
+          <el-input v-model="form.hook_url"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -73,7 +77,8 @@ export default {
     return {
       form: {
         name: "",
-        desc: ""
+        desc: "",
+        hook_url: ""
       },
       adding: false,
       loading: false,

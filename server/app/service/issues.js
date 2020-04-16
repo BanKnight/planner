@@ -86,6 +86,7 @@ module.exports = class Current extends Service
         one.tags = one.tags || []
 
         this.add(one)
+        this.service.hook.add_issues(one)
 
         let cache = this.get_cache(one.planner)
 
@@ -100,6 +101,7 @@ module.exports = class Current extends Service
                 val.push(one)
             }
         })
+
 
         this.app.db.set("planner.issues", one._id, one)
     }
@@ -120,6 +122,7 @@ module.exports = class Current extends Service
         })
 
         this.app.db.delete("planner.issues", id)
+        this.service.hook.del_issues(one)
 
         this.del(one)
 
@@ -128,6 +131,8 @@ module.exports = class Current extends Service
 
     update(one, option)
     {
+        let old_one = Object.assign({}, one)
+        let new_one = Object.assign({}, option)
         delete option._id
 
         let is_closed = one.closed
@@ -166,6 +171,7 @@ module.exports = class Current extends Service
             }
         })
 
+        this.service.hook.update_issues(old_one,new_one)
         this.add(one)
 
         this.app.db.set("planner.issues", one._id, one)
