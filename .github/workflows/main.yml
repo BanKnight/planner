@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    tags:
+    branches:
       - '**'
 jobs:
   server:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout tags
+    - name: Checkout branches
       uses: actions/checkout@v2 
       with:  
         ref: ${{github.ref}}   
@@ -30,7 +30,7 @@ jobs:
   client:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout tags
+    - name: Checkout branches
       uses: actions/checkout@v2 
       with:  
         ref: ${{github.ref}}  
