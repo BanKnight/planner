@@ -1,17 +1,17 @@
 // vue.config.js
 module.exports = {
-    devServer: {
-        proxy: {
-            '/api': {
-                target: 'http://localhost:7000',
-                changeOrigin: true,
-                ws: true,
-            },
-            '/public': {
-                target: 'http://localhost:7000',
-                changeOrigin: true,
-                ws: true,
-            },
-        }
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://planner.tinyfunny.net",
+        changeOrigin: true,
+        ws: true
+      },
+      "/public": {
+        target: "http://planner.tinyfunny.net",
+        changeOrigin: true,
+        ws: true
+      }
     }
-}
+  }
+};
