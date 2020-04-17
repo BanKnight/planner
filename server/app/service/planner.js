@@ -104,6 +104,7 @@ module.exports = class Planner extends Service
 
         planner.name = option.name || planner.name
         planner.desc = option.desc || planner.desc
+        planner.hook_url = option.hook_url || planner.hook_url
 
         planner.owner = option.owner || planner.owner
 

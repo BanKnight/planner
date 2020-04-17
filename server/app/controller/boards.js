@@ -417,7 +417,6 @@ module.exports = class Current extends Controller
             return
         }
 
-
         const note = planner.notes[ctx.params.note]
 
         if (note == null)

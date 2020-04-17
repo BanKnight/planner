@@ -165,7 +165,6 @@ module.exports = class Current extends Service
         extend(group, option)
 
         group.updated = Date.now()
-
         this.save_group(group)
     }
 
@@ -354,13 +353,13 @@ module.exports = class Current extends Service
 
     move_note(planner_id, group_id, option)
     {
+        
         let planner = this.get_planner(planner_id)
 
         let group = this.get_group(planner, group_id)
 
         let from = this.get_col(group, option.from)
         let to = this.get_col(group, option.to)
-
         if (from == null || to == null)
         {
             throw new Error("no such col")
@@ -400,6 +399,8 @@ module.exports = class Current extends Service
         {
             this.save_col(to)
         }
+
+        this.service.hook.move_boards(from,to,option.target)
     }
 
     /**
@@ -415,6 +416,7 @@ module.exports = class Current extends Service
      */
     create_note(planner, group, col, option)
     {
+
         col.updated = Date.now()
 
         let note = {
@@ -429,9 +431,9 @@ module.exports = class Current extends Service
         col.notes.sort(Current.note_cmp)
 
         planner.notes[note._id] = note
-
         this.save_note(note)
         this.save_col(col)
+        this.service.hook.add_boards(note,group.title,col)
 
         return note
     }
@@ -442,6 +444,7 @@ module.exports = class Current extends Service
      */
     update_note(group, col, note, option)
     {
+        let old_one = Object.assign({}, note)
         const stats = option.stats
 
         delete option._id
@@ -495,6 +498,7 @@ module.exports = class Current extends Service
         }
 
         this.save_note(note)
+        this.service.hook.update_boards(old_one,note,group._id)
     }
 
     close_by_milestone(planner_id, milestone)
@@ -535,7 +539,7 @@ module.exports = class Current extends Service
         delete planner.notes[note._id]
 
         this.save_col(col)
-
+        this.service.hook.del_boards(note)
         this.app.db.delete("planner.boards.notes", note._id)
     }
 
@@ -593,7 +597,6 @@ module.exports = class Current extends Service
     get_group(planner, group_id)
     {
         let index = planner.groups.findIndex(Current.find_by_id, group_id)
-
         return planner.groups[index]
     }
 

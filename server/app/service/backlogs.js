@@ -86,7 +86,7 @@ module.exports = class Current extends Service
         one.tags = one.tags || []
 
         this.add(one)
-
+        this.service.hook.add_backlog(one)
         let cache = this.get_cache(one.planner)
 
         cache.forEach((val, keyword) =>
@@ -120,6 +120,7 @@ module.exports = class Current extends Service
         })
 
         this.app.db.delete("planner.backlogs", id)
+        this.service.hook.del_backlog(one)
 
         this.del(one)
 
@@ -128,6 +129,7 @@ module.exports = class Current extends Service
 
     update(one, option)
     {
+        let old_one = Object.assign({}, one)
         delete option._id
 
         let is_closed = one.closed
@@ -166,6 +168,7 @@ module.exports = class Current extends Service
             }
         })
 
+        this.service.hook.update_backlog(old_one,one)
         this.add(one)
 
         this.app.db.set("planner.backlogs", one._id, one)
