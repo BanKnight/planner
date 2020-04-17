@@ -74,7 +74,6 @@ module.exports = class Current extends Service
      */
     create(option)
     {
-
         let one = {
             _id: shortid.generate(),
             ...option,
@@ -131,7 +130,6 @@ module.exports = class Current extends Service
     update(one, option)
     {
         let old_one = Object.assign({}, one)
-        let new_one = Object.assign({}, option)
         delete option._id
 
         let is_closed = one.closed
@@ -170,7 +168,7 @@ module.exports = class Current extends Service
             }
         })
 
-        this.service.hook.update_backlog(old_one,new_one)
+        this.service.hook.update_backlog(old_one,one)
         this.add(one)
 
         this.app.db.set("planner.backlogs", one._id, one)

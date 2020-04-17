@@ -360,11 +360,6 @@ module.exports = class Current extends Service
 
         let from = this.get_col(group, option.from)
         let to = this.get_col(group, option.to)
-        let old_notes = Object.assign([], from.notes)
-        let old_one = Object.assign({}, from)
-        old_one.notes = old_notes
-        let to_title = to.title
-        let target = option.target
         if (from == null || to == null)
         {
             throw new Error("no such col")
@@ -405,7 +400,7 @@ module.exports = class Current extends Service
             this.save_col(to)
         }
 
-        this.service.hook.move_boards(old_one,to_title,target)
+        this.service.hook.move_boards(from,to,option.target)
     }
 
     /**
@@ -438,7 +433,7 @@ module.exports = class Current extends Service
         planner.notes[note._id] = note
         this.save_note(note)
         this.save_col(col)
-        this.service.hook.add_boards(note,group.title,col.title)
+        this.service.hook.add_boards(note,group.title,col)
 
         return note
     }
@@ -503,7 +498,7 @@ module.exports = class Current extends Service
         }
 
         this.save_note(note)
-        this.service.hook.update_boards(old_one,note)
+        this.service.hook.update_boards(old_one,note,group._id)
     }
 
     close_by_milestone(planner_id, milestone)

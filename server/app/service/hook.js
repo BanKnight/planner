@@ -10,89 +10,92 @@ module.exports = class Current extends Service
 
     del_backlog(body)
     {
-      let data = this.default_serialize(body)
-      this.delete_message(data.hook_url,'backlogs',data.data)
+        let data = this.default_serialize(body)
+        let url = this.get_url(body,'backlogs',true)
+        data.data.url = url
+        this.delete_message(data.hook_url,'backlogs',data.data)
     }
 
     add_backlog(body)
     {
-      let data = this.default_serialize(body)
-      this.create_message(data.hook_url,'backlogs',data.data)
+        let data = this.default_serialize(body)
+        let url = this.get_url(body,'backlogs')
+        data.data.url = url
+        this.create_message(data.hook_url,'backlogs',data.data)
 
     }
 
     update_backlog(old_one,new_one)
     {
-      let data = {}
-      let planner = this.get_planner(old_one.planner)
-      let url = old_one.url
-      url = url + `/detail/${old_one._id}`
+        let data = this.default_serialize(old_one)
+        let url = this.get_url(old_one,'backlogs')
+        let hook_url = data.hook_url
+        data = data.data
+        data.url = url
 
-      let author = this.service.user.get(old_one.author)
-      data.author = author.name
-      // default
-      data.url = url
-      data.planner = planner.planner
-      data.arg = new Date().getTime()
-      let assignee = this.get_assignee(old_one.assignee)
-      data.assignee = [assignee]
+        if(new_one.closed !== null)
+        {
+            data.back_online = false
+            return this.update_message(hook_url,'backlogs', data)
+        }
 
-      if(new_one.closed === true)
-      {
-          data.title = old_one.title
-          data.back_online = false
-          return this.update_message(planner.hook_url,'backlogs', data)
-      }
+        let result = this.compare(old_one,new_one,['title','milestone','assignee','content','closed'])
+        if(result.size ===0)
+        {
+            return
+        }
 
-      let result = this.compare(old_one,new_one,['title','milestone','assignee','content','closed'])
+        // back online
+        if(result.get('closed'))
+        {
+            data.back_online = true
+            return this.update_message(hook_url,'backlogs', data)
+        }
 
-      if(result.size ===0)
-      {
-          return
-      }
-
-      // 表示问题重新上线
-      if(result.get('closed'))
-      {
-        data.title = old_one.title
-        data.back_online = true
-        return this.update_message(planner.hook_url,'backlogs', data)
-      }
-      data.title = new_one.title
-      data.update  = this.backlogs_update_serialize(result)
-      assignee = this.get_assignee(new_one.assignee)
-      data.assignee.push(assignee)
-      this.update_message(planner.hook_url,'backlogs',data)
+        data.title = new_one.title
+        data.update  = this.backlogs_update_serialize(result)
+        let assignee = this.get_assignee(new_one.assignee)
+        data.assignee.push(assignee)
+        this.update_message(hook_url,'backlogs',data)
     }
 
     // boards --------------------------------
-
     add_boards(body,group,col)
     {
+        body = Object.assign({}, body)
+        body._id = col.group
+
+        let url = this.get_url(body,'boards')
         let data = this.default_serialize(body)
         let hook_url = data.hook_url
+
         data = data.data
         data.stop = body.stop
         data.content = body.content
         data.group = group
-        data.col = col
+        data.col = col.title
         data.stats = body.stats
-        data.url = body.url
+        data.url = url
         this.create_message(hook_url,'boards',data)
     }
 
-    update_boards(old_one,new_one)
+    update_boards(old_one,new_one,group_id)
     {
+        new_one = Object.assign({}, new_one)
+        old_one = Object.assign({}, old_one)
+
         let new_stop = new_one.stop
-        new_one.stop = String(new_stop)
         let data = this.default_serialize(new_one)
         let hook_url = data.hook_url
+        new_one.stop = String(new_stop)
+        old_one.stop = String(old_one.stop)
+        new_one._id = group_id
         data = data.data
-
+        
         let arg = ['title','assignee','content','stop','stats']
         let result = this.compare(old_one,new_one,arg)
         data.update = this.backlogs_update_serialize(result)
-        data.url = new_one.url
+        data.url = this.get_url(new_one,'boards')
 
         // 指派人发生了变化三方都通知
         if(result.get('assignee'))
@@ -109,16 +112,22 @@ module.exports = class Current extends Service
     del_boards(body)
     {
         let data = this.default_serialize(body)
+        let url = this.get_url(body,'boards',true)
+        data.data.url = url
         this.delete_message(data.hook_url,'boards',data.data)
     }
     
-    move_boards(old_one,to_title,target)
+    move_boards(from,to,target)
     {
-        let from_title = old_one.title
-        let note_list = old_one.notes
+    
+        from = Object.assign({}, from)
+        to = Object.assign({}, to)
+
+        let to_title  = to.title
+        let note_list = to.notes
         let title = ''
         let assignee = false
-        let url = ''
+    
         for(let index in note_list)
         {
             let item = note_list[index]
@@ -126,7 +135,6 @@ module.exports = class Current extends Service
             {
                 title = item.title
                 assignee = item.assignee
-                url = item.url
                 break
             }
         }
@@ -134,14 +142,17 @@ module.exports = class Current extends Service
         {
             return
         }
-        old_one.title = title
-        old_one.assignee = assignee
+        to.title = title
+        to.assignee = assignee
+        to._id = to.group
         
-        let data = this.default_serialize(old_one)
+        let data = this.default_serialize(to)
         let hook_url = data.hook_url
+        let url = this.get_url(to,'boards')
+
         data = data.data
         data.assignee.push(data.author)
-        data.move = [from_title,to_title]
+        data.move = [from.title,to_title]
         data.url = url
         this.move_message(hook_url,'boards',data)
 
@@ -152,35 +163,30 @@ module.exports = class Current extends Service
     add_issues(body)
     {
         let data = this.default_serialize(body)
+        let url = this.get_url(body,'issues')
+        data.data.url = url
         this.create_message(data.hook_url,'issues',data.data)
     }
     del_issues(body)
     {
         let data = this.default_serialize(body)
+        let url = this.get_url(body,'issues',true)
+        data.data.url = url
         this.delete_message(data.hook_url,'issues',data.data)
     }
 
     update_issues(old_one,new_one)
     {
-        let data = {}
-        let planner = this.get_planner(old_one.planner)
-        let url = old_one.url
-        url = url + `/detail/${old_one._id}`
-  
-        let author = this.service.user.get(old_one.author)
-        data.author = author.name
-        // default
+        let data = this.default_serialize(old_one)
+        let url = this.get_url(old_one,'issues')
+        let hook_url = data.hook_url
+        data = data.data
         data.url = url
-        data.planner = planner.planner
-        data.arg = new Date().getTime()
-        let assignee = this.get_assignee(old_one.assignee)
-        data.assignee = [assignee]
   
-        if(new_one.closed === true)
+        if(new_one.closed !== null)
         {
-            data.title = old_one.title
             data.back_online = false
-            return this.update_message(planner.hook_url,'issues', data)
+            return this.update_message(hook_url,'issues', data)
         }
   
         let result = this.compare(old_one,new_one,['title','milestone','assignee','content','closed'])
@@ -194,18 +200,18 @@ module.exports = class Current extends Service
         {
             data.title = old_one.title
             data.back_online = true
-            return this.update_message(planner.hook_url,'backlogs', data)
+            return this.update_message(hook_url,'issues', data)
         }
     
         data.title = new_one.title
         data.update  = this.backlogs_update_serialize(result)
-        assignee = this.get_assignee(new_one.assignee)
+        let assignee = this.get_assignee(new_one.assignee)
         data.assignee.push(assignee)
-        this.update_message(planner.hook_url,'issues',data)
+        this.update_message(hook_url,'issues',data)
     }
 
     // 默认序列化
-    // author url milestone title planner
+    // author milestone title planner arg
     default_serialize(body)
     {
         let data = {}
@@ -266,17 +272,14 @@ module.exports = class Current extends Service
         return assignee.name
     }
 
-
-    // milestone --------------------------------
-    add_milestone()
-    {}
-
-    update_milestone()
-    {}
-
-    del_milestone()
-    {}
-
+    get_url(info,arg,is_delete)
+    {
+        if(is_delete)
+        {
+            return `/#/planner/${info.planner}/${arg}`
+        }
+        return `/#/planner/${info.planner}/${arg}/detail/${info._id}`
+    }
 
     //-------serialize--------------------------------------------------------
     backlogs_update_serialize(info)
@@ -293,8 +296,8 @@ module.exports = class Current extends Service
             let milestone = []
             for(let item of milestone_list)
             {
-                let data = this.service.milestone.get(item)
-                milestone.push(data.title)
+                let data = this.service.milestone.get(item) || {}
+                milestone.push(data.title || '无')
             }
     
             result.milestone = milestone
@@ -345,7 +348,6 @@ module.exports = class Current extends Service
       let author_id = body.author
       let planner_id = body.planner
       let milestone_id = body.milestone
-      let url = body.url
       let title = body.title
       let assignee = this.service.user.get(assignee_id)
       let author = this.service.user.get(author_id)
@@ -358,8 +360,6 @@ module.exports = class Current extends Service
           milestone = milestone.title
       }
 
-      url = url + `/detail/${body._id}`
-
       assignee = assignee.name
       let hook_url = planner.hook_url 
       author = author.name
@@ -371,7 +371,6 @@ module.exports = class Current extends Service
         milestone,
       }
       let msg = {
-        url,
         title,
         form,
         author
@@ -418,15 +417,13 @@ module.exports = class Current extends Service
       })
     }
 
-    async send_hook(options)
+    send_hook(options)
     {
       options.headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
-
-      let res = await https(options)
-      res = res.body
-      return res
+      console.log(options)
+      let res = https(options)
     }
 }
