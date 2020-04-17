@@ -1,172 +1,152 @@
 <template>
-  <el-container direction="vertical" class="full">
-    <el-row
-      type="flex"
-      justify="space-between"
-      align="middle"
-      style="margin-bottom:10px;"
-    >
-      <el-input
-        class="search"
-        placeholder="输入搜索关键字"
-        v-model="keyword"
-        clearable
-        prefix-icon="el-icon-search"
-        @clear="on_search"
-        @keydown.enter.native.stop="on_search"
-      >
-        <el-button
-          slot="append"
-          icon="el-icon-search"
-          @click="on_search"
-        ></el-button>
+  <el-container direction="vertical"
+                class="full">
+    <el-row type="flex"
+            justify="space-between"
+            align="middle"
+            style="margin-bottom:10px;">
+      <el-input class="search"
+                placeholder="输入搜索关键字"
+                v-model="keyword"
+                clearable
+                prefix-icon="el-icon-search"
+                @clear="on_search"
+                @keydown.enter.native.stop="on_search">
+        <el-button slot="append"
+                   icon="el-icon-search"
+                   @click="on_search"></el-button>
       </el-input>
     </el-row>
 
-    <el-row
-      v-if="tags.length > 0"
-      type="flex"
-      style="flex-wrap: wrap;margin-bottom:10px;background-color:white;border-radius:4px;border: 1px solid #EBEEF5;padding:10px"
-    >
-      <el-checkbox v-for="one in tags" v-model="one.checked" :key="one.title">{{
+    <el-row v-if="tags.length > 0"
+            type="flex"
+            style="flex-wrap: wrap;margin-bottom:10px;background-color:white;border-radius:4px;border: 1px solid #EBEEF5;padding:10px">
+      <el-checkbox v-for="one in tags"
+                   v-model="one.checked"
+                   :key="one.title">{{
         one.title
       }}</el-checkbox>
     </el-row>
 
-    <el-dialog title="快速添加" width="500px" :visible.sync="add_form_visible">
-      <el-form
-        label-position="top"
-        :model="add_form"
-        :rules="rules"
-        ref="add_form"
-      >
-        <el-form-item label="标题:" prop="title">
-          <el-input
-            tabindex="1"
-            autofocus
-            placeholder="请输入标题"
-            v-model="add_form.title"
-            clearable
-          />
+    <el-dialog title="快速添加"
+               width="500px"
+               :visible.sync="add_form_visible">
+      <el-form label-position="top"
+               :model="add_form"
+               :rules="rules"
+               ref="add_form">
+        <el-form-item label="标题:"
+                      prop="title">
+          <el-input tabindex="1"
+                    autofocus
+                    placeholder="请输入标题"
+                    v-model="add_form.title"
+                    clearable />
         </el-form-item>
-        <el-form-item label="指派:" prop="assignee">
-          <member-select
-            tabindex="2"
-            v-model="add_form.assignee"
-            :planner="planner_id"
-          />
+        <el-form-item label="指派:"
+                      prop="assignee">
+          <member-select tabindex="2"
+                         v-model="add_form.assignee"
+                         :planner="planner_id" />
         </el-form-item>
-        <el-form-item label="里程碑:" prop="milestone">
-          <milestone-select
-            tabindex="3"
-            v-model="add_form.milestone"
-            :planner="planner_id"
-          />
+        <el-form-item label="里程碑:"
+                      prop="milestone">
+          <milestone-select tabindex="3"
+                            v-model="add_form.milestone"
+                            :planner="planner_id" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="full-width" @click="add_one"
-            >确定</el-button
-          >
+          <el-button type="primary"
+                     class="full-width"
+                     @click="add_one">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
-    <el-table
-      ref="data"
-      v-loading="loading"
-      :data="page.data"
-      style="width: 100%"
-      height="100%"
-      size="small"
-      :stripe="true"
-      border
-      :row-class-name="row_class"
-      row-key="_id"
-    >
+    <el-table ref="data"
+              v-loading="loading"
+              :data="page.data"
+              style="width: 100%"
+              height="100%"
+              size="small"
+              :stripe="true"
+              border
+              :row-class-name="row_class"
+              row-key="_id">
       <el-table-column width="80">
         <template slot="header">
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-plus"
-            @click="add_form_visible = true"
-          ></el-button>
+          <el-button type="primary"
+                     size="mini"
+                     icon="el-icon-plus"
+                     @click="add_form_visible = true"></el-button>
         </template>
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.closed"
-            title="关闭或者打开"
-            active-color="#ff4949"
-            inactive-color="#13ce66"
-            @change="close(scope.row, $event)"
-          ></el-switch>
+          <el-switch v-model="scope.row.closed"
+                     title="关闭或者打开"
+                     active-color="#ff4949"
+                     inactive-color="#13ce66"
+                     @change="close(scope.row, $event)"></el-switch>
         </template>
       </el-table-column>
 
-      <el-table-column label="标题" prop="title">
+      <el-table-column label="标题"
+                       prop="title">
         <template slot-scope="scope">
-          <router-link
-            :to="`${root}/detail/${scope.row._id}`"
-            class="el-link el-link--default"
-            >{{ scope.row.title }}</router-link
-          >
+          <router-link :to="`${root}/detail/${scope.row._id}`"
+                       class="el-link el-link--default">{{ scope.row.title }}</router-link>
         </template>
       </el-table-column>
 
-      <el-table-column label="标签" width="200">
+      <el-table-column label="标签"
+                       width="200">
         <template slot-scope="scope">
-          <el-tag
-            v-for="tag in scope.row.tags"
-            :key="tag"
-            type="danger"
-            size="small"
-            >{{ tag }}</el-tag
-          >
+          <el-tag v-for="tag in scope.row.tags"
+                  :key="tag"
+                  type="danger"
+                  size="small">{{ tag }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="指派给" width="120">
+      <el-table-column label="指派给"
+                       width="120">
         <template slot-scope="scope">
-          <member-preview
-            :value="scope.row.assignee"
-            size="mini"
-            :planner="planner_id"
-          />
+          <member-preview :value="scope.row.assignee"
+                          size="mini"
+                          :planner="planner_id" />
         </template>
       </el-table-column>
 
-      <el-table-column label="里程碑" width="120">
+      <el-table-column label="里程碑"
+                       width="120">
         <template slot-scope="scope">
-          <milestone-preview
-            :value="scope.row.milestone"
-            size="mini"
-            :planner="planner_id"
-          />
+          <milestone-preview :value="scope.row.milestone"
+                             size="mini"
+                             :planner="planner_id" />
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="120" align="right" fixed="right">
+      <el-table-column label="操作"
+                       width="120"
+                       align="right"
+                       fixed="right">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button
-              size="mini"
-              icon="el-icon-delete"
-              type="danger"
-              @click="destroy(scope.row)"
-            ></el-button>
+            <el-button size="mini"
+                       icon="el-icon-delete"
+                       type="danger"
+                       @click="destroy(scope.row)"></el-button>
           </el-button-group>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-footer height="auto" style="display: flex;justify-content: center">
-      <el-pagination
-        :page-count="page.count"
-        layout="total,prev, pager, next"
-        :total="page.total"
-        @current-change="fetch"
-        @prev-click="fetch"
-        @next-click="fetch"
-      ></el-pagination>
+    <el-footer height="auto"
+               style="display: flex;justify-content: center">
+      <el-pagination :page-count="page.count"
+                     layout="total,prev, pager, next"
+                     :total="page.total"
+                     @current-change="fetch"
+                     @prev-click="fetch"
+                     @next-click="fetch"></el-pagination>
     </el-footer>
   </el-container>
 </template>
@@ -189,7 +169,7 @@ export default {
     MemberSelect
   },
 
-  data() {
+  data()  {
     return {
       loading: false,
       page: {
@@ -203,26 +183,25 @@ export default {
         title: "",
         assignee: null,
         milestone: null,
-        url: window.location.href
       },
       tags: [],
       keyword: ""
     };
   },
-  mounted() {
+  mounted()  {
     this.fetch(1);
   },
   computed: {
-    root() {
+    root()    {
       return `/planner/${this.planner_id}/backlogs`;
     },
-    milestone() {
+    milestone()    {
       return `/planner/${this.planner_id}/milestone`;
     },
-    planner_id() {
+    planner_id()    {
       return this.$route.params.planner;
     },
-    rules() {
+    rules()    {
       return {
         title: [
           { required: true, message: "请输入标题", trigger: "blur" },
@@ -231,8 +210,8 @@ export default {
       };
     }
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
+  beforeRouteEnter(to, from, next)  {
+    next(vm =>    {
       if (from.fullPath != "/") {
         vm.from = from.fullPath;
       }
@@ -240,7 +219,7 @@ export default {
   },
 
   methods: {
-    async fetch(page) {
+    async fetch(page)    {
       this.loading = true;
 
       const page_info = await this.$store.dispatch("backlogs_list", {
@@ -264,7 +243,7 @@ export default {
 
       this.loading = false;
     },
-    row_class({ row, rowIndex }) {
+    row_class({ row, rowIndex })    {
       let classes = [];
 
       if (row.closed) {
@@ -277,7 +256,7 @@ export default {
 
       return classes.concat(" ");
     },
-    async destroy(item) {
+    async destroy(item)    {
       await this.$confirm("是否确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -296,7 +275,7 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    async close(item, value) {
+    async close(item, value)    {
       await this.$store.dispatch("backlogs_update", {
         planner: this.planner_id,
         backlog: item._id,
@@ -305,11 +284,11 @@ export default {
 
       this.fetch(this.page.curr);
     },
-    on_search() {
+    on_search()    {
       this.fetch(1);
     },
-    add_one() {
-      this.$refs.add_form.validate(async valid => {
+    add_one()    {
+      this.$refs.add_form.validate(async valid =>      {
         if (!valid) {
           return false;
         }

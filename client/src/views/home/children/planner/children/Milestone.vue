@@ -254,8 +254,7 @@ export default {
       form: {
         title: "",
         desc: "",
-        due: null,
-        url: window.location.href
+        due: null
       },
       view: {
         backlogs: [],
