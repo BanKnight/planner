@@ -10,4 +10,7 @@ module.exports = {
             expiresIn: "30d",
         }
     },
+    logger: {
+        enabled: true,
+    },
 }

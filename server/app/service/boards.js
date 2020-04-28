@@ -259,6 +259,8 @@ module.exports = class Current extends Service
         for (let note of col.notes)
         {
             this.app.db.delete("planner.boards.notes", note._id)
+
+            delete planner.notes[note._id]
         }
 
         this.app.db.delete("planner.boards.cols", col_id)
@@ -353,7 +355,7 @@ module.exports = class Current extends Service
 
     move_note(planner_id, group_id, option)
     {
-        
+
         let planner = this.get_planner(planner_id)
 
         let group = this.get_group(planner, group_id)
@@ -400,7 +402,7 @@ module.exports = class Current extends Service
             this.save_col(to)
         }
 
-        this.service.hook.move_boards(from,to,option.target)
+        // this.service.hook.move_boards(from, to, option.target)
     }
 
     /**
@@ -433,7 +435,7 @@ module.exports = class Current extends Service
         planner.notes[note._id] = note
         this.save_note(note)
         this.save_col(col)
-        this.service.hook.add_boards(note,group.title,col)
+        // this.service.hook.add_boards(note, group.title, col)
 
         return note
     }
@@ -498,7 +500,7 @@ module.exports = class Current extends Service
         }
 
         this.save_note(note)
-        this.service.hook.update_boards(old_one,note,group._id)
+        // this.service.hook.update_boards(old_one, note, group._id)
     }
 
     close_by_milestone(planner_id, milestone)
@@ -539,7 +541,7 @@ module.exports = class Current extends Service
         delete planner.notes[note._id]
 
         this.save_col(col)
-        this.service.hook.del_boards(note)
+        // this.service.hook.del_boards(note)
         this.app.db.delete("planner.boards.notes", note._id)
     }
 

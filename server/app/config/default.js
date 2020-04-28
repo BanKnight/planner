@@ -7,6 +7,7 @@ module.exports = {
         url: process.env.DB_URL,
         name: process.env.DB_NAME,
     },
+
     compress: {
         threshold: 2048,
     },
@@ -25,6 +26,9 @@ module.exports = {
     page: {
         size: 10,                    //每页条目数量    
     },
+    logger: {
+        enabled: false,
+    },
     upload: {
         multipart: true, // 支持文件上传
         dir: path.resolve("./public/upload"), // 支持文件上传
@@ -36,5 +40,6 @@ module.exports = {
     },
     static: {
         dir: path.resolve("./")
-    }
+    },
+
 }
