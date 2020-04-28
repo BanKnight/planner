@@ -110,7 +110,7 @@ export default {
       await this.$store.dispatch("boards_destroy_col", {
         planner: this.planner_id,
         group: this.group_id,
-        col: col
+        col: col._id
       });
 
       this.cols.splice(this.cols.indexOf(col), 1);

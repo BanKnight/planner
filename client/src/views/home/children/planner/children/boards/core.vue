@@ -246,6 +246,7 @@ export default {
       })
         .then(async () =>       
         {
+
           await this.$store.dispatch("boards_destroy_group", {
             planner: this.planner_id,
             group: group._id
